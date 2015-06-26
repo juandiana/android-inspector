@@ -3,9 +3,11 @@
 from abc import abstractmethod, ABCMeta
 import os
 import errno
+from cybox.core import Observables
 
 INSPECTED_DATA_DIR_NAME = 'inspected_data'
 EXTRACTED_DATA_DIR_NAME = 'extracted_data'
+SOURCE_DATA_DIR_NAME = 'source_data'
 
 
 class InspectionResult(object):
@@ -62,9 +64,11 @@ class Operation(object):
         """
         extracted_data_dir_path = os.path.join(data_dir_path, EXTRACTED_DATA_DIR_NAME)
         inspected_data_dir_path = os.path.join(data_dir_path, INSPECTED_DATA_DIR_NAME)
+        source_data_dir_path = os.path.join(data_dir_path, SOURCE_DATA_DIR_NAME)
         try:
             os.makedirs(extracted_data_dir_path)
             os.makedirs(inspected_data_dir_path)
+            os.makedirs(source_data_dir_path)
         except OSError as exception:
             if exception.errno != errno.EEXIST:
                 raise
@@ -77,6 +81,18 @@ class Operation(object):
         if not inspection_result.success:
             return OperationResult(False, None, 'Inspection failed.')
 
-        # TODO: Write inspection_result.inspected_objects and inspection_result.source_objects to their dirs.
-        # TODO: Deberiamos hacer esto aqui o en el operation manager?
+        # Persist source_data
+        source_files_obs = Observables(inspection_result.source_objects)
+        xml = source_files_obs.to_xml(include_namespaces=True)
+        f = open(os.path.join(source_data_dir_path, 'source_data.xml'), 'w')
+        f.write(xml)
+        f.close()
+
+        # Persist inspected_data
+        inspected_files_obs = Observables(inspection_result.inspected_objects)
+        xml = inspected_files_obs.to_xml(include_namespaces=True)
+        f = open(os.path.join(inspected_data_dir_path, 'inspected_data.xml'), 'w')
+        f.write(xml)
+        f.close()
+
         return OperationResult(True, data_dir_path, None)
