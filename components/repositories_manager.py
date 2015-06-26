@@ -1,4 +1,11 @@
 # coding=utf-8
+from importlib import import_module
+import re
+
+
+def convert(name):
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 class RepositoriesManager(object):
     def add_file(self, repo_name, file_path):
@@ -22,18 +29,24 @@ class RepositoriesManager(object):
         :param name: string
         :rtype : Extractor
         """
-        pass
+        module_name = convert(name)
+        module = import_module('repositories.extractors.' + module_name)
+        return getattr(module, name)()
 
     def get_inspector(self, name):
         """
         :param name: string
         :rtype : Inspector
         """
-        pass
+        module_name = convert(name)
+        module = import_module('repositories.inspectors.' + module_name)
+        return getattr(module, name)()
 
     def get_custom_cybox_object(self, name):
         """
         :param name: string
         :rtype : ObjectProperties
         """
-        pass
+        module_name = convert(name)
+        module = import_module('repositories.custom_cybox_objects.' + module_name)
+        return getattr(module, name)()
