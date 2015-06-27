@@ -9,7 +9,7 @@ EXTRACTED_DATA_DIR_NAME = 'extracted_data'
 
 
 class InspectionResult(object):
-    def __init__(self, success, inspected_objects, source_objects):
+    def __init__(self, success, inspected_objects=None, source_objects=None):
         self.success = success
         self.inspected_objects = inspected_objects
         self.source_objects = source_objects
