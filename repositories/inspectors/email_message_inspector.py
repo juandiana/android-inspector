@@ -3,12 +3,16 @@
 import hashlib
 import os
 import sqlite3
+
 from cybox.common import datetime
 from cybox.objects.email_message_object import EmailHeader, EmailMessage
-
 from cybox.objects.file_object import File
 from cybox.utils import set_id_method, IDGenerator
+
 from model.operation import Inspector, InspectionResult
+
+simple_output = True
+
 
 def calculate_hash(route, block_size=65536):
     hasher = hashlib.sha256()
@@ -20,17 +24,28 @@ def calculate_hash(route, block_size=65536):
 
     return hasher.hexdigest()
 
+
 class EmailMessageInspector(Inspector):
     def execute(self, device_info, extracted_data_dir_path):
-        set_id_method(IDGenerator.METHOD_INT)
-
         db_file_name = 'EmailProvider.db'
         db_file_path = os.path.join(extracted_data_dir_path, 'databases', db_file_name)
 
+        if not os.path.exists(db_file_path):
+            return InspectionResult(False)
+
         conn = sqlite3.connect(db_file_path)
         c = conn.cursor()
-        c.execute('SELECT * FROM message')
+
+        try:
+            c.execute('SELECT * FROM message')
+        except (sqlite3.OperationalError, sqlite3.DatabaseError), msg:
+            # TODO: Logger
+            return InspectionResult(False)
+
         column_names = [d[0] for d in c.description]
+
+        if simple_output:
+            set_id_method(IDGenerator.METHOD_INT)
 
         # Source data
         source_data = []
@@ -52,21 +67,19 @@ class EmailMessageInspector(Inspector):
             info = dict(zip(column_names, row))
 
             header = EmailHeader()
-
             header.to = info['toList']
             header.cc = info['ccList']
             header.bcc = info['bccList']
             header.from_ = info['fromList']
             header.subject = info['subject']
             header.in_reply_to = info['replyToList']
-            header.date = datetime.fromtimestamp(info['timeStamp']/1000)    # Convert from milliseconds to seconds
+            header.date = datetime.fromtimestamp(info['timeStamp'] / 1000)  # Convert from milliseconds to seconds
             header.message_id = info['messageId']
             header.content_type = 'text/html'
 
             email = EmailMessage()
             email.header = header
-
-            email.add_related(source_file, "Extracted From", inline=False)
+            email.add_related(source_file, "Extracted From", inline=not simple_output)
 
             inspected_data.append(email)
 
