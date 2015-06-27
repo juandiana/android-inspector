@@ -25,9 +25,9 @@ class EmailMessageInspector(Inspector):
         set_id_method(IDGenerator.METHOD_INT)
 
         db_file_name = 'EmailProvider.db'
-        db_path = os.path.join(extracted_data_dir_path, 'databases', db_file_name)
+        db_file_path = os.path.join(extracted_data_dir_path, 'databases', db_file_name)
 
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3.connect(db_file_path)
         c = conn.cursor()
         c.execute('SELECT * FROM message')
         column_names = [d[0] for d in c.description]
@@ -39,8 +39,8 @@ class EmailMessageInspector(Inspector):
         source_file.db_file_name = db_file_name
         source_file.file_path = '/data/data/com.android.email/databases/'
         source_file.file_format = 'SQLite 3.x database'
-        source_file.size_in_bytes = os.path.getsize(db_path)
-        source_file.add_hash(calculate_hash(db_path))
+        source_file.size_in_bytes = os.path.getsize(db_file_path)
+        source_file.add_hash(calculate_hash(db_file_path))
 
         source_data.append(source_file)
 
