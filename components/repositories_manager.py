@@ -1,11 +1,14 @@
 # coding=utf-8
 from importlib import import_module
 import re
+import os
+import shutil
 
 
 def convert(name):
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
 
 class RepositoriesManager(object):
     def add_file(self, repo_name, file_path):
@@ -14,7 +17,15 @@ class RepositoriesManager(object):
         :param file_path: string
         :rtype : bool
         """
-        pass
+
+        file_name = os.path.basename(file_path)
+
+        try:
+            shutil.copyfile(file_path, os.path.join(os.getcwd(), 'repositories', file_name))
+            return True
+        except IOError:
+            print 'The file ' + file_name + 'was not copied to the ' + repo_name + ' repository.'
+            return False
 
     def remove_file(self, repo_name, file_name):
         """
@@ -22,7 +33,13 @@ class RepositoriesManager(object):
         :param file_name: string
         :rtype : bool
         """
-        pass
+
+        try:
+            os.remove(os.path.join(os.getcwd(), repo_name, file_name))
+            return True
+        except OSError:
+            print 'The file ' + file_name + 'was not deleted from the ' + repo_name + ' repository.'
+            return False
 
     def get_extractor(self, name):
         """
