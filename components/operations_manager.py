@@ -2,9 +2,6 @@
 
 from model import Operation
 
-class NotDefinedError(Exception):
-    pass
-
 
 class OperationsManager(object):
     def __init__(self, definitions_database, repositories_manager):
@@ -19,11 +16,15 @@ class OperationsManager(object):
         :rtype : set(OperationInfo)
         """
         if not self.definitions_database.exists_data_type(data_type):
-            raise NotDefinedError("DataType '{0}' is not defined.".format(data_type))
-        if not self.definitions_database.exists_data_source_type(data_source.type_):
-            raise NotDefinedError("DataSourceType '{0}' is not defined.".format(data_source.type_))
+            raise ValueError("'{0}' is not a defined DataType.".format(data_type))
 
-        # TODO: Check that data_source.info has all the params required by data_source.type
+        if not self.definitions_database.exists_data_source_type(data_source.type_):
+            raise ValueError("'{0}' of the specified DataSource is not a defined DataSourceType."
+                             .format(data_source.type_))
+
+        if not self.definitions_database.has_all_required_param_values(data_source):
+            raise ValueError("DataSource with type '{0}' must specify all its corresponding parameters."
+                             .format(data_source.type_))
 
         return self.definitions_database.query_operations_info(data_type, data_source, device_info)
 

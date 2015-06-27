@@ -13,6 +13,9 @@ class DefinitionsDatabase(object):
     def exists_data_source_type(self, data_source_type):
         pass
 
+    def has_all_required_param_values(self, data_source):
+        pass
+
     def add_operation(self, id_, data_type_id, data_source_type_id, inspector_id, param_values, device_models, android_versions):
         pass
 
