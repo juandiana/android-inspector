@@ -11,7 +11,7 @@ from cybox.utils import set_id_method, IDGenerator
 
 from model.operation import Inspector, InspectionResult
 
-simple_output = True
+SIMPLE_OUTPUT = True
 
 
 def calculate_hash(route, block_size=65536):
