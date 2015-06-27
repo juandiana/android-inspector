@@ -36,7 +36,7 @@ class EmailMessageInspector(Inspector):
         source_data = []
 
         source_file = File()
-        source_file.db_file_name = db_file_name
+        source_file.file_name = db_file_name
         source_file.file_path = '/data/data/com.android.email/databases/'
         source_file.file_format = 'SQLite 3.x database'
         source_file.size_in_bytes = os.path.getsize(db_file_path)
