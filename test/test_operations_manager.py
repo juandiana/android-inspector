@@ -1,6 +1,7 @@
 # coding=utf-8
 import unittest
-from components.operations_manager import OperationsManager, NotDefinedError
+
+from components.operations_manager import OperationsManager
 from components.repositories_manager import RepositoriesManager
 from model import DataSource, OperationInfo, DeviceInfo
 
@@ -33,6 +34,9 @@ class MockedDefinitionsDatabase(object):
     def exists_data_source_type(self, data_source_type):
         return True
 
+    def has_all_required_param_values(self, data_source):
+        return True
+
 
 class TestOperationsManager(unittest.TestCase):
     def setUp(self):
@@ -47,7 +51,7 @@ class TestOperationsManager(unittest.TestCase):
         try:
             op_info = self.operations_manager.get_operations_info(data_type, data_source, device_info)
             print op_info
-        except NotDefinedError as error:
+        except ValueError as error:
             print error.message
 
 
