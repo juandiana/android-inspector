@@ -21,13 +21,13 @@ def calculate_hash(route, block_size=65536):
     return hasher.hexdigest()
 
 class EmailMessageInspector(Inspector):
-    def execute(self, device_info, route):
+    def execute(self, device_info, extracted_data_dir_path):
         set_id_method(IDGenerator.METHOD_INT)
 
-        file_name = 'EmailProvider.db'
-        formated_route = os.path.join(route, 'databases', file_name)
+        db_file_name = 'EmailProvider.db'
+        db_path = os.path.join(extracted_data_dir_path, 'databases', db_file_name)
 
-        conn = sqlite3.connect(formated_route)
+        conn = sqlite3.connect(db_path)
         c = conn.cursor()
         c.execute('SELECT * FROM message')
         column_names = [d[0] for d in c.description]
@@ -36,11 +36,11 @@ class EmailMessageInspector(Inspector):
         source_data = []
 
         source_file = File()
-        source_file.file_name = file_name
+        source_file.db_file_name = db_file_name
         source_file.file_path = '/data/data/com.android.email/databases/'
         source_file.file_format = 'SQLite 3.x database'
-        source_file.size_in_bytes = os.path.getsize(formated_route)
-        source_file.add_hash(calculate_hash(formated_route))
+        source_file.size_in_bytes = os.path.getsize(db_path)
+        source_file.add_hash(calculate_hash(db_path))
 
         source_data.append(source_file)
 
@@ -69,5 +69,8 @@ class EmailMessageInspector(Inspector):
             email.add_related(source_file, "Extracted From", inline=False)
 
             inspected_data.append(email)
+
+        c.close()
+        conn.close()
 
         return InspectionResult(True, inspected_data, source_data)
