@@ -44,7 +44,7 @@ class EmailMessageInspector(Inspector):
 
         column_names = [d[0] for d in c.description]
 
-        if simple_output:
+        if SIMPLE_OUTPUT:
             set_id_method(IDGenerator.METHOD_INT)
 
         # Source data
@@ -79,7 +79,7 @@ class EmailMessageInspector(Inspector):
 
             email = EmailMessage()
             email.header = header
-            email.add_related(source_file, "Extracted From", inline=not simple_output)
+            email.add_related(source_file, "Extracted From", inline=not SIMPLE_OUTPUT)
 
             inspected_data.append(email)
 
