@@ -47,43 +47,40 @@ class EmailMessageInspector(Inspector):
         if SIMPLE_OUTPUT:
             set_id_method(IDGenerator.METHOD_INT)
 
-        # Source data
-        source_data = []
+        source_objects = []
 
-        source_file = File()
-        source_file.file_name = db_file_name
-        source_file.file_path = '/data/data/com.android.email/databases/'
-        source_file.file_format = 'SQLite 3.x database'
-        source_file.size_in_bytes = os.path.getsize(db_file_path)
-        source_file.add_hash(calculate_hash(db_file_path))
+        db_file_object = File()
+        db_file_object.file_name = db_file_name
+        db_file_object.file_path = '/data/data/com.android.email/databases/'
+        db_file_object.file_format = 'SQLite 3.x database'
+        db_file_object.size_in_bytes = os.path.getsize(db_file_path)
+        db_file_object.add_hash(calculate_hash(db_file_path))
 
-        source_data.append(source_file)
+        source_objects.append(db_file_object)
 
-        # Inspected data
-        inspected_data = []
+        inspected_objects = []
 
         for row in c:
-            # build dict
-            info = dict(zip(column_names, row))
+            row_data = dict(zip(column_names, row))
 
             header = EmailHeader()
-            header.to = info['toList']
-            header.cc = info['ccList']
-            header.bcc = info['bccList']
-            header.from_ = info['fromList']
-            header.subject = info['subject']
-            header.in_reply_to = info['replyToList']
-            header.date = datetime.fromtimestamp(info['timeStamp'] / 1000)  # Convert from milliseconds to seconds
-            header.message_id = info['messageId']
+            header.to = row_data['toList']
+            header.cc = row_data['ccList']
+            header.bcc = row_data['bccList']
+            header.from_ = row_data['fromList']
+            header.subject = row_data['subject']
+            header.in_reply_to = row_data['replyToList']
+            header.date = datetime.fromtimestamp(row_data['timeStamp'] / 1000)  # Convert from milliseconds to seconds
+            header.message_id = row_data['messageId']
             header.content_type = 'text/html'
 
             email = EmailMessage()
             email.header = header
-            email.add_related(source_file, "Extracted From", inline=not SIMPLE_OUTPUT)
+            email.add_related(db_file_object, "Extracted From", inline=not SIMPLE_OUTPUT)
 
-            inspected_data.append(email)
+            inspected_objects.append(email)
 
         c.close()
         conn.close()
 
-        return InspectionResult(True, inspected_data, source_data)
+        return InspectionResult(True, inspected_objects, source_objects)
