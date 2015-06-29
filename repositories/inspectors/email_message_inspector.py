@@ -73,9 +73,11 @@ class EmailMessageInspector(Inspector):
 
             email = EmailMessage()
             email.header = header
-            email.add_related(db_file_object, "Extracted From", inline=not simple_output)
+            email.add_related(db_file_object, 'Extracted_From', inline=not simple_output)
 
             inspected_objects.append(email)
 
         c.close()
         conn.close()
+
+        return inspected_objects, source_objects
