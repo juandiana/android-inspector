@@ -1,68 +1,100 @@
 # coding=utf-8
+from os import path
+from datetime import datetime
+
+from model import OperationError
+from operations_manager import OperationsManager
+
 
 class Coordinator(object):
+    def __init__(self, operations_manager):
+        """
+        :type operations_manager: OperationsManager
+        """
+        self.operations_manager = operations_manager
+        self.device_info = None
+
     def set_device_info(self, device_info):
         """
-        :param device_info: DeviceInfo
+        :type device_info: DeviceInfo
         :rtype : None
         """
-        pass
+        self.device_info = device_info
 
     def list_operations(self, data_type, data_source, device_info):
         """
-        :param data_type: string
-        :param data_source: DataSource
-        :param device_info: DeviceInfo
+        :type data_type: string
+        :type data_source: DataSource
+        :type device_info: DeviceInfo
         :rtype : None
         """
-        pass
+        device_info_to_use = device_info if (device_info is None) else self.device_info
+        return self.operations_manager.get_operations_info(data_type, data_source, device_info_to_use)
 
-    def execute_operations(self, ids, device_info):
+    def execute_operations(self, ids, device_info, results_dir_path):
         """
-        :param ids: list(UUID)
-        :param device_info: DeviceInfo
+        :type ids: list(UUID)
+        :type device_info: DeviceInfo
+        :type results_dir_path: string
         :rtype : None
         """
-        pass
+        if device_info is None and self.device_info is None:
+            print "No device information set."
+            return
+
+        device_info_to_use = device_info if (device_info is None) else self.device_info
+
+        op_count = 0
+        for id_ in ids:
+            op_count += 1
+            op = self.operations_manager.get_operation(id_)
+            data_dir_name = datetime.now().isoformat()  # TODO: Determine actual format
+            data_dir_path = path.join(results_dir_path, data_dir_name)
+            print "[{0}/{1}] Executing... ".format(op_count, len(ids))
+            try:
+                op.execute(device_info_to_use, data_dir_path)
+            except OperationError as error:
+                print "Failed. Reason: {0}".format(error.message)
+            print "Completed. Data stored to {0}".format(data_dir_path)
 
     def add_data_type(self, def_path):
         """
-        :param def_path: string
+        :type def_path: string
         :rtype : None
         """
         pass
 
     def remove_data_type(self, id_):
         """
-        :param id_: UUID
+        :type id_: UUID
         :rtype : None
         """
         pass
 
     def add_data_source_type(self, def_path):
         """
-        :param def_path: string
+        :type def_path: string
         :rtype : None
         """
         pass
 
     def remove_data_source_type(self, id_):
         """
-        :param id_: UUID
+        :type id_: UUID
         :rtype : None
         """
         pass
 
     def add_operation(self, def_path):
         """
-        :param def_path: string
+        :type def_path: string
         :rtype : None
         """
         pass
 
     def remove_operation(self, id_):
         """
-        :param id_: UUID
+        :type id_: UUID
         :rtype : None
         """
         pass
