@@ -3,20 +3,20 @@
 import os
 import tempfile
 import unittest
+import shutil
 
 from cybox.common import Hash, DateTime
 from cybox.objects.email_message_object import EmailMessage
-import cybox.core
 from cybox.objects.file_object import File
-import shutil
 
-from model import Extractor, Inspector, InspectionResult, DeviceInfo, Operation, EXTRACTED_DATA_DIR_NAME, \
-    INSPECTED_DATA_DIR_NAME
+from model import Extractor, Inspector, DeviceInfo, Operation, EXTRACTED_DATA_DIR_NAME
+
 
 # TODO: @implements?
 class MockedApplicationExtractor(Extractor):
     def execute(self, extracted_data_dir_path, param_values):
-        return True
+        pass
+
 
 class MockedEmailInspector(Inspector):
     def __get_source_objs(self):
@@ -37,10 +37,10 @@ class MockedEmailInspector(Inspector):
         email1.add_related(source_file, "Extracted_From", inline=False)
         return [email1]
 
-    def execute(self, device_info, extracted_data_dir_path):
+    def execute(self, device_info, extracted_data_dir_path, simple_output):
         source_objects = self.__get_source_objs()
         inspected_objects = self.__get_inspected_objs(source_objects[0])
-        return InspectionResult(True, inspected_objects, source_objects)
+        return inspected_objects, source_objects
 
 
 class TestOperation(unittest.TestCase):
@@ -56,11 +56,9 @@ class TestOperation(unittest.TestCase):
 
     def test_operation(self):
         op = Operation(self.extractor, self.inspector, self.param_values)
-        op_result = op.execute(self.device_info, self.data_dir_path)
+        op.execute(self.device_info, self.data_dir_path)
 
         self.assertTrue(os.path.exists(os.path.join(self.data_dir_path, EXTRACTED_DATA_DIR_NAME)))
-        self.assertTrue(os.path.exists(os.path.join(self.data_dir_path, INSPECTED_DATA_DIR_NAME)))
-        self.assertTrue(op_result.success)
 
 
 if __name__ == "__main__":

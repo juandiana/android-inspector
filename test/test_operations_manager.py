@@ -8,16 +8,14 @@ from model import DataSource, OperationInfo, DeviceInfo
 
 class MockedDefinitionsDatabase(object):
     def query_operations_info(self, data_type, data_source, device_info):
-        op1_id = 'com.example/gmail/email'
-        op1_data_type = "EmailMessage"
-        op1_data_source = DataSource('Application', {'package_name': 'com.google.gm'})
-        op1_supported_device_models = ['XT1053']
-        op1_supported_os_versions = ['4.4.4', '5.1']
-        op1_info = OperationInfo(op1_id, op1_data_type, op1_data_source, op1_supported_device_models,
-                                 op1_supported_os_versions)
-        result = list()
-        result.append(op1_info)
-        return result
+        op_info = OperationInfo(
+            id_='com.example/gmail/email',
+            data_type='EmailMessage',
+            data_source=DataSource('Application', {'package_name': 'com.google.gm'}),
+            supported_device_models=['XT1053'],
+            supported_os_versions=['4.4.4', '5.1']
+        )
+        return [op_info]
 
     def get_operation_exec_info(self, id_):
         return {
