@@ -51,7 +51,7 @@ class EmailMessageInspector(Inspector):
         db_file_object.file_path = '/data/data/com.android.email/databases/'
         db_file_object.file_format = 'SQLite 3.x database'
         db_file_object.size_in_bytes = os.path.getsize(db_file_path)
-        db_file_object.add_hash(calculate_hash(db_file_path))
+        db_file_object.sha256 = calculate_hash(db_file_path)
 
         source_objects.append(db_file_object)
 
@@ -73,7 +73,7 @@ class EmailMessageInspector(Inspector):
 
             email = EmailMessage()
             email.header = header
-            email.add_related(db_file_object, "Extracted From", inline=not SIMPLE_OUTPUT)
+            email.add_related(db_file_object, "Extracted From", inline=not simple_output)
 
             inspected_objects.append(email)
 
