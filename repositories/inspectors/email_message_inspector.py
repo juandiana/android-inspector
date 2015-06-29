@@ -13,7 +13,7 @@ from model.operation import Inspector, OperationError
 
 
 def calculate_hash(route, block_size=65536):
-    hasher = hashlib.md5()
+    hasher = hashlib.sha256()
     with open(route, 'rb') as a_file:
         buf = a_file.read(block_size)
         while len(buf) > 0:
