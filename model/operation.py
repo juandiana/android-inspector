@@ -68,7 +68,8 @@ class Operation(object):
 
         try:
             self.extractor.execute(extracted_data_dir_path, self.param_values)
-            inspected_objects, source_objects = self.inspector.execute(device_info, extracted_data_dir_path, simple_output)
+            inspected_objects, source_objects = self.inspector.execute(device_info, extracted_data_dir_path,
+                                                                       simple_output)
         except OperationError as error:
             raise
 

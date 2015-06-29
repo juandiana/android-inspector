@@ -1,7 +1,8 @@
 # coding=utf-8
 
 import subprocess
-from model.operation import Extractor
+from model.operation import Extractor, OperationError
+
 
 class ApplicationExtractor(Extractor):
     def execute(self, route, param_values):
@@ -9,7 +10,5 @@ class ApplicationExtractor(Extractor):
 
         try:
             subprocess.check_call(cmd, shell=True, cwd=route)
-            return True
         except subprocess.CalledProcessError:
-            print "Extraction failed."
-            return False
+            raise OperationError('Extraction failed.')
