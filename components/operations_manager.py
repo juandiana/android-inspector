@@ -5,6 +5,10 @@ from model import Operation
 
 class OperationsManager(object):
     def __init__(self, definitions_database, repositories_manager):
+        """
+        :type definitions_database: DefinitionsDatabase
+        :type repositories_manager: RepositoriesManager
+        """
         self.definitions_database = definitions_database
         self.repositories_manager = repositories_manager
 

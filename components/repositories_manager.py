@@ -5,7 +5,7 @@ import os
 import shutil
 
 
-def convert(name):
+def camel_case_to_underscore(name):
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
@@ -17,15 +17,11 @@ class RepositoriesManager(object):
         :type file_path: string
         :rtype : bool
         """
-
-        file_name = os.path.basename(file_path)
-
+        dest_path = os.path.join('repositories', repo_name)
         try:
-            shutil.copyfile(file_path, os.path.join(os.getcwd(), 'repositories', file_name))
-            return True
+            shutil.copyfile(file_path, dest_path)
         except IOError:
-            print 'The file ' + file_name + 'was not copied to the ' + repo_name + ' repository.'
-            return False
+            raise
 
     def remove_file(self, repo_name, file_name):
         """
@@ -33,20 +29,18 @@ class RepositoriesManager(object):
         :type file_name: string
         :rtype : bool
         """
-
+        target_path = os.path.join('repositories', repo_name, file_name)
         try:
-            os.remove(os.path.join(os.getcwd(), repo_name, file_name))
-            return True
+            os.remove(target_path)
         except OSError:
-            print 'The file ' + file_name + 'was not deleted from the ' + repo_name + ' repository.'
-            return False
+            raise
 
     def get_extractor(self, name):
         """
         :type name: string
         :type : Extractor
         """
-        module_name = convert(name)
+        module_name = camel_case_to_underscore(name)
         module = import_module('repositories.extractors.' + module_name)
         return getattr(module, name)()
 
@@ -55,7 +49,7 @@ class RepositoriesManager(object):
         :type name: string
         :rtype : Inspector
         """
-        module_name = convert(name)
+        module_name = camel_case_to_underscore(name)
         module = import_module('repositories.inspectors.' + module_name)
         return getattr(module, name)()
 
@@ -64,6 +58,6 @@ class RepositoriesManager(object):
         :type name: string
         :rtype : ObjectProperties
         """
-        module_name = convert(name)
+        module_name = camel_case_to_underscore(name)
         module = import_module('repositories.custom_cybox_objects.' + module_name)
         return getattr(module, name)()
