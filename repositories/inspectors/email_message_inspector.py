@@ -4,7 +4,7 @@ import hashlib
 import os
 import sqlite3
 
-from cybox.common import datetime
+from cybox.common import datetime, Hash
 from cybox.objects.email_message_object import EmailHeader, EmailMessage
 from cybox.objects.file_object import File
 from cybox.utils import set_id_method, IDGenerator
@@ -48,10 +48,11 @@ class EmailMessageInspector(Inspector):
 
         db_file_object = File()
         db_file_object.file_name = db_file_name
+        db_file_object.file_extension = '.db'
         db_file_object.file_path = '/data/data/com.android.email/databases/'
         db_file_object.file_format = 'SQLite 3.x database'
         db_file_object.size_in_bytes = os.path.getsize(db_file_path)
-        db_file_object.sha256 = calculate_hash(db_file_path)
+        db_file_object.add_hash(Hash(calculate_hash(db_file_path)))
 
         source_objects.append(db_file_object)
 
