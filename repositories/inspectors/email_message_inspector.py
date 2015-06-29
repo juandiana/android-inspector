@@ -9,9 +9,7 @@ from cybox.objects.email_message_object import EmailHeader, EmailMessage
 from cybox.objects.file_object import File
 from cybox.utils import set_id_method, IDGenerator
 
-from model.operation import Inspector, InspectionResult
-
-SIMPLE_OUTPUT = True
+from model.operation import Inspector, OperationError
 
 
 def calculate_hash(route, block_size=65536):
@@ -26,12 +24,12 @@ def calculate_hash(route, block_size=65536):
 
 
 class EmailMessageInspector(Inspector):
-    def execute(self, device_info, extracted_data_dir_path):
+    def execute(self, device_info, extracted_data_dir_path, simple_output):
         db_file_name = 'EmailProvider.db'
         db_file_path = os.path.join(extracted_data_dir_path, 'databases', db_file_name)
 
         if not os.path.exists(db_file_path):
-            return InspectionResult(False)
+            raise OperationError('Inspection failed: DB do not exists.')
 
         conn = sqlite3.connect(db_file_path)
         c = conn.cursor()
@@ -40,11 +38,11 @@ class EmailMessageInspector(Inspector):
             c.execute('SELECT * FROM message')
         except (sqlite3.OperationalError, sqlite3.DatabaseError), msg:
             # TODO: Logger
-            return InspectionResult(False)
+            raise OperationError('Inspection failed: {0}'.format(msg))
 
         column_names = [d[0] for d in c.description]
 
-        if SIMPLE_OUTPUT:
+        if simple_output:
             set_id_method(IDGenerator.METHOD_INT)
 
         source_objects = []
@@ -82,5 +80,3 @@ class EmailMessageInspector(Inspector):
 
         c.close()
         conn.close()
-
-        return InspectionResult(True, inspected_objects, source_objects)
