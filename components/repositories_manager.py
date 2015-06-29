@@ -13,8 +13,8 @@ def convert(name):
 class RepositoriesManager(object):
     def add_file(self, repo_name, file_path):
         """
-        :param repo_name: string
-        :param file_path: string
+        :type repo_name: string
+        :type file_path: string
         :rtype : bool
         """
 
@@ -29,8 +29,8 @@ class RepositoriesManager(object):
 
     def remove_file(self, repo_name, file_name):
         """
-        :param repo_name: string
-        :param file_name: string
+        :type repo_name: string
+        :type file_name: string
         :rtype : bool
         """
 
@@ -43,8 +43,8 @@ class RepositoriesManager(object):
 
     def get_extractor(self, name):
         """
-        :param name: string
-        :rtype : Extractor
+        :type name: string
+        :type : Extractor
         """
         module_name = convert(name)
         module = import_module('repositories.extractors.' + module_name)
@@ -52,7 +52,7 @@ class RepositoriesManager(object):
 
     def get_inspector(self, name):
         """
-        :param name: string
+        :type name: string
         :rtype : Inspector
         """
         module_name = convert(name)
@@ -61,7 +61,7 @@ class RepositoriesManager(object):
 
     def get_custom_cybox_object(self, name):
         """
-        :param name: string
+        :type name: string
         :rtype : ObjectProperties
         """
         module_name = convert(name)

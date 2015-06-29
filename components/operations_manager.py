@@ -10,9 +10,9 @@ class OperationsManager(object):
 
     def get_operations_info(self, data_type, data_source, device_info):
         """
-        :param data_type: string
-        :param data_source: DataSource
-        :param device_info: DeviceInfo
+        :type data_type: string
+        :type data_source: DataSource
+        :type device_info: DeviceInfo
         :rtype : set(OperationInfo)
         """
         if not self.definitions_database.exists_data_type(data_type):
@@ -30,7 +30,7 @@ class OperationsManager(object):
 
     def get_operation(self, id_):
         """
-        :param id_: UUID
+        :type id_: UUID
         :rtype : Operation
         """
         info = self.definitions_database.get_operation_exec_info(id_)
