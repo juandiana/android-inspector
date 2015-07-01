@@ -13,7 +13,8 @@ class MyTestCase(unittest.TestCase):
         print db_helper.query_operations_info('EmailMessage', ds, dv_info)
 
         self.assertEqual(db_helper.get_operation_exec_info('operation_1'),
-                         {'extractor_id': 'application_extractor', 'inspector_id': 'email_message_inspector'})
+                         {'extractor_id': 'application_extractor', 'inspector_id': 'email_message_inspector',
+                          'param_values': {'package_name': 'com.android.email'}})
         self.assertEqual(db_helper.get_operation_exec_info('id_non_existent'), {})
 
         self.assertTrue(db_helper.exists_data_type('EmailMessage'))

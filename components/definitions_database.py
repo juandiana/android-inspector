@@ -65,16 +65,25 @@ class DefinitionsDatabase(object):
         result = {}
         c = self.conn.cursor()
         c.execute("""
-                SELECT dst.extractor_name, o.inspector_name
+                SELECT o.id, dst.extractor_name, o.inspector_name
                 FROM operations AS o, data_source_types AS dst
                 WHERE o.data_source_type_id = dst.id and o.id = ?
                 """, [id_])
 
         row = c.fetchone()
         if row is not None:
-            result['extractor_id'] = row[0].__str__()
-            result['inspector_id'] = row[1].__str__()
+            result['extractor_id'] = row[1].__str__()
+            result['inspector_id'] = row[2].__str__()
 
+            c2 = self.conn.cursor()
+            c2.execute('SELECT param_name, param_value FROM data_source_params_values dspv WHERE dspv.operation_id = ?', [row[0]])
+
+            param_values = {}
+
+            for pv in c2:
+                param_values[pv[0]] = pv[1]
+
+            result['param_values'] = param_values
         return result
 
     def exists_data_type(self, data_type):
