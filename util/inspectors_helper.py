@@ -18,7 +18,7 @@ def sha256_checksum(file_path, block_size=65536):
     return sha256sum.hexdigest()
 
 
-def create_source_object(file_path, original_file_path):
+def create_file_object(file_path, original_file_path):
     f = File()
     f.file_name = os.path.basename(file_path)
     f.file_extension = os.path.splitext(file_path)[1]

@@ -8,7 +8,7 @@ from cybox.objects.email_message_object import EmailHeader, EmailMessage
 from cybox.utils import set_id_method, IDGenerator
 
 from model.operation import Inspector, OperationError
-from util.inspectors_helper import create_source_object
+from util.inspectors_helper import create_file_object
 
 
 class EmailMessageInspector(Inspector):
@@ -40,8 +40,8 @@ class EmailMessageInspector(Inspector):
             set_id_method(IDGenerator.METHOD_INT)
 
         source_objects = [
-            create_source_object(headers_db_file_path, original_headers_db_file_path),
-            create_source_object(bodies_db_file_path, original_bodies_db_file_path)
+            create_file_object(headers_db_file_path, original_headers_db_file_path),
+            create_file_object(bodies_db_file_path, original_bodies_db_file_path)
         ]
         inspected_objects = {}
 
@@ -67,7 +67,7 @@ class EmailMessageInspector(Inspector):
         cursor.close()
         conn.close()
 
-        cursor, conn = self._execute_query(bodies_db_file_path, 'SELECT * FROM body')
+        cursor, conn = self._execute_query(bodies_db_file_path, 'SELECT _id, htmlContent, textContent FROM body')
         for row in cursor:
             email_id = row['_id']
             email = inspected_objects.get(email_id)
