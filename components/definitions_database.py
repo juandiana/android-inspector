@@ -26,7 +26,6 @@ class DefinitionsDatabase(object):
                 SELECT o.id as id, dt.name as data_type, dst.name as data_source_type
                 FROM operations AS o, data_types AS dt, data_source_types AS dst
                 WHERE o.data_type_id = dt.id AND o.data_source_type_id = dst.id AND dt.name = ? AND dst.name = ?
-                GROUP BY o.id, dt.name, dst.name
                 """, [data_type, data_source_type])
 
         result = []
