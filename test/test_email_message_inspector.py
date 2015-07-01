@@ -1,8 +1,9 @@
 # coding=utf-8
+import os
 import unittest
 from cybox.core import Observables
 
-from model import DeviceInfo, EXTRACTED_DATA_DIR_NAME, OperationError
+from model import DeviceInfo, EXTRACTED_DATA_DIR_NAME, OperationError, INSPECTED_DATA_FILE_NAME, SOURCE_DATA_FILE_NAME
 from repositories.inspectors.email_message_inspector import EmailMessageInspector
 
 
@@ -17,8 +18,15 @@ class MyTestCase(unittest.TestCase):
         except OperationError:
             raise
 
-        print Observables(inspected_objects).to_xml(include_namespaces=False)
-        print Observables(source_objects).to_xml(include_namespaces=False)
+        inspected_xml = Observables(inspected_objects).to_xml(include_namespaces=True)
+        source_xml = Observables(source_objects).to_xml(include_namespaces=True)
+
+        with open(INSPECTED_DATA_FILE_NAME, 'w') as file1:
+            file1.write(inspected_xml)
+
+        with open(SOURCE_DATA_FILE_NAME, 'w') as file2:
+            file2.write(source_xml)
+
 
 if __name__ == '__main__':
     unittest.main()
