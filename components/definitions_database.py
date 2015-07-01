@@ -13,7 +13,7 @@ class DefinitionsDatabase(object):
             # Create the db schema
             execute_sql_script(db_file_path, '../create_db.sql')
             # Insert default operations
-            execute_sql_script(db_file_path, '../insert_email_operation.sql')
+            execute_sql_script(db_file_path, '../insert_default_operations.sql')
 
         self.conn = sqlite3.connect(db_file_path)
         # TODO: Close connection, somewhere.
