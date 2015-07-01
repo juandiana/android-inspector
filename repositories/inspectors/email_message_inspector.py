@@ -1,130 +1,85 @@
 # coding=utf-8
 
-import hashlib
 import os
 import sqlite3
 
 from cybox.common import datetime
 from cybox.objects.email_message_object import EmailHeader, EmailMessage
-from cybox.objects.file_object import File
 from cybox.utils import set_id_method, IDGenerator
 
 from model.operation import Inspector, OperationError
-
-
-def calculate_hash(route, block_size=65536):
-    hasher = hashlib.sha256()
-    with open(route, 'rb') as a_file:
-        buf = a_file.read(block_size)
-        while len(buf) > 0:
-            hasher.update(buf)
-            buf = a_file.read(block_size)
-    return hasher.hexdigest()
+from util.inspectors_helper import create_source_object
 
 
 class EmailMessageInspector(Inspector):
-    def execute(self, device_info, extracted_data_dir_path, simple_output):
-        db_message_file_name = 'EmailProvider.db'
-        db_body_file_name = 'EmailProviderBody.db'
-        db_message_file_path = os.path.join(extracted_data_dir_path, 'databases', db_message_file_name)
-        db_body_file_path = os.path.join(extracted_data_dir_path, 'databases', db_body_file_name)
-
-        if not os.path.exists(db_message_file_path):
-            raise OperationError('Inspection failed: Message DB do not exists.')
-
-        conn = sqlite3.connect(db_message_file_path)
+    def _execute_query(self, headers_db_file_path, sql_query):
+        if not os.path.exists(headers_db_file_path):
+            raise OperationError('Inspection failed: {0} not found.'.format(headers_db_file_path))
+        conn = sqlite3.connect(headers_db_file_path)
+        # Access columns by name instead of by index
+        conn.row_factory = sqlite3.Row
         c = conn.cursor()
-
         try:
-            c.execute('SELECT * FROM message')
-        except (sqlite3.OperationalError, sqlite3.DatabaseError), msg:
-            # TODO: Logger
-            raise OperationError('Inspection failed: {0}'.format(msg))
+            c.execute(sql_query)
+        except (sqlite3.OperationalError, sqlite3.DatabaseError) as error:
+            # TODO: Log the error message.
+            raise OperationError('Inspection failed: Could not perform SQL query on {0}.'.format(headers_db_file_path))
+        return c, conn
 
-        column_names = [d[0] for d in c.description]
+    def execute(self, device_info, extracted_data_dir_path, simple_output):
+        original_app_path = '/data/data/com.android.email'
+        headers_db_rel_file_path = os.path.join('databases', 'EmailProvider.db')
+        bodies_db_rel_file_path = os.path.join('databases', 'EmailProviderBody.db')
+
+        original_headers_db_file_path = os.path.join(original_app_path, headers_db_rel_file_path)
+        original_bodies_db_file_path = os.path.join(original_app_path, bodies_db_rel_file_path)
+        headers_db_file_path = os.path.join(extracted_data_dir_path, headers_db_rel_file_path)
+        bodies_db_file_path = os.path.join(extracted_data_dir_path, bodies_db_rel_file_path)
 
         if simple_output:
             set_id_method(IDGenerator.METHOD_INT)
 
-        source_objects = []
+        source_objects = [
+            create_source_object(headers_db_file_path, original_headers_db_file_path),
+            create_source_object(bodies_db_file_path, original_bodies_db_file_path)
+        ]
+        inspected_objects = {}
 
-        db_message_file_object = File()
-        db_message_file_object.file_name = db_message_file_name
-        db_message_file_object.file_extension = '.db'
-        db_message_file_object.file_path = '/data/data/com.android.email/databases/'
-        db_message_file_object.file_format = 'SQLite 3.x database'
-        db_message_file_object.size_in_bytes = os.path.getsize(db_message_file_path)
-        db_message_file_object.sha256 = calculate_hash(db_message_file_path)
-
-        source_objects.append(db_message_file_object)
-
-        db_body_file_object = File()
-        db_body_file_object.file_name = db_message_file_name
-        db_body_file_object.file_extension = '.db'
-        db_body_file_object.file_path = '/data/data/com.android.email/databases/'
-        db_body_file_object.file_format = 'SQLite 3.x database'
-        db_body_file_object.size_in_bytes = os.path.getsize(db_message_file_path)
-        db_body_file_object.sha256 = calculate_hash(db_message_file_path)
-
-        source_objects.append(db_body_file_object)
-
-        # Auxiliary dictionary that maps android database id to email object.
-        # Used to append email's body and content-type connecting to another database.
-        aux_inspected_hash = {}
-
-        for row in c:
-            row_data = dict(zip(column_names, row))
-
+        cursor, conn = self._execute_query(headers_db_file_path, 'SELECT * FROM message')
+        for row in cursor:
             header = EmailHeader()
-            header.to = row_data['toList']
-            header.cc = row_data['ccList']
-            header.bcc = row_data['bccList']
-            header.from_ = row_data['fromList']
-            header.subject = row_data['subject']
-            header.in_reply_to = row_data['replyToList']
-            header.date = datetime.fromtimestamp(row_data['timeStamp'] / 1000)  # Convert from milliseconds to seconds
-            header.message_id = row_data['messageId']
+            header.to = row['toList']
+            header.cc = row['ccList']
+            header.bcc = row['bccList']
+            header.from_ = row['fromList']
+            header.subject = row['subject']
+            header.in_reply_to = row['replyToList']
+            header.date = datetime.fromtimestamp(row['timeStamp'] / 1000)  # Convert from milliseconds to seconds
+            header.message_id = row['messageId']
 
             email = EmailMessage()
             email.header = header
-            email.add_related(db_message_file_object, 'Extracted_From', inline=not simple_output)
-            # TODO: Falta relacionar con la base de datos de los body's
+            email.add_related(source_objects[0], 'Extracted_From', inline=not simple_output)
 
-            aux_inspected_hash[row_data['_id']] = email
-
-        c.close()
+            # Add the email to the inspected_objects dict using its _id value as key.
+            email_id = row['_id']
+            inspected_objects[email_id] = email
+        cursor.close()
         conn.close()
 
-        # Connect to EmailMessageBody.db and add email's body.
-        if not os.path.exists(db_body_file_path):
-            raise OperationError("Inspection failed: Body's DB do not exists.")
-
-        conn = sqlite3.connect(db_body_file_path)
-        c = conn.cursor()
-
-        try:
-            c.execute('SELECT * FROM body')
-        except (sqlite3.OperationalError, sqlite3.DatabaseError), msg:
-            # TODO: Logger
-            raise OperationError('Inspection failed: {0}'.format(msg))
-
-        column_names = [d[0] for d in c.description]
-
-        inspected_objects = []
-
-        for row in c:
-            row_data = dict(zip(column_names, row))
-
-            current_object = aux_inspected_hash.get(row_data['_id'])
-
-            if current_object is not None:
-                if row_data['htmlContent'] == '':
-                    current_object.raw_body = row_data['htmlContent']
-                    current_object.header.content_type = 'html'
+        cursor, conn = self._execute_query(bodies_db_file_path, 'SELECT * FROM body')
+        for row in cursor:
+            email_id = row['_id']
+            email = inspected_objects.get(email_id)
+            if email is not None:
+                if row['htmlContent'] != '':
+                    email.raw_body = row['htmlContent']
+                    email.header.content_type = 'text/html'
                 else:
-                    current_object.raw_body = row_data['textContent']
-                    current_object.header.content_type = 'text'
+                    email.raw_body = row['textContent']
+                    email.header.content_type = 'text/plain'
+                email.add_related(source_objects[1], 'Extracted_From', inline=not simple_output)
+        cursor.close()
+        conn.close()
 
-                inspected_objects.append(current_object)
-
-        return inspected_objects, source_objects
+        return inspected_objects.values(), source_objects
