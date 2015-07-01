@@ -1,6 +1,7 @@
 # coding=utf-8
 from os import path
 import sqlite3
+from model import OperationInfo
 
 
 class DefinitionsDatabase(object):
@@ -19,15 +20,45 @@ class DefinitionsDatabase(object):
         # TODO: Close connection, somewhere.
 
     def query_operations_info(self, data_type, data_source, device_info):
-        cursor = self.conn.cursor()
-        cursor.execute('SELECT *'
-                       'FROM operations'
-                       'WHERE data_type_id = ? AND data_source_id = ?',
-                       parameters=(data_type, data_source.type_))
-        cursor.close()
+        c = self.conn.cursor()
+        data_source_type = data_source.type_
+        c.execute("""
+                SELECT o.id as id, dt.name as data_type, dst.name as data_source_type
+                FROM operations AS o, data_types AS dt, data_source_types AS dst
+                WHERE o.data_type_id = dt.id AND o.data_source_type_id = dst.id AND dt.name = ? AND dst.name = ?
+                GROUP BY o.id, dt.name, dst.name
+                """, [data_type, data_source_type])
 
         result = []
-        # create OperationInfo's
+
+        for row in c:
+            c2 = self.conn.cursor()
+            c2.execute('SELECT model_number FROM device_models WHERE operation_id = ?', [row[0]])
+
+            models = []
+            for op_model_row in c2:
+                models.append(op_model_row[0])
+
+            if device_info.device_model in models:
+                c3 = self.conn.cursor()
+                c3.execute('SELECT from_version, to_version FROM android_versions WHERE operation_id = ?', [row[0]])
+
+                os_versions = []
+                supported = False
+
+                for android_v in c3:
+                    if android_v[0] <= device_info.os_version <= android_v[1]:
+                        supported = True
+                        break
+
+                c3.close()
+
+                if supported:
+                    op_info = OperationInfo(row[0], row[1], row[2], ', '.join(models), ', '.join(os_versions))
+                    result.append(op_info)
+
+            c2.close()
+        c.close()
 
         return result
 
