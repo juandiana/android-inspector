@@ -17,6 +17,9 @@ class MyTestCase(unittest.TestCase):
                           'param_values': {'package_name': 'com.android.email'}})
         self.assertEqual(db_helper.get_operation_exec_info('id_non_existent'), {})
 
+        self.assertTrue(db_helper.exists_operation('operation_1'))
+        self.assertFalse(db_helper.exists_operation('Non_existent'))
+
         self.assertTrue(db_helper.exists_data_type('EmailMessage'))
         self.assertFalse(db_helper.exists_data_type('Non_existent'))
 
