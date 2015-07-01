@@ -63,16 +63,48 @@ class DefinitionsDatabase(object):
         return result
 
     def get_operation_exec_info(self, id_):
-        pass
+        result = {}
+        c = self.conn.cursor()
+        c.execute("""
+                SELECT dst.extractor_name, o.inspector_name
+                FROM operations AS o, data_source_types AS dst
+                WHERE o.data_source_type_id = dst.id and o.id = ?
+                """, [id_])
+
+        row = c.fetchone()
+        if row is not None:
+            result['extractor_id'] = row[0].__str__()
+            result['inspector_id'] = row[1].__str__()
+
+        return result
 
     def exists_data_type(self, data_type):
-        pass
+        c = self.conn.cursor()
+        c.execute('SELECT 1 FROM data_types AS dt WHERE dt.name = ?', [data_type])
+
+        row = c.fetchone()
+
+        return row is not None
 
     def exists_data_source_type(self, data_source_type):
-        pass
+        c = self.conn.cursor()
+        c.execute('SELECT 1 FROM data_source_types AS dst WHERE dst.name = ?', [data_source_type])
+
+        row = c.fetchone()
+
+        return row is not None
 
     def has_all_required_param_values(self, data_source):
-        pass
+        c = self.conn.cursor()
+        c.execute("""
+                SELECT param_name FROM data_source_types AS dst, required_params AS rp
+                WHERE dst.id = rp.data_source_type_id and dst.name = ?
+                """, [data_source.type_])
+
+        for row in c:
+            if not data_source.info.get(row[0]):
+                return False
+        return True
 
     def add_operation(self, id_, data_type_id, data_source_type_id, inspector_id, param_values, device_models,
                       android_versions):
