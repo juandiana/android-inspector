@@ -14,6 +14,6 @@ class ApplicationExtractor(Extractor):
             p = subprocess.Popen([command_name, command_arg1, command_arg2],
                                  cwd=extracted_data_dir_path, stderr=subprocess.PIPE)
             for line in p.stderr:
-                print "[adb] {0}".format(line)
+                print "\t[adb] {0}".format(line),
         except subprocess.CalledProcessError:
             raise OperationError('Extraction failed.')

@@ -48,7 +48,7 @@ class Coordinator(object):
         for id_ in ids:
             op_count += 1
             op = self.operations_manager.get_operation(id_)
-            data_dir_name = datetime.now().strftime("%Y%m%d_%H:%M:%S")
+            data_dir_name = datetime.now().strftime("%Y%m%d_%H%M%S")
             data_dir_path = path.join(results_dir_path, data_dir_name)
             print "[{0}/{1}] Executing... ".format(op_count, len(ids))
             try:
