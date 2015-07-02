@@ -59,7 +59,7 @@ class EmailMessageInspector(Inspector):
 
             email = EmailMessage()
             email.header = header
-            email.add_related(source_objects[0], 'Extracted_From', inline=not simple_output)
+            email.add_related(source_objects[0], 'Extracted_From', inline=False)
 
             # Add the email to the inspected_objects dict using its _id value as key.
             email_id = row['_id']
@@ -78,7 +78,7 @@ class EmailMessageInspector(Inspector):
                 else:
                     email.raw_body = row['textContent']
                     email.header.content_type = 'text/plain'
-                email.add_related(source_objects[1], 'Extracted_From', inline=not simple_output)
+                email.add_related(source_objects[1], 'Extracted_From', inline=False)
         cursor.close()
         conn.close()
 
