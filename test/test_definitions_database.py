@@ -12,7 +12,10 @@ class MyTestCase(unittest.TestCase):
         ds = DataSource('Application', {'package_name': 'com.android.email'})
         bad_ds = DataSource('Application', {})
         dv_info = DeviceInfo('3.0.0', 'GT-I9300')
+
         print db_helper.query_operations_info('EmailMessage', ds, dv_info)
+
+        self.assertEqual(db_helper.query_operations_info('Non_existent', ds, dv_info), [])
 
         self.assertEqual(db_helper.get_operation_exec_info('operation_1'),
                          {'extractor_id': 'ApplicationExtractor', 'inspector_id': 'EmailMessageInspector',

@@ -1,7 +1,7 @@
 # coding=utf-8
 from os import path
 import sqlite3
-from model import OperationInfo
+from model import OperationInfo, DataSource
 
 
 class DefinitionsDatabase(object):
@@ -26,16 +26,15 @@ class DefinitionsDatabase(object):
                 FROM operations AS o, data_types AS dt, data_source_types AS dst, device_models AS dm,
                      android_versions AS av
                 WHERE o.data_type_id = dt.id AND o.data_source_type_id = dst.id AND o.id = dm.operation_id
-                        AND o.id = av.operation_id
-                """
+                        AND o.id = av.operation_id"""
         if data_type is not None:
-            query += ' AND dt.name = {0}'.format(data_type)
+            query += ' AND dt.name = "{0}"'.format(data_type)
         if data_source is not None:
-            query += ' AND dst.name = {0}'.format(data_source.type_)
+            query += ' AND dst.name = "{0}"'.format(data_source.type_)
         if device_info.device_model is not None:
-            query += ' AND dm.model_number = {0}'.format(device_info.device_model)
+            query += ' AND dm.model_number = "{0}"'.format(device_info.device_model)
         if device_info.os_version is not None:
-            query += ' AND {0} between av.from_version AND av.to_version)'.format(device_info.os_version)
+            query += ' AND "{0}" between av.from_version AND av.to_version'.format(device_info.os_version)
 
         c.execute(query)
 
@@ -46,24 +45,44 @@ class DefinitionsDatabase(object):
             c2 = self.conn.cursor()
             c2.execute("""
                     SELECT param_name, param_value
-                    FROM data_source_param_values dtpv
+                    FROM data_source_params_values dspv
                     WHERE dspv.operation_id = ?
                     """, [op_id])
 
             supported = True
+            op_params = {}
             for pv in c2:
                 if data_source_params.get(pv[0]) != pv[1]:
                     supported = False
                     break
+                op_params[pv[0].__str__()] = pv[1].__str__()
 
             c2.close()
 
             if supported:
-                # TODO: Buscar info de device_models y android_versions, y armar los OperationInfo
-                pass
+                c3 = self.conn.cursor()
+                c3.execute('SELECT model_number FROM device_models WHERE operation_id = ?', [op_id])
+
+                supported_models = []
+                for dm in c3:
+                    supported_models.append(dm[0].__str__())
+
+                c3.close()
+
+                c4 = self.conn.cursor()
+                c4.execute('SELECT to_version, from_version FROM android_versions WHERE operation_id = ?', [op_id])
+
+                supported_os_versions = []
+                for av in c4:
+                    supported_os_versions.append(av[0].__str__() + '-' + av[1].__str__())
+
+                c4.close()
+
+                op_info = OperationInfo(op_id, row[1], DataSource(row[2], op_params),
+                                        ', '.join(supported_models), supported_os_versions)
+                result.append(op_info)
 
         c.close()
-
         return result
 
     def get_operation_exec_info(self, id_):

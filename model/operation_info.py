@@ -19,13 +19,14 @@ class OperationInfo(object):
 
     def __repr__(self):
         return '{{\n' \
-               '\t"id": {0}\n' \
-               '\t"data_type": {1}\n' \
-               '\t"data_source": {2}\n' \
-               '\t"supported_device_models": {3}\n' \
-               '\t"supported_os_models": {4}\n' \
-               '}}\n'\
-            .format(self.id_, self.data_type, self.data_source, self.supported_device_models, self.supported_os_versions)
+               '\tid: {0}\n' \
+               '\tdata_type: {1}\n' \
+               '\tdata_source: {2}\n' \
+               '\tsupported_device_models: {3}\n' \
+               '\tsupported_os_models: {4}\n' \
+               '}}\n' \
+            .format(self.id_, self.data_type, self.data_source, self.supported_device_models,
+                    self.supported_os_versions)
 
 
 class DeviceInfo(object):
