@@ -70,7 +70,7 @@ class DefinitionsDatabase(object):
                 c3.close()
 
                 c4 = self.conn.cursor()
-                c4.execute('SELECT to_version, from_version FROM android_versions WHERE operation_id = ?', [op_id])
+                c4.execute('SELECT from_version, to_version FROM android_versions WHERE operation_id = ?', [op_id])
 
                 supported_os_versions = []
                 for av in c4:

@@ -1,7 +1,7 @@
 # coding=utf-8
 import unittest
 from components.definitions_database import DefinitionsDatabase
-from model import DataSource, DeviceInfo
+from model import DataSource, DeviceInfo, OperationInfo
 
 
 class MyTestCase(unittest.TestCase):
@@ -13,7 +13,14 @@ class MyTestCase(unittest.TestCase):
         bad_ds = DataSource('Application', {})
         dv_info = DeviceInfo('3.0.0', 'GT-I9300')
 
-        print db_helper.query_operations_info('EmailMessage', ds, dv_info)
+        result = [OperationInfo('operation_1', 'EmailMessage', ds, 'GT-I9300', "['2.3.7-5.1.1']")]
+
+        self.assertEqual(db_helper.query_operations_info('EmailMessage', ds, dv_info), result)
+
+        # print db_helper.query_operations_info('EmailMessage', ds, dv_info)
+        # print db_helper.query_operations_info(None, ds, dv_info)
+        # print db_helper.query_operations_info('EmailMessage', None, dv_info)
+        # print db_helper.query_operations_info(None, None, dv_info)
 
         self.assertEqual(db_helper.query_operations_info('Non_existent', ds, dv_info), [])
 
