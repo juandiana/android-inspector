@@ -6,7 +6,9 @@ from model import DataSource, DeviceInfo
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
-        db_helper = DefinitionsDatabase()
+        db_helper = DefinitionsDatabase('my_test_definitions.db',
+                                        '../my_test_create_db.sql',
+                                        '../my_test_insert_default_operations.sql')
         ds = DataSource('Application', {'package_name': 'com.android.email'})
         bad_ds = DataSource('Application', {})
         dv_info = DeviceInfo('3.0.0', 'GT-I9300')

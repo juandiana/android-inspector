@@ -5,16 +5,14 @@ from model import OperationInfo
 
 
 class DefinitionsDatabase(object):
-    DB_FILE_NAME = 'definitions.db'
-
-    def __init__(self):
-        db_file_path = DefinitionsDatabase.DB_FILE_NAME
+    def __init__(self, db_file_name, create_db_script_path, insert_default_operations_script_path):
+        db_file_path = db_file_name
 
         if not path.exists(db_file_path):
             # Create the db schema
-            execute_sql_script(db_file_path, '../create_db.sql')
+            execute_sql_script(db_file_path, create_db_script_path)
             # Insert default operations
-            execute_sql_script(db_file_path, '../insert_default_operations.sql')
+            execute_sql_script(db_file_path, insert_default_operations_script_path)
 
         self.conn = sqlite3.connect(db_file_path)
         # TODO: Close connection, somewhere.
