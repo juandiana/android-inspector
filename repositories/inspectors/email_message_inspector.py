@@ -4,6 +4,7 @@ import os
 import sqlite3
 
 from cybox.common import datetime
+from cybox.common.vocabs import ObjectRelationship
 from cybox.objects.email_message_object import EmailHeader, EmailMessage
 from cybox.utils import set_id_method, IDGenerator
 
@@ -59,7 +60,7 @@ class EmailMessageInspector(Inspector):
 
             email = EmailMessage()
             email.header = header
-            email.add_related(source_objects[0], 'Extracted_From', inline=False)
+            email.add_related(source_objects[0], ObjectRelationship.TERM_EXTRACTED_FROM, inline=False)
 
             # Add the email to the inspected_objects dict using its _id value as key.
             email_id = row['_id']
@@ -78,7 +79,7 @@ class EmailMessageInspector(Inspector):
                 else:
                     email.raw_body = row['textContent']
                     email.header.content_type = 'text/plain'
-                email.add_related(source_objects[1], 'Extracted_From', inline=False)
+                email.add_related(source_objects[1], ObjectRelationship.TERM_EXTRACTED_FROM, inline=False)
         cursor.close()
         conn.close()
 
