@@ -42,8 +42,8 @@ class OperationsManager(object):
 
         info = self.definitions_database.get_operation_exec_info(id_)
 
-        extractor = self.repositories_manager.get_extractor(info['extractor_id'])
-        inspector = self.repositories_manager.get_inspector(info['inspector_id'])
+        extractor = self.repositories_manager.get_extractor(info['extractor_id'])  # TODO: Check if it raises exception
+        inspector = self.repositories_manager.get_inspector(info['inspector_id'])  # TODO: Check if it raises exception
         param_values = info['param_values']
 
         return Operation(extractor, inspector, param_values)

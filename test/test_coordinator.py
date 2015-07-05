@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
         definitions_database = DefinitionsDatabase('definitions.db',
                                                    'create_db.sql',
                                                    'insert_default_operations.sql')
-        repositories_manager = RepositoriesManager()
+        repositories_manager = RepositoriesManager('repositories')
         operations_manager = OperationsManager(definitions_database, repositories_manager)
         self.coordinator = Coordinator(operations_manager)
 

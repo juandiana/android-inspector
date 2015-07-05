@@ -39,7 +39,7 @@ class MockedDefinitionsDatabase(object):
 class TestOperationsManager(unittest.TestCase):
     def setUp(self):
         definitions_database = MockedDefinitionsDatabase()
-        repositories_manager = RepositoriesManager()
+        repositories_manager = RepositoriesManager('repositories')
         self.operations_manager = OperationsManager(definitions_database, repositories_manager)
 
     def test_operations_manager(self):
