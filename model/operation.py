@@ -1,9 +1,11 @@
 # coding=utf-8
 
 from abc import abstractmethod, ABCMeta
+from datetime import datetime
 import os
 import errno
 
+from cybox.common import MeasureSource, ToolInformation, ToolInformationList, ToolType, Time
 from cybox.core import Observables
 
 EXTRACTED_DATA_DIR_NAME = 'extracted_data'
@@ -73,8 +75,23 @@ class Operation(object):
         except OperationError as error:
             raise
 
-        inspected_xml = Observables(inspected_objects).to_xml(include_namespaces=not simple_output)
-        source_xml = Observables(source_objects).to_xml(include_namespaces=not simple_output)
+        inspected_observables = Observables(inspected_objects)
+        source_observables = Observables(source_objects)
+
+        tool_info = ToolInformation()
+        tool_info.name = 'Android Inspector'
+        tool_info.version = '1.0'
+
+        measure_source = MeasureSource()
+        measure_source.tool_type = ToolType.TERM_DIGITAL_FORENSICS
+        measure_source.tools = ToolInformationList([tool_info])
+        measure_source.time = Time(produced_time=datetime.now().isoformat())
+
+        inspected_observables.observable_package_source = measure_source
+        source_observables.observable_package_source = measure_source
+
+        inspected_xml = inspected_observables.to_xml(include_namespaces=not simple_output)
+        source_xml = source_observables.to_xml(include_namespaces=not simple_output)
 
         with open(os.path.join(data_dir_path, INSPECTED_DATA_FILE_NAME), 'w') as file1:
             file1.write(inspected_xml)
