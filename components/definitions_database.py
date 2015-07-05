@@ -78,7 +78,7 @@ class DefinitionsDatabase(object):
 
                 c4.close()
 
-                op_info = OperationInfo(op_id, row[1], DataSource(row[2], op_params),
+                op_info = OperationInfo(op_id.__str__(), row[1].__str__(), DataSource(row[2], op_params),
                                         ', '.join(supported_models), supported_os_versions)
                 result.append(op_info)
 
