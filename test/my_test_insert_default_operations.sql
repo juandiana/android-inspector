@@ -37,18 +37,20 @@ INSERT INTO operations (id, data_type_id, data_source_type_id, inspector_name)
 VALUES ('com.example:ImageFileFacebook', 'com.example:ImageFile', 'com.example:Application', 'ImageFileFacebookInspector');
 INSERT INTO device_models (operation_id, model_number)
 VALUES ('com.example:ImageFileFacebook', 'GT-I9300');
+INSERT INTO device_models (operation_id, model_number)
+VALUES ('com.example:ImageFileFacebook', 'XT1053');
 INSERT INTO android_versions (operation_id, from_version, to_version)
 VALUES ('com.example:ImageFileFacebook', '2.3.7', '5.1.1');
 INSERT INTO data_source_params_values (operation_id, param_name, param_value)
 VALUES ('com.example:ImageFileFacebook', 'package_name', 'com.facebook.katana');
 
--- Operation to extract SmsMessage from the AOSP application.
+-- Operation to extract SmsMessage from the AOSP SMS messages application.
 INSERT INTO operations (id, data_type_id, data_source_type_id, inspector_name)
 VALUES ('com.example:SmsMessageAOSPSmsApp', 'com.example:SmsMessage', 'com.example:Application', 'SmsMessageInspector');
 INSERT INTO device_models (operation_id, model_number)
 VALUES ('com.example:SmsMessageAOSPSmsApp', 'GT-I9300');
 INSERT INTO device_models (operation_id, model_number)
-VALUES ('com.example:SmsMessageAOSPSmsApp', 'Nexus 5');
+VALUES ('com.example:SmsMessageAOSPSmsApp', 'LG-D820');
 INSERT INTO android_versions (operation_id, from_version, to_version)
 VALUES ('com.example:SmsMessageAOSPSmsApp', '2.0', '4.4.4');
 INSERT INTO data_source_params_values (operation_id, param_name, param_value)

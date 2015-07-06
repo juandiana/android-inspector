@@ -18,6 +18,16 @@ class DefinitionsDatabase(object):
         # TODO: Close connection, somewhere.
 
     def query_operations_info(self, data_type, data_source, device_info):
+        """
+        The data_type exists in definitions.db
+        The data_source.type_ exists in definitions.db and has all the required params.
+        The device_info contains a model and an os_version.
+        :param data_type:
+        :param data_source:
+        :param device_info:
+        :return: list(OperationInfo)
+        """
+
         result = []
         c = self.conn.cursor()
 
@@ -38,52 +48,85 @@ class DefinitionsDatabase(object):
 
         c.execute(query)
 
-        data_source_params = data_source.info
+        if data_source is not None:
+            data_source_params = data_source.info
 
-        for row in c:
-            op_id = row[0]
-            c2 = self.conn.cursor()
-            c2.execute("""
-                    SELECT param_name, param_value
-                    FROM data_source_params_values dspv
-                    WHERE dspv.operation_id = ?
-                    """, [op_id])
+            for row in c:
+                op_id = row[0]
 
-            supported = True
-            op_params = {}
-            for pv in c2:
-                if data_source_params.get(pv[0]) != pv[1]:
-                    supported = False
-                    break
-                op_params[pv[0].__str__()] = pv[1].__str__()
+                c2 = self.conn.cursor()
+                c2.execute("""
+                        SELECT param_name, param_value
+                        FROM data_source_params_values dspv
+                        WHERE dspv.operation_id = ?
+                        """, [op_id])
 
-            c2.close()
+                supported = True
 
-            if supported:
-                c3 = self.conn.cursor()
-                c3.execute('SELECT model_number FROM device_models WHERE operation_id = ?', [op_id])
+                for pv in c2:
+                    if data_source_params.get(pv[0]) != pv[1]:
+                        supported = False
+                        break
 
-                supported_models = []
-                for dm in c3:
-                    supported_models.append(dm[0].__str__())
+                c2.close()
 
-                c3.close()
+                if supported:
+                    result.append(self.get_operation_info_by_id(op_id))
 
-                c4 = self.conn.cursor()
-                c4.execute('SELECT from_version, to_version FROM android_versions WHERE operation_id = ?', [op_id])
-
-                supported_os_versions = []
-                for av in c4:
-                    supported_os_versions.append(av[0].__str__() + '-' + av[1].__str__())
-
-                c4.close()
-
-                op_info = OperationInfo(op_id.__str__(), row[1].__str__(), DataSource(row[2], op_params),
-                                        ', '.join(supported_models), supported_os_versions)
-                result.append(op_info)
+        else:
+            for row in c:
+                result.append(self.get_operation_info_by_id(row[0]))
 
         c.close()
         return result
+
+    def get_operation_info_by_id(self, id_):
+        c1 = self.conn.cursor()
+        c1.execute("""
+                SELECT dt.name, dst.name
+                FROM operations AS o, data_types AS dt, data_source_types AS dst
+                WHERE o.data_type_id = dt.id AND o.data_source_type_id = dst.id AND o.id = ?
+                """, [id_])
+
+        res = c1.fetchone()
+        data_type = res[0]
+        data_source_type = res[1]
+
+        c1.close()
+
+        c2 = self.conn.cursor()
+        c2.execute("""
+                SELECT param_name, param_value
+                FROM data_source_params_values dspv
+                WHERE dspv.operation_id = ?
+                """, [id_])
+
+        param_values = {}
+        for pv in c2:
+            param_values[pv[0].__str__()] = pv[1].__str__()
+
+        c2.close()
+
+        c3 = self.conn.cursor()
+        c3.execute('SELECT model_number FROM device_models WHERE operation_id = ?', [id_])
+
+        supported_models = []
+        for dm in c3:
+            supported_models.append(dm[0].__str__())
+
+        c3.close()
+
+        c4 = self.conn.cursor()
+        c4.execute('SELECT from_version, to_version FROM android_versions WHERE operation_id = ?', [id_])
+
+        supported_os_versions = []
+        for av in c4:
+            supported_os_versions.append((av[0].__str__(), av[1].__str__()))
+
+        c4.close()
+
+        return OperationInfo(id_, data_type.__str__(), DataSource(data_source_type, param_values),
+                             supported_models, supported_os_versions)
 
     def get_operation_exec_info(self, id_):
         result = {}
@@ -100,7 +143,8 @@ class DefinitionsDatabase(object):
             result['inspector_id'] = row[2].__str__()
 
             c2 = self.conn.cursor()
-            c2.execute('SELECT param_name, param_value FROM data_source_params_values dspv WHERE dspv.operation_id = ?', [row[0]])
+            c2.execute('SELECT param_name, param_value FROM data_source_params_values dspv WHERE dspv.operation_id = ?',
+                       [row[0]])
 
             param_values = {}
 
