@@ -15,9 +15,7 @@ class SmsMessageInspector(Inspector):
         original_sms_db_file_path = os.path.join(original_app_path, sms_db_rel_file_path)
         sms_db_file_path = os.path.join(extracted_data_dir_path, sms_db_rel_file_path)
 
-        source_objects = [
-            create_file_object(sms_db_file_path, original_sms_db_file_path),
-        ]
+        source_objects = [create_file_object(sms_db_file_path, original_sms_db_file_path)]
 
         inspected_objects = []
 
