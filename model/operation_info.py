@@ -8,6 +8,9 @@ class DataSource(object):
     def __repr__(self):
         return '{0}:{1}'.format(self.type_, self.info)
 
+    def __eq__(self, other):
+        return self.type_ == other.type_ and self.info == other.info
+
 
 class OperationInfo(object):
     def __init__(self, id_, data_type, data_source, supported_device_models, supported_os_versions):
@@ -19,13 +22,21 @@ class OperationInfo(object):
 
     def __repr__(self):
         return '{{\n' \
-               '\t"id": {0}\n' \
-               '\t"data_type": {1}\n' \
-               '\t"data_source": {2}\n' \
-               '\t"supported_device_models": {3}\n' \
-               '\t"supported_os_models": {4}\n' \
-               '}}\n'\
-            .format(self.id_, self.data_type, self.data_source, self.supported_device_models, self.supported_os_versions)
+               '\tid: {0}\n' \
+               '\tdata_type: {1}\n' \
+               '\tdata_source: {2}\n' \
+               '\tsupported_device_models: {3}\n' \
+               '\tsupported_os_models: {4}\n' \
+               '}}\n' \
+            .format(self.id_, self.data_type, self.data_source, self.supported_device_models,
+                    self.supported_os_versions)
+
+    def __eq__(self, other):
+        return self.id_ == other.id_ \
+               and self.data_type == other.data_type \
+               and self.data_source.__eq__(other.data_source) \
+               and self.supported_device_models == other.supported_device_models \
+               and self.supported_os_versions == other.supported_os_versions
 
 
 class DeviceInfo(object):

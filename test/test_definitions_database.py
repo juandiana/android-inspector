@@ -1,35 +1,85 @@
 # coding=utf-8
 import unittest
 from components.definitions_database import DefinitionsDatabase
-from model import DataSource, DeviceInfo
+from model import DataSource, DeviceInfo, OperationInfo
 
 
-class MyTestCase(unittest.TestCase):
-    def test_something(self):
-        db_helper = DefinitionsDatabase('definitions.db',
-                                        '../my_test_create_db.sql',
-                                        '../my_test_insert_default_operations.sql')
-        ds = DataSource('Application', {'package_name': 'com.android.email'})
-        bad_ds = DataSource('Application', {})
-        dv_info = DeviceInfo('3.0.0', 'GT-I9300')
-        print db_helper.query_operations_info('EmailMessage', ds, dv_info)
+class TestDefinitionsDatabase(unittest.TestCase):
+    def setUp(self):
+        self.db_helper = DefinitionsDatabase('test_definitions.db',
+                                             'my_test_create_db.sql',
+                                             'my_test_insert_default_operations.sql')
+        self.ds_aosp_email = DataSource('Application', {'package_name': 'com.android.email'})
+        self.ds_facebook = DataSource('Application', {'package_name': 'com.facebook.katana'})
+        self.ds_aosp_sms = DataSource('Application', {'package_name': 'com.android.providers.telephony'})
+        self.bad_ds = DataSource('Application', {})
+        self.dv_info = DeviceInfo('3.0.0', 'GT-I9300')
 
-        self.assertEqual(db_helper.get_operation_exec_info('operation_1'),
+        self.op_info_email_aosp_email = OperationInfo('com.example:EmailMessageAOSPEmailApp', 'EmailMessage',
+                                                      self.ds_aosp_email, ['GT-I9300'], [('2.3.7', '5.1.1')])
+        self.op_info_image_aosp_email = OperationInfo('com.example:ImageFileAOSPEmailApp', 'ImageFile',
+                                                      self.ds_aosp_email, ['GT-I9300'], [('2.3.7', '5.1.1')])
+        self.op_info_image_facebook = OperationInfo('com.example:ImageFileFacebook', 'ImageFile', self.ds_facebook,
+                                                    ['GT-I9300', 'XT1053'], [('2.3.7', '5.1.1')])
+        self.op_info_sms_aosp_sms = OperationInfo('com.example:SmsMessageAOSPSmsApp', 'SmsMessage', self.ds_aosp_sms,
+                                                  ['GT-I9300', 'LG-D820'], [('2.0', '4.4.4')])
+
+    def test_query_operation_for_email_message(self):
+        result = self.db_helper.query_operations_info('EmailMessage', self.ds_aosp_email, self.dv_info)
+        expected_result = [self.op_info_email_aosp_email]
+
+        self.assertEqualList(result, expected_result)
+
+    def test_query_operation_without_data_type(self):
+        result = self.db_helper.query_operations_info(None, self.ds_aosp_email, self.dv_info)
+        expected_result = [self.op_info_email_aosp_email, self.op_info_image_aosp_email]
+
+        self.assertEqualList(expected_result, result)
+
+    def test_query_operation_without_data_source(self):
+        result = self.db_helper.query_operations_info('ImageFile', None, self.dv_info)
+        expected_result = [self.op_info_image_aosp_email, self.op_info_image_facebook]
+
+        self.assertEqualList(result, expected_result)
+
+    def test_query_operation_without_data_type_nor_data_source(self):
+        result = self.db_helper.query_operations_info(None, None, self.dv_info)
+        expected_result = [self.op_info_email_aosp_email, self.op_info_image_aosp_email,
+                           self.op_info_image_facebook, self.op_info_sms_aosp_sms]
+
+        self.assertEqualList(result, expected_result)
+
+    def test_query_operation_for_non_existent_data_type(self):
+        self.assertEqual(self.db_helper.query_operations_info('Non_existent', self.ds_aosp_email, self.dv_info), [])
+
+    def test_get_operation_exec_info(self):
+        self.assertEqual(self.db_helper.get_operation_exec_info('com.example:EmailMessageAOSPEmailApp'),
                          {'extractor_id': 'ApplicationExtractor', 'inspector_id': 'EmailMessageInspector',
                           'param_values': {'package_name': 'com.android.email'}})
-        self.assertEqual(db_helper.get_operation_exec_info('id_non_existent'), {})
 
-        self.assertTrue(db_helper.exists_operation('operation_1'))
-        self.assertFalse(db_helper.exists_operation('Non_existent'))
+    def test_get_operation_exec_info_id_non_existent(self):
+        self.assertEqual(self.db_helper.get_operation_exec_info('id_non_existent'), {})
 
-        self.assertTrue(db_helper.exists_data_type('EmailMessage'))
-        self.assertFalse(db_helper.exists_data_type('Non_existent'))
+    def test_exists_operation(self):
+        self.assertTrue(self.db_helper.exists_operation('com.example:EmailMessageAOSPEmailApp'))
+        self.assertFalse(self.db_helper.exists_operation('Non_existent'))
 
-        self.assertTrue(db_helper.exists_data_source_type('Application'))
-        self.assertFalse(db_helper.exists_data_source_type('Non_existent'))
+    def test_exists_data_type(self):
+        self.assertTrue(self.db_helper.exists_data_type('EmailMessage'))
+        self.assertFalse(self.db_helper.exists_data_type('Non_existent'))
 
-        self.assertTrue(db_helper.has_all_required_param_values(ds))
-        self.assertFalse(db_helper.has_all_required_param_values(bad_ds))
+    def test_exists_data_source_type(self):
+        self.assertTrue(self.db_helper.exists_data_source_type('Application'))
+        self.assertFalse(self.db_helper.exists_data_source_type('Non_existent'))
+
+    def test_has_all_required_param_values(self):
+        self.assertTrue(self.db_helper.has_all_required_param_values(self.ds_aosp_email))
+        self.assertFalse(self.db_helper.has_all_required_param_values(self.bad_ds))
+
+    def assertEqualList(self, expected_result, result):
+        self.assertEqual(len(result), len(expected_result))
+        for i in range(len(expected_result)):
+            self.assertEqual(result[i], expected_result[i])
 
 
 if __name__ == '__main__':

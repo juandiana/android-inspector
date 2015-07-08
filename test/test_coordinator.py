@@ -10,7 +10,7 @@ from model import DeviceInfo
 
 class MyTestCase(unittest.TestCase):
     def setUp(self):
-        definitions_database = DefinitionsDatabase('definitions.db',
+        definitions_database = DefinitionsDatabase('test_definitions.db',
                                                    'create_db.sql',
                                                    'insert_default_operations.sql')
         repositories_manager = RepositoriesManager('repositories')

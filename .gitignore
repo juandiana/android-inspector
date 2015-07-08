@@ -106,3 +106,4 @@ crashlytics-build.properties
 # Project specific.
 test/results/
 test/definitions.db
+test/test_definitions.db
