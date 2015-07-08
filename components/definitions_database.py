@@ -22,9 +22,9 @@ class DefinitionsDatabase(object):
         The data_type exists in definitions.db
         The data_source.type_ exists in definitions.db and has all the required params.
         The device_info contains a model and an os_version.
-        :param data_type:
-        :param data_source:
-        :param device_info:
+        :param data_type: DataType
+        :param data_source: DataSource
+        :param device_info: DeviceInfo
         :return: list(OperationInfo)
         """
 
