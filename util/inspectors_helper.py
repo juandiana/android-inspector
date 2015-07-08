@@ -4,6 +4,8 @@ import os
 
 import magic
 from cybox.objects.file_object import File
+import sqlite3
+from model import OperationError
 
 
 def sha256_checksum(file_path, block_size=65536):
@@ -27,3 +29,18 @@ def create_file_object(file_path, original_file_path):
     f.size_in_bytes = os.path.getsize(file_path)
     f.sha256 = sha256_checksum(file_path)
     return f
+
+
+def execute_query(headers_db_file_path, sql_query):
+    if not os.path.exists(headers_db_file_path):
+        raise OperationError('Inspection failed: {0} not found.'.format(headers_db_file_path))
+    conn = sqlite3.connect(headers_db_file_path)
+    # Access columns by name instead of by index
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    try:
+        c.execute(sql_query)
+    except (sqlite3.OperationalError, sqlite3.DatabaseError) as error:
+        # TODO: Log the error message.
+        raise OperationError('Inspection failed: Could not perform SQL query on {0}.'.format(headers_db_file_path))
+    return c, conn
