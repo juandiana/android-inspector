@@ -1,32 +1,17 @@
 # coding=utf-8
 
 import os
-import sqlite3
 
 from cybox.common import datetime
 from cybox.common.vocabs import ObjectRelationship
 from cybox.objects.email_message_object import EmailHeader, EmailMessage
 from cybox.utils import set_id_method, IDGenerator
 
-from model.operation import Inspector, OperationError
-from util.inspectors_helper import create_file_object
+from model.operation import Inspector
+from util.inspectors_helper import create_file_object, execute_query
 
 
 class EmailMessageInspector(Inspector):
-    def _execute_query(self, headers_db_file_path, sql_query):
-        if not os.path.exists(headers_db_file_path):
-            raise OperationError('Inspection failed: {0} not found.'.format(headers_db_file_path))
-        conn = sqlite3.connect(headers_db_file_path)
-        # Access columns by name instead of by index
-        conn.row_factory = sqlite3.Row
-        c = conn.cursor()
-        try:
-            c.execute(sql_query)
-        except (sqlite3.OperationalError, sqlite3.DatabaseError) as error:
-            # TODO: Log the error message.
-            raise OperationError('Inspection failed: Could not perform SQL query on {0}.'.format(headers_db_file_path))
-        return c, conn
-
     def execute(self, device_info, extracted_data_dir_path, simple_output):
         original_app_path = '/data/data/com.android.email'
         headers_db_rel_file_path = os.path.join('databases', 'EmailProvider.db')
@@ -46,7 +31,7 @@ class EmailMessageInspector(Inspector):
         ]
         inspected_objects = {}
 
-        cursor, conn = self._execute_query(headers_db_file_path, 'SELECT * FROM message')
+        cursor, conn = execute_query(headers_db_file_path, 'SELECT * FROM message')
         for row in cursor:
             header = EmailHeader()
             header.to = row['toList']
@@ -68,7 +53,7 @@ class EmailMessageInspector(Inspector):
         cursor.close()
         conn.close()
 
-        cursor, conn = self._execute_query(bodies_db_file_path, 'SELECT _id, htmlContent, textContent FROM body')
+        cursor, conn = execute_query(bodies_db_file_path, 'SELECT _id, htmlContent, textContent FROM body')
         for row in cursor:
             email_id = row['_id']
             email = inspected_objects.get(email_id)
