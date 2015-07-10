@@ -1,10 +1,11 @@
 # coding=utf-8
 
 import os
+import re
 
 from cybox.common import datetime
 from cybox.common.vocabs import ObjectRelationship
-from cybox.objects.email_message_object import EmailHeader, EmailMessage
+from cybox.objects.email_message_object import EmailHeader, EmailMessage, Attachments
 from cybox.utils import set_id_method, IDGenerator
 
 from model.operation import Inspector
@@ -53,6 +54,7 @@ class EmailMessageInspector(Inspector):
         cursor.close()
         conn.close()
 
+        # Add full raw body to emails.
         cursor, conn = execute_query(bodies_db_file_path, 'SELECT _id, htmlContent, textContent FROM body')
         for row in cursor:
             email_id = row['_id']
@@ -65,6 +67,32 @@ class EmailMessageInspector(Inspector):
                     email.raw_body = row['textContent']
                     email.header.content_type = 'text/plain'
                 email.add_related(source_objects[1], ObjectRelationship.TERM_EXTRACTED_FROM, inline=False)
+        cursor.close()
+
+        # Add attachments to emails.
+        cursor, conn = execute_query(headers_db_file_path,
+                                     'SELECT messageKey, fileName, size, contentUri FROM attachment')
+
+        for row in cursor:
+            email_id = row['messageKey']
+            email = inspected_objects.get(email_id)
+            if email.attachments is None:
+                email.attachments = Attachments()
+
+            attachment_rel_path_dirs = re.search('.*//.*/(.*)/(.*)/.*', row['contentUri'])
+
+            attachment_rel_file_path = os.path.join('databases', attachment_rel_path_dirs.group(1) + '.db_att',
+                                                    attachment_rel_path_dirs.group(2))
+
+            attachment_file_path = os.path.join(extracted_data_dir_path, attachment_rel_file_path)
+            original_file_path = os.path.join(original_app_path, attachment_rel_file_path)
+
+            attachment = create_file_object(attachment_file_path, original_file_path)
+            email.attachments.append(attachment.parent.id_)
+
+            attachment.add_related(email, ObjectRelationship.TERM_CONTAINED_WITHIN, inline=False)
+            source_objects.append(attachment)
+
         cursor.close()
         conn.close()
 
