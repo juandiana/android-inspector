@@ -6,10 +6,10 @@ VALUES ('com.example:Application', 'Application','ApplicationExtractor');
 INSERT INTO required_params (data_source_type_id, param_name)
 VALUES ('com.example:Application', 'package_name');
 INSERT INTO operations (id, data_type_id, data_source_type_id, inspector_name)
-VALUES ('com.example:EmailMessageAOSPApp', 'com.example:EmailMessage', 'com.example:Application', 'EmailMessageInspector');
+VALUES ('com.example:EmailMessageAOSPEmailApp', 'com.example:EmailMessage', 'com.example:Application', 'EmailMessageInspector');
 INSERT INTO device_models (operation_id, model_number)
-VALUES ('com.example:EmailMessageAOSPApp', 'GT-I9300');
+VALUES ('com.example:EmailMessageAOSPEmailApp', 'GT-I9300');
 INSERT INTO android_versions (operation_id, from_version, to_version)
-VALUES ('com.example:EmailMessageAOSPApp', '2.3.7', '5.1.1');
+VALUES ('com.example:EmailMessageAOSPEmailApp', '2.3.7', '5.1.1');
 INSERT INTO data_source_params_values (operation_id, param_name, param_value)
-VALUES ('com.example:EmailMessageAOSPApp', 'package_name', 'com.android.email');
+VALUES ('com.example:EmailMessageAOSPEmailApp', 'package_name', 'com.android.email');

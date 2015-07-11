@@ -30,7 +30,7 @@ class SmsMessageInspector(Inspector):
                 sms.recipient_phone_number = row['address']
             sms.sent_datetime = datetime.fromtimestamp(row['date_sent'] / 1000)  # Convert from milliseconds to seconds
             sms.body = row['body']
-            sms.length = len(row['body'].__str__())
+            sms.length = len(row['body'])
             sms.add_related(source_objects[0], ObjectRelationship.TERM_EXTRACTED_FROM, inline=False)
 
             inspected_objects.append(sms)

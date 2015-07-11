@@ -18,7 +18,7 @@ class MyTestCase(unittest.TestCase):
         self.coordinator = Coordinator(operations_manager)
 
     def test_use_case_batch_mode(self):
-        ids = ['operation_1']
+        ids = ['com.example:EmailMessageAOSPEmailApp']
         device_info = DeviceInfo('5.1', 'XT1053')
         results_dir_path = 'results'
         self.coordinator.execute_operations(ids, device_info, results_dir_path)
