@@ -28,7 +28,7 @@ class SmsMessageInspector(Inspector):
             else:
                 # sms.sender_phone_number = TODO: Ver como conseguir el número del dispositivo.
                 sms.recipient_phone_number = row['address']
-            sms.sent_datetime = datetime.fromtimestamp(row['date_sent'] / 1000)  # Convert from milliseconds to seconds
+            sms.sent_datetime = datetime.fromtimestamp(row['date'] / 1000)  # Convert from milliseconds to seconds
             sms.body = row['body']
             sms.length = len(row['body'])
             sms.add_related(source_objects[0], ObjectRelationship.TERM_EXTRACTED_FROM, inline=False)
