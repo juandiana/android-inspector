@@ -3,16 +3,17 @@ import unittest
 from cybox.core import Observables
 from model import DeviceInfo, OperationError, EXTRACTED_DATA_DIR_NAME, INSPECTED_DATA_FILE_NAME, SOURCE_DATA_FILE_NAME
 from repositories.inspectors.sms_message_inspector import SmsMessageInspector
+from test import TEST_EXTRACTED_DATA_DIR_NAME
 
 
-class MyTestCase(unittest.TestCase):
+class TestSmsMessageInspector(unittest.TestCase):
     def setUp(self):
         self.device_info = DeviceInfo('4.4.4', 'XT1053')
         self.inspector = SmsMessageInspector()
 
-    def test_something(self):
+    def test_sms_message_inspector(self):
         try:
-            inspected_objects, source_objects = self.inspector.execute(self.device_info, EXTRACTED_DATA_DIR_NAME, True)
+            inspected_objects, source_objects = self.inspector.execute(self.device_info, TEST_EXTRACTED_DATA_DIR_NAME, True)
         except OperationError:
             raise
 
