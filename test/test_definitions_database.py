@@ -53,12 +53,17 @@ class TestDefinitionsDatabase(unittest.TestCase):
         self.assertEqual(self.db_helper.query_operations_info('Non_existent', self.ds_aosp_email, self.dv_info), [])
 
     def test_get_operation_exec_info(self):
-        self.assertEqual(self.db_helper.get_operation_exec_info('com.example:EmailMessageAOSPEmailApp'),
-                         {'extractor_id': 'ApplicationExtractor', 'inspector_id': 'EmailMessageInspector',
-                          'param_values': {'package_name': 'com.android.email'}})
+        extractor_id, inspector_id, param_values = self.db_helper.get_operation_exec_info('com.example:EmailMessageAOSPEmailApp')
+
+        self.assertEqual(extractor_id, 'ApplicationExtractor')
+        self.assertEqual(inspector_id, 'EmailMessageInspector')
+        self.assertEqual(param_values, {'package_name': 'com.android.email'})
 
     def test_get_operation_exec_info_id_non_existent(self):
-        self.assertEqual(self.db_helper.get_operation_exec_info('id_non_existent'), {})
+        extractor_id, inspector_id, param_values = self.db_helper.get_operation_exec_info('id_non_existent')
+        self.assertEqual(extractor_id, '')
+        self.assertEqual(inspector_id, '')
+        self.assertEqual(param_values, {})
 
     def test_exists_operation(self):
         self.assertTrue(self.db_helper.exists_operation('com.example:EmailMessageAOSPEmailApp'))

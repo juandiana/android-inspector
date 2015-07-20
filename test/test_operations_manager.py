@@ -18,13 +18,7 @@ class MockedDefinitionsDatabase(object):
         return [op_info]
 
     def get_operation_exec_info(self, id_):
-        return {
-            'extractor_id': 'com.example.extractor1',
-            'inspector_id': 'com.example.inspector1',
-            'param_values': {
-                'package_name': 'com.google.gm'
-            }
-        }
+        return 'com.example.extractor1', 'com.example.inspector1', {'package_name': 'com.google.gm'}
 
     def exists_data_type(self, data_type):
         return True
