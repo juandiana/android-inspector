@@ -1,22 +1,20 @@
 # coding=utf-8
 import os
 import unittest
-
 from cybox.core import Observables
-
 from model import DeviceInfo, OperationError, INSPECTED_DATA_FILE_NAME, SOURCE_DATA_FILE_NAME
-from repositories.inspectors.email_message_inspector import EmailMessageInspector
+from repositories.inspectors.contact_whatsapp_inspector import ContactWhatsAppInspector
 from test import TEST_EXTRACTED_DATA_DIR_NAME
 
-db_path = os.path.join(TEST_EXTRACTED_DATA_DIR_NAME, 'email_message')
+db_path = os.path.join(TEST_EXTRACTED_DATA_DIR_NAME, 'whatsapp')
 
 
-class TestEmailMessageInspector(unittest.TestCase):
+class TestSmsMessageInspector(unittest.TestCase):
     def setUp(self):
         self.device_info = DeviceInfo('4.4.4', 'XT1053')
-        self.inspector = EmailMessageInspector()
+        self.inspector = ContactWhatsAppInspector()
 
-    def test_email_message_inspector(self):
+    def test_sms_message_inspector(self):
         try:
             inspected_objects, source_objects = self.inspector.execute(self.device_info, db_path, True)
         except OperationError:

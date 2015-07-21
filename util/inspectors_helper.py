@@ -20,6 +20,13 @@ def sha256_checksum(file_path, block_size=65536):
     return sha256sum.hexdigest()
 
 
+def get_source_object(file_path, source_objects):
+    for o in source_objects:
+        if o.file_path == file_path:
+            return o
+    return None
+
+
 def create_file_object(file_path, original_file_path):
     f = File()
     f.file_name = os.path.basename(file_path)
