@@ -36,5 +36,6 @@ class SmsMessageInspector(Inspector):
             inspected_objects.append(sms)
 
         cursor.close()
+        conn.close()
 
         return inspected_objects, source_objects

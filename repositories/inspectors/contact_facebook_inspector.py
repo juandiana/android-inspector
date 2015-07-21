@@ -3,6 +3,7 @@ import os
 from cybox.common.object_properties import CustomProperties, Property
 from cybox.common.vocabs import ObjectRelationship
 from cybox.objects.custom_object import Custom
+from cybox.utils import set_id_method, IDGenerator
 from model import Inspector
 from util.inspectors_helper import create_file_object, execute_query
 
@@ -14,6 +15,9 @@ class ContactFacebookInspector(Inspector):
 
         original_fb_db_file_path = os.path.join(original_app_path, fb_db_rel_file_path)
         fb_db_file_path = os.path.join(extracted_data_dir_path, fb_db_rel_file_path)
+
+        if simple_output:
+            set_id_method(IDGenerator.METHOD_INT)
 
         source_objects = [create_file_object(fb_db_file_path, original_fb_db_file_path)]
 
@@ -29,6 +33,7 @@ class ContactFacebookInspector(Inspector):
         for row in cursor:
             custom = Custom()
             custom.custom_name = 'Contact'
+            custom._namespace = 'uy.edu.fing.gsi.android.inspector:Contact'
             custom.custom_properties = CustomProperties()
 
             for p in properties:
@@ -43,5 +48,6 @@ class ContactFacebookInspector(Inspector):
             inspected_objects.append(custom)
 
         cursor.close()
+        conn.close()
 
         return inspected_objects, source_objects
