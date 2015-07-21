@@ -165,7 +165,7 @@ class DefinitionsDatabase(object):
     def exists_operation(self, id_):
         """
         :type id_: UUID
-        :rtype : Bool
+        :rtype : bool
         """
         c = self.conn.cursor()
         c.execute('SELECT 1 FROM operations AS o WHERE o.id = ?', [id_])
@@ -177,7 +177,7 @@ class DefinitionsDatabase(object):
     def exists_data_type(self, data_type):
         """
         :type data_type: string
-        :rtype : Bool
+        :rtype : bool
         """
         c = self.conn.cursor()
         c.execute('SELECT 1 FROM data_types AS dt WHERE dt.name = ?', [data_type])
@@ -189,7 +189,7 @@ class DefinitionsDatabase(object):
     def exists_data_source_type(self, data_source_type):
         """
         :type data_source_type: string
-        :rtype : Bool
+        :rtype : bool
         """
         c = self.conn.cursor()
         c.execute('SELECT 1 FROM data_source_types AS dst WHERE dst.name = ?', [data_source_type])
@@ -201,7 +201,7 @@ class DefinitionsDatabase(object):
     def has_all_required_param_values(self, data_source):
         """
         :type data_source: DataSource
-        :rtype : Bool
+        :rtype : bool
         """
         c = self.conn.cursor()
         c.execute("""
