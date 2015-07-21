@@ -40,10 +40,9 @@ class OperationsManager(object):
         if not self.definitions_database.exists_operation(id_):
             raise ValueError("'{0}' is not a defined Operation.".format(id_))
 
-        info = self.definitions_database.get_operation_exec_info(id_)
+        extractor_id, inspector_id, param_values = self.definitions_database.get_operation_exec_info(id_)
 
-        extractor = self.repositories_manager.get_extractor(info['extractor_id'])  # TODO: Check if it raises exception
-        inspector = self.repositories_manager.get_inspector(info['inspector_id'])  # TODO: Check if it raises exception
-        param_values = info['param_values']
+        extractor = self.repositories_manager.get_extractor(extractor_id)  # TODO: Check if it raises exception
+        inspector = self.repositories_manager.get_inspector(inspector_id)  # TODO: Check if it raises exception
 
         return Operation(extractor, inspector, param_values)

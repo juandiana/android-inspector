@@ -22,10 +22,10 @@ class DefinitionsDatabase(object):
         The data_type exists in definitions.db
         The data_source.type_ exists in definitions.db and has all the required params.
         The device_info contains a model and an os_version.
-        :param data_type: DataType
-        :param data_source: DataSource
-        :param device_info: DeviceInfo
-        :return: list(OperationInfo)
+        :type data_type: DataType
+        :type data_source: DataSource
+        :type device_info: DeviceInfo
+        :rtype : list(OperationInfo)
         """
 
         result = []
@@ -81,6 +81,10 @@ class DefinitionsDatabase(object):
         return result
 
     def get_operation_info_by_id(self, id_):
+        """
+        :type id_: UUID
+        :rtype : OperationInfo
+        """
         c1 = self.conn.cursor()
         c1.execute("""
                 SELECT dt.name, dst.name
@@ -129,7 +133,14 @@ class DefinitionsDatabase(object):
                              supported_models, supported_os_versions)
 
     def get_operation_exec_info(self, id_):
-        result = {}
+        """
+        :type id_: UUID
+        :rtype : extractor_id: string, inspector_id: string, params_values: dict(string)
+        """
+        extractor_id = ''
+        inspector_id = ''
+        param_values = {}
+
         c = self.conn.cursor()
         c.execute("""
                 SELECT o.id, dst.extractor_name, o.inspector_name
@@ -139,22 +150,23 @@ class DefinitionsDatabase(object):
 
         row = c.fetchone()
         if row is not None:
-            result['extractor_id'] = row[1].__str__()
-            result['inspector_id'] = row[2].__str__()
+            extractor_id = row[1].__str__()
+            inspector_id = row[2].__str__()
 
             c2 = self.conn.cursor()
             c2.execute('SELECT param_name, param_value FROM data_source_params_values dspv WHERE dspv.operation_id = ?',
                        [row[0]])
 
-            param_values = {}
-
             for pv in c2:
                 param_values[pv[0]] = pv[1]
 
-            result['param_values'] = param_values
-        return result
+        return extractor_id, inspector_id, param_values
 
     def exists_operation(self, id_):
+        """
+        :type id_: UUID
+        :rtype : bool
+        """
         c = self.conn.cursor()
         c.execute('SELECT 1 FROM operations AS o WHERE o.id = ?', [id_])
 
@@ -163,6 +175,10 @@ class DefinitionsDatabase(object):
         return row is not None
 
     def exists_data_type(self, data_type):
+        """
+        :type data_type: string
+        :rtype : bool
+        """
         c = self.conn.cursor()
         c.execute('SELECT 1 FROM data_types AS dt WHERE dt.name = ?', [data_type])
 
@@ -171,6 +187,10 @@ class DefinitionsDatabase(object):
         return row is not None
 
     def exists_data_source_type(self, data_source_type):
+        """
+        :type data_source_type: string
+        :rtype : bool
+        """
         c = self.conn.cursor()
         c.execute('SELECT 1 FROM data_source_types AS dst WHERE dst.name = ?', [data_source_type])
 
@@ -179,6 +199,10 @@ class DefinitionsDatabase(object):
         return row is not None
 
     def has_all_required_param_values(self, data_source):
+        """
+        :type data_source: DataSource
+        :rtype : bool
+        """
         c = self.conn.cursor()
         c.execute("""
                 SELECT param_name FROM data_source_types AS dst, required_params AS rp
@@ -200,7 +224,7 @@ class DefinitionsDatabase(object):
     def add_data_type(self, name, cybox_object_name):
         pass
 
-    def remove_data_type(self, name):
+    def remove_data_type(self, id_):
         pass
 
     def add_data_source_type(self, id_, name, extractor_name):
