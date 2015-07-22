@@ -1,10 +1,9 @@
 # coding=utf-8
 import os
-from cybox.common.object_properties import CustomProperties, Property
 from cybox.common.vocabs import ObjectRelationship
-from cybox.objects.custom_object import Custom
 from cybox.utils import set_id_method, IDGenerator
 from model import Inspector
+from repositories.custom_cybox_objects.contact import Contact
 from util import inspectors_helper
 
 
@@ -21,9 +20,6 @@ class ContactWhatsAppInspector(Inspector):
 
         source_objects = [inspectors_helper.create_file_object(wa_db_file_path, original_wa_db_file_path)]
 
-        # Properties to add to Custom Object
-        properties = ['display_name', 'given_name', 'family_name', 'number']
-
         inspected_objects = []
 
         query = 'SELECT display_name, given_name, family_name, number, jid FROM wa_contacts'
@@ -31,18 +27,18 @@ class ContactWhatsAppInspector(Inspector):
         cursor, conn = inspectors_helper.execute_query(wa_db_file_path, query)
 
         for row in cursor:
-            custom = Custom()
-            custom.custom_name = 'Contact'
-            custom.custom_properties = CustomProperties()
+            contact = Contact()
 
-            for p in properties:
-                if row[p]:
-                    prop = Property()
-                    prop.name = p
-                    prop.value = row[p]
-                    custom.custom_properties.append(prop)
+            if row['display_name']:
+                contact.display_name = row['display_name']
+            if row['given_name']:
+                contact.first_name = row['given_name']
+            if row['family_name']:
+                contact.last_name = row['family_name']
+            if row['number']:
+                contact.phone_number = row['number']
 
-            custom.add_related(source_objects[0], ObjectRelationship.TERM_EXTRACTED_FROM, inline=False)
+            contact.add_related(source_objects[0], ObjectRelationship.TERM_EXTRACTED_FROM, inline=False)
 
             if row['jid']:
                 # Using 'jid' field, create the absolute image_file path.
@@ -65,15 +61,12 @@ class ContactWhatsAppInspector(Inspector):
                                                                           original_profile_picture_file_path)
                         source_objects.append(image_file)
 
-                    # Add profile_picture property, with absolute path to image_file as value.
-                    p_profile_picture = Property()
-                    p_profile_picture.name = 'profile_picture'
-                    p_profile_picture.value = 'file://' + os.path.join(os.getcwd(), profile_picture_file_path)
-                    custom.custom_properties.append(p_profile_picture)
+                    # Add profile_picture property.
+                    contact.profile_picture = 'file://' + original_profile_picture_file_path
 
-                    custom.add_related(image_file, ObjectRelationship.TERM_RELATED_TO, inline=False)
+                    contact.add_related(image_file, ObjectRelationship.TERM_RELATED_TO, inline=False)
 
-            inspected_objects.append(custom)
+            inspected_objects.append(contact)
 
         cursor.close()
         conn.close()
