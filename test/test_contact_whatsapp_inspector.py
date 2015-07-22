@@ -9,12 +9,12 @@ from test import TEST_EXTRACTED_DATA_DIR_NAME
 EXTRACTED_DATA = os.path.join(TEST_EXTRACTED_DATA_DIR_NAME, 'whatsapp')
 
 
-class TestSmsMessageInspector(unittest.TestCase):
+class TestContactFacebookInspector(unittest.TestCase):
     def setUp(self):
         self.device_info = DeviceInfo('4.4.4', 'XT1053')
         self.inspector = ContactWhatsAppInspector()
 
-    def test_sms_message_inspector(self):
+    def test_contact_facebook_inspector(self):
         try:
             inspected_objects, source_objects = self.inspector.execute(self.device_info, EXTRACTED_DATA, True)
         except OperationError:

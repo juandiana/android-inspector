@@ -1,19 +1,22 @@
 # coding=utf-8
+import os
 import unittest
 from cybox.core import Observables
 from model import DeviceInfo, OperationError, INSPECTED_DATA_FILE_NAME, SOURCE_DATA_FILE_NAME
 from repositories.inspectors.contact_facebook_inspector import ContactFacebookInspector
 from test import TEST_EXTRACTED_DATA_DIR_NAME
 
+EXTRACTED_DATA = os.path.join(TEST_EXTRACTED_DATA_DIR_NAME, 'facebook')
 
-class TestSmsMessageInspector(unittest.TestCase):
+
+class TestContactFacebookInspector(unittest.TestCase):
     def setUp(self):
         self.device_info = DeviceInfo('4.4.4', 'XT1053')
         self.inspector = ContactFacebookInspector()
 
-    def test_sms_message_inspector(self):
+    def test_contact_facebook_inspector(self):
         try:
-            inspected_objects, source_objects = self.inspector.execute(self.device_info, TEST_EXTRACTED_DATA_DIR_NAME, True)
+            inspected_objects, source_objects = self.inspector.execute(self.device_info, EXTRACTED_DATA, True)
         except OperationError:
             raise
 
