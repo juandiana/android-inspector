@@ -62,7 +62,7 @@ class ContactWhatsAppInspector(Inspector):
                         source_objects.append(image_file)
 
                     # Add profile_picture property.
-                    contact.profile_picture = 'file://' + os.path.join(os.getcwd(), profile_picture_file_path)
+                    contact.profile_picture = 'file://' + original_profile_picture_file_path
 
                     contact.add_related(image_file, ObjectRelationship.TERM_RELATED_TO, inline=False)
 

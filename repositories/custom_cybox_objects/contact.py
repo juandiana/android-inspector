@@ -11,74 +11,72 @@ class Contact(Custom):
 
     @property
     def display_name(self):
-        return get_property('display_name', self.custom_properties)
+        return self.get_property('display_name')
 
     @display_name.setter
     def display_name(self, value):
-        set_property('display_name', value, self.custom_properties)
+        self.set_property('display_name', value)
 
     @property
     def first_name(self):
-        return get_property('first_name', self.custom_properties)
+        return self.get_property('first_name')
 
     @first_name.setter
     def first_name(self, value):
-        set_property('first_name', value, self.custom_properties)
+        self.set_property('first_name', value)
 
     @property
     def last_name(self):
-        return get_property('last_name', self.custom_properties)
+        return self.get_property('last_name')
 
     @last_name.setter
     def last_name(self, value):
-        set_property('last_name', value, self.custom_properties)
+        self.set_property('last_name', value)
 
     @property
     def phone_number(self):
-        return get_property('phone_number', self.custom_properties)
+        return self.get_property('phone_number')
 
     @phone_number.setter
     def phone_number(self, value):
-        set_property('phone_number', value, self.custom_properties)
+        self.set_property('phone_number', value)
 
     @property
     def email(self):
-        return get_property('email', self.custom_properties)
+        return self.get_property('email')
 
     @email.setter
     def email(self, value):
-        set_property('email', value, self.custom_properties)
+        self.set_property('email', value)
 
     @property
     def profile_picture(self):
-        return get_property('profile_picture', self.custom_properties)
+        return self.get_property('profile_picture')
 
     @profile_picture.setter
     def profile_picture(self, value):
-        set_property('profile_picture', value, self.custom_properties)
+        self.set_property('profile_picture', value)
 
     @property
     def birthday(self):
-        return get_property('birthday', self.custom_properties)
+        return self.get_property('birthday')
 
     @birthday.setter
     def birthday(self, value):
-        set_property('birthday', value, self.custom_properties)
+        self.set_property('birthday', value)
 
+    def set_property(self, property_name, property_value):
+        p = self.get_property(property_name)
 
-def set_property(property_name, property_value, properties):
-    p = get_property(property_name, properties)
+        if p is None:
+            p = Property()
+            p.name = property_name
+            self.custom_properties.append(p)
 
-    if p is None:
-        p = Property()
-        p.name = property_name
-        properties.append(p)
+        p.value = property_value
 
-    p.value = property_value
-
-
-def get_property(prop_name, properties):
-    for p in properties:
-        if p.name == prop_name:
-            return p
-    return None
+    def get_property(self, prop_name):
+        for p in self.custom_properties:
+            if p.name == prop_name:
+                return p
+        return None

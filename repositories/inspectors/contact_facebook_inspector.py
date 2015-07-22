@@ -46,14 +46,14 @@ class ContactFacebookInspector(Inspector):
                 contact.profile_picture = row['user_image_url']
 
             birthday = []
-            if not (row['birthday_day'] == -1 or row['birthday_month'] == -1):
-                birthday.append(str(row['birthday_day']))
-                birthday.append(str(row['birthday_month']))
-
-                if row['birthday_year'] != -1:
+            if row['birthday_year'] != -1:
                     birthday.append(str(row['birthday_year']))
 
-                contact.birthday = '/'.join(birthday)
+            if not (row['birthday_day'] == -1 or row['birthday_month'] == -1):
+                birthday.append(str(row['birthday_month']))
+                birthday.append(str(row['birthday_day']))
+
+                contact.birthday = '-'.join(birthday)
 
             contact.add_related(source_objects[0], ObjectRelationship.TERM_EXTRACTED_FROM, inline=False)
 
