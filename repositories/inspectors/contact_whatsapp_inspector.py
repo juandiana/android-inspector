@@ -1,8 +1,6 @@
 # coding=utf-8
 import os
-from cybox.common.object_properties import CustomProperties, Property
 from cybox.common.vocabs import ObjectRelationship
-from cybox.objects.custom_object import Custom
 from cybox.utils import set_id_method, IDGenerator
 from model import Inspector
 from repositories.custom_cybox_objects.contact import Contact
