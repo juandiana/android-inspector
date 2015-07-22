@@ -6,7 +6,7 @@ from model import DeviceInfo, OperationError, INSPECTED_DATA_FILE_NAME, SOURCE_D
 from repositories.inspectors.contact_whatsapp_inspector import ContactWhatsAppInspector
 from test import TEST_EXTRACTED_DATA_DIR_NAME
 
-db_path = os.path.join(TEST_EXTRACTED_DATA_DIR_NAME, 'whatsapp')
+EXTRACTED_DATA = os.path.join(TEST_EXTRACTED_DATA_DIR_NAME, 'whatsapp')
 
 
 class TestSmsMessageInspector(unittest.TestCase):
@@ -16,7 +16,7 @@ class TestSmsMessageInspector(unittest.TestCase):
 
     def test_sms_message_inspector(self):
         try:
-            inspected_objects, source_objects = self.inspector.execute(self.device_info, db_path, True)
+            inspected_objects, source_objects = self.inspector.execute(self.device_info, EXTRACTED_DATA, True)
         except OperationError:
             raise
 
