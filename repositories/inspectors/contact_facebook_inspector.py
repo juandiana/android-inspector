@@ -32,8 +32,7 @@ class ContactFacebookInspector(Inspector):
 
         for row in cursor:
             custom = Custom()
-            custom.custom_name = 'Contact'
-            custom._namespace = 'uy.edu.fing.gsi.android.inspector:Contact'
+            custom.custom_name = 'uy.edu.fing.gsi.android_inspector:Contact' #TODO: Verificar la forma de expresar el namespace
             custom.custom_properties = CustomProperties()
 
             for p in properties:
