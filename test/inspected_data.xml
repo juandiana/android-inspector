@@ -1,0 +1,234 @@
+<cybox:Observables 
+	xmlns:cyboxCommon="http://cybox.mitre.org/common-2"
+	xmlns:cybox="http://cybox.mitre.org/cybox-2"
+	xmlns:cyboxVocabs="http://cybox.mitre.org/default_vocabularies-2"
+	xmlns:CustomObj="http://cybox.mitre.org/objects#CustomObject-1"
+	xmlns:FileObj="http://cybox.mitre.org/objects#FileObject-2"
+	xmlns:example="http://example.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://cybox.mitre.org/common-2 http://cybox.mitre.org/XMLSchema/common/2.1/cybox_common.xsd http://cybox.mitre.org/cybox-2 http://cybox.mitre.org/XMLSchema/core/2.1/cybox_core.xsd http://cybox.mitre.org/default_vocabularies-2 http://cybox.mitre.org/XMLSchema/default_vocabularies/2.1/cybox_default_vocabularies.xsd http://cybox.mitre.org/objects#CustomObject-1 http://cybox.mitre.org/XMLSchema/objects/Custom/1.1/Custom_Object.xsd http://cybox.mitre.org/objects#FileObject-2 http://cybox.mitre.org/XMLSchema/objects/File/2.1/File_Object.xsd" cybox_major_version="2" cybox_minor_version="1" cybox_update_version="0">
+    <cybox:Observable id="example:Observable-26">
+        <cybox:Object id="example:Contact-1">
+            <cybox:Properties xsi:type="CustomObj:CustomObjectType" custom_name="Contact">
+                <cyboxCommon:Custom_Properties>
+                    <cyboxCommon:Property name="display_name">Joe Bautista</cyboxCommon:Property>
+                    <cyboxCommon:Property name="first_name">Joe</cyboxCommon:Property>
+                    <cyboxCommon:Property name="last_name">Bautista</cyboxCommon:Property>
+                    <cyboxCommon:Property name="phone_number">+639157175318</cyboxCommon:Property>
+                    <cyboxCommon:Property name="email">jobau518@yahoo.com</cyboxCommon:Property>
+                    <cyboxCommon:Property name="profile_picture">http://profile.ak.fbcdn.net/hprofile-ak-ash2/49302_1337617745_5617_q.jpg</cyboxCommon:Property>
+                    <cyboxCommon:Property name="birthday">5-18</cyboxCommon:Property>
+                </cyboxCommon:Custom_Properties>
+            </cybox:Properties>
+            <cybox:Related_Objects>
+                <cybox:Related_Object idref="example:File-3">
+                    <cybox:Relationship xsi:type="cyboxVocabs:ObjectRelationshipVocab-1.1">Extracted_From</cybox:Relationship>
+                </cybox:Related_Object>
+            </cybox:Related_Objects>
+        </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="example:Observable-27">
+        <cybox:Object id="example:Contact-4">
+            <cybox:Properties xsi:type="CustomObj:CustomObjectType" custom_name="Contact">
+                <cyboxCommon:Custom_Properties>
+                    <cyboxCommon:Property name="display_name">Alain Pascua</cyboxCommon:Property>
+                    <cyboxCommon:Property name="first_name">Alain</cyboxCommon:Property>
+                    <cyboxCommon:Property name="last_name">Pascua</cyboxCommon:Property>
+                    <cyboxCommon:Property name="profile_picture">http://profile.ak.fbcdn.net/hprofile-ak-snc4/372440_747044856_925302105_q.jpg</cyboxCommon:Property>
+                    <cyboxCommon:Property name="birthday">11-26</cyboxCommon:Property>
+                </cyboxCommon:Custom_Properties>
+            </cybox:Properties>
+            <cybox:Related_Objects>
+                <cybox:Related_Object idref="example:File-3">
+                    <cybox:Relationship xsi:type="cyboxVocabs:ObjectRelationshipVocab-1.1">Extracted_From</cybox:Relationship>
+                </cybox:Related_Object>
+            </cybox:Related_Objects>
+        </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="example:Observable-28">
+        <cybox:Object id="example:Contact-6">
+            <cybox:Properties xsi:type="CustomObj:CustomObjectType" custom_name="Contact">
+                <cyboxCommon:Custom_Properties>
+                    <cyboxCommon:Property name="display_name">Madonna Stevens</cyboxCommon:Property>
+                    <cyboxCommon:Property name="first_name">Madonna</cyboxCommon:Property>
+                    <cyboxCommon:Property name="last_name">Stevens</cyboxCommon:Property>
+                    <cyboxCommon:Property name="profile_picture">http://profile.ak.fbcdn.net/hprofile-ak-ash2/23237_100001131261053_8680_q.jpg</cyboxCommon:Property>
+                    <cyboxCommon:Property name="birthday">1980-12-28</cyboxCommon:Property>
+                </cyboxCommon:Custom_Properties>
+            </cybox:Properties>
+            <cybox:Related_Objects>
+                <cybox:Related_Object idref="example:File-3">
+                    <cybox:Relationship xsi:type="cyboxVocabs:ObjectRelationshipVocab-1.1">Extracted_From</cybox:Relationship>
+                </cybox:Related_Object>
+            </cybox:Related_Objects>
+        </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="example:Observable-29">
+        <cybox:Object id="example:Contact-8">
+            <cybox:Properties xsi:type="CustomObj:CustomObjectType" custom_name="Contact">
+                <cyboxCommon:Custom_Properties>
+                    <cyboxCommon:Property name="display_name">Freddie Manalac</cyboxCommon:Property>
+                    <cyboxCommon:Property name="first_name">Freddie</cyboxCommon:Property>
+                    <cyboxCommon:Property name="last_name">Manalac</cyboxCommon:Property>
+                    <cyboxCommon:Property name="email">freddie_manalac02@yahoo.com</cyboxCommon:Property>
+                    <cyboxCommon:Property name="profile_picture">http://profile.ak.fbcdn.net/hprofile-ak-ash2/368700_1311293388_1569335612_q.jpg</cyboxCommon:Property>
+                    <cyboxCommon:Property name="birthday">1947-4-22</cyboxCommon:Property>
+                </cyboxCommon:Custom_Properties>
+            </cybox:Properties>
+            <cybox:Related_Objects>
+                <cybox:Related_Object idref="example:File-3">
+                    <cybox:Relationship xsi:type="cyboxVocabs:ObjectRelationshipVocab-1.1">Extracted_From</cybox:Relationship>
+                </cybox:Related_Object>
+            </cybox:Related_Objects>
+        </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="example:Observable-30">
+        <cybox:Object id="example:Contact-10">
+            <cybox:Properties xsi:type="CustomObj:CustomObjectType" custom_name="Contact">
+                <cyboxCommon:Custom_Properties>
+                    <cyboxCommon:Property name="display_name">Danelyn Vidad</cyboxCommon:Property>
+                    <cyboxCommon:Property name="first_name">Danelyn</cyboxCommon:Property>
+                    <cyboxCommon:Property name="last_name">Vidad</cyboxCommon:Property>
+                    <cyboxCommon:Property name="email">danelyn_vidad@yahoo.com</cyboxCommon:Property>
+                    <cyboxCommon:Property name="profile_picture">http://profile.ak.fbcdn.net/hprofile-ak-ash2/41502_100000206749205_1774_q.jpg</cyboxCommon:Property>
+                    <cyboxCommon:Property name="birthday">8-3</cyboxCommon:Property>
+                </cyboxCommon:Custom_Properties>
+            </cybox:Properties>
+            <cybox:Related_Objects>
+                <cybox:Related_Object idref="example:File-3">
+                    <cybox:Relationship xsi:type="cyboxVocabs:ObjectRelationshipVocab-1.1">Extracted_From</cybox:Relationship>
+                </cybox:Related_Object>
+            </cybox:Related_Objects>
+        </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="example:Observable-31">
+        <cybox:Object id="example:Contact-12">
+            <cybox:Properties xsi:type="CustomObj:CustomObjectType" custom_name="Contact">
+                <cyboxCommon:Custom_Properties>
+                    <cyboxCommon:Property name="display_name">Kikosu Umaru</cyboxCommon:Property>
+                    <cyboxCommon:Property name="first_name">Kikosu</cyboxCommon:Property>
+                    <cyboxCommon:Property name="last_name">Umaru</cyboxCommon:Property>
+                    <cyboxCommon:Property name="email">oxygen3gs@gmail.com</cyboxCommon:Property>
+                    <cyboxCommon:Property name="profile_picture">http://profile.ak.fbcdn.net/hprofile-ak-snc4/41634_100001270213965_8573_q.jpg</cyboxCommon:Property>
+                    <cyboxCommon:Property name="birthday">1975-7-13</cyboxCommon:Property>
+                </cyboxCommon:Custom_Properties>
+            </cybox:Properties>
+            <cybox:Related_Objects>
+                <cybox:Related_Object idref="example:File-3">
+                    <cybox:Relationship xsi:type="cyboxVocabs:ObjectRelationshipVocab-1.1">Extracted_From</cybox:Relationship>
+                </cybox:Related_Object>
+            </cybox:Related_Objects>
+        </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="example:Observable-32">
+        <cybox:Object id="example:Contact-14">
+            <cybox:Properties xsi:type="CustomObj:CustomObjectType" custom_name="Contact">
+                <cyboxCommon:Custom_Properties>
+                    <cyboxCommon:Property name="display_name">Samson Villasis</cyboxCommon:Property>
+                    <cyboxCommon:Property name="first_name">Samson</cyboxCommon:Property>
+                    <cyboxCommon:Property name="last_name">Villasis</cyboxCommon:Property>
+                    <cyboxCommon:Property name="email">msqvillasis@yahoo.com</cyboxCommon:Property>
+                    <cyboxCommon:Property name="profile_picture">http://profile.ak.fbcdn.net/hprofile-ak-snc4/48976_100000036583422_5073_q.jpg</cyboxCommon:Property>
+                    <cyboxCommon:Property name="birthday">1964-7-17</cyboxCommon:Property>
+                </cyboxCommon:Custom_Properties>
+            </cybox:Properties>
+            <cybox:Related_Objects>
+                <cybox:Related_Object idref="example:File-3">
+                    <cybox:Relationship xsi:type="cyboxVocabs:ObjectRelationshipVocab-1.1">Extracted_From</cybox:Relationship>
+                </cybox:Related_Object>
+            </cybox:Related_Objects>
+        </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="example:Observable-33">
+        <cybox:Object id="example:Contact-16">
+            <cybox:Properties xsi:type="CustomObj:CustomObjectType" custom_name="Contact">
+                <cyboxCommon:Custom_Properties>
+                    <cyboxCommon:Property name="display_name">Kaakbay Pilipinas</cyboxCommon:Property>
+                    <cyboxCommon:Property name="first_name">KAAKBAY</cyboxCommon:Property>
+                    <cyboxCommon:Property name="last_name">Pilipinas</cyboxCommon:Property>
+                    <cyboxCommon:Property name="email">kaakbay.ph@gmail.com</cyboxCommon:Property>
+                    <cyboxCommon:Property name="profile_picture">http://profile.ak.fbcdn.net/hprofile-ak-snc4/41692_100000311947369_8259542_q.jpg</cyboxCommon:Property>
+                </cyboxCommon:Custom_Properties>
+            </cybox:Properties>
+            <cybox:Related_Objects>
+                <cybox:Related_Object idref="example:File-3">
+                    <cybox:Relationship xsi:type="cyboxVocabs:ObjectRelationshipVocab-1.1">Extracted_From</cybox:Relationship>
+                </cybox:Related_Object>
+            </cybox:Related_Objects>
+        </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="example:Observable-34">
+        <cybox:Object id="example:Contact-18">
+            <cybox:Properties xsi:type="CustomObj:CustomObjectType" custom_name="Contact">
+                <cyboxCommon:Custom_Properties>
+                    <cyboxCommon:Property name="display_name">Tel Burdeos</cyboxCommon:Property>
+                    <cyboxCommon:Property name="first_name">Tel</cyboxCommon:Property>
+                    <cyboxCommon:Property name="last_name">Burdeos</cyboxCommon:Property>
+                    <cyboxCommon:Property name="email">kristel_imy@yahoo.com</cyboxCommon:Property>
+                    <cyboxCommon:Property name="profile_picture">http://profile.ak.fbcdn.net/hprofile-ak-snc4/369443_100000875378114_1493820235_q.jpg</cyboxCommon:Property>
+                    <cyboxCommon:Property name="birthday">1995-9-18</cyboxCommon:Property>
+                </cyboxCommon:Custom_Properties>
+            </cybox:Properties>
+            <cybox:Related_Objects>
+                <cybox:Related_Object idref="example:File-3">
+                    <cybox:Relationship xsi:type="cyboxVocabs:ObjectRelationshipVocab-1.1">Extracted_From</cybox:Relationship>
+                </cybox:Related_Object>
+            </cybox:Related_Objects>
+        </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="example:Observable-35">
+        <cybox:Object id="example:Contact-20">
+            <cybox:Properties xsi:type="CustomObj:CustomObjectType" custom_name="Contact">
+                <cyboxCommon:Custom_Properties>
+                    <cyboxCommon:Property name="display_name">Ghaile Janine Concepcion</cyboxCommon:Property>
+                    <cyboxCommon:Property name="first_name">Ghaile Janine</cyboxCommon:Property>
+                    <cyboxCommon:Property name="last_name">Concepcion</cyboxCommon:Property>
+                    <cyboxCommon:Property name="email">ghaile_conception@yahoo.com</cyboxCommon:Property>
+                    <cyboxCommon:Property name="profile_picture">http://profile.ak.fbcdn.net/hprofile-ak-snc4/371164_100002123714056_1561557174_q.jpg</cyboxCommon:Property>
+                </cyboxCommon:Custom_Properties>
+            </cybox:Properties>
+            <cybox:Related_Objects>
+                <cybox:Related_Object idref="example:File-3">
+                    <cybox:Relationship xsi:type="cyboxVocabs:ObjectRelationshipVocab-1.1">Extracted_From</cybox:Relationship>
+                </cybox:Related_Object>
+            </cybox:Related_Objects>
+        </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="example:Observable-36">
+        <cybox:Object id="example:Contact-22">
+            <cybox:Properties xsi:type="CustomObj:CustomObjectType" custom_name="Contact">
+                <cyboxCommon:Custom_Properties>
+                    <cyboxCommon:Property name="display_name">Karen Ronnie</cyboxCommon:Property>
+                    <cyboxCommon:Property name="first_name">Karen</cyboxCommon:Property>
+                    <cyboxCommon:Property name="last_name">Ronnie</cyboxCommon:Property>
+                    <cyboxCommon:Property name="profile_picture">http://profile.ak.fbcdn.net/hprofile-ak-ash2/369077_100002336036787_811163259_q.jpg</cyboxCommon:Property>
+                    <cyboxCommon:Property name="birthday">11-14</cyboxCommon:Property>
+                </cyboxCommon:Custom_Properties>
+            </cybox:Properties>
+            <cybox:Related_Objects>
+                <cybox:Related_Object idref="example:File-3">
+                    <cybox:Relationship xsi:type="cyboxVocabs:ObjectRelationshipVocab-1.1">Extracted_From</cybox:Relationship>
+                </cybox:Related_Object>
+            </cybox:Related_Objects>
+        </cybox:Object>
+    </cybox:Observable>
+    <cybox:Observable id="example:Observable-37">
+        <cybox:Object id="example:Contact-24">
+            <cybox:Properties xsi:type="CustomObj:CustomObjectType" custom_name="Contact">
+                <cyboxCommon:Custom_Properties>
+                    <cyboxCommon:Property name="display_name">Patrick Payge</cyboxCommon:Property>
+                    <cyboxCommon:Property name="first_name">Patrick</cyboxCommon:Property>
+                    <cyboxCommon:Property name="last_name">Payge</cyboxCommon:Property>
+                    <cyboxCommon:Property name="email">jayparkers54@gmail.com</cyboxCommon:Property>
+                    <cyboxCommon:Property name="profile_picture">http://profile.ak.fbcdn.net/hprofile-ak-snc4/275466_100003068931346_1517092189_q.jpg</cyboxCommon:Property>
+                    <cyboxCommon:Property name="birthday">1974-1-17</cyboxCommon:Property>
+                </cyboxCommon:Custom_Properties>
+            </cybox:Properties>
+            <cybox:Related_Objects>
+                <cybox:Related_Object idref="example:File-3">
+                    <cybox:Relationship xsi:type="cyboxVocabs:ObjectRelationshipVocab-1.1">Extracted_From</cybox:Relationship>
+                </cybox:Related_Object>
+            </cybox:Related_Objects>
+        </cybox:Object>
+    </cybox:Observable>
+</cybox:Observables>
