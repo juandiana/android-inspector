@@ -1,10 +1,12 @@
 # coding=utf-8
 import os
+from cybox.common import Date
 from cybox.common.object_properties import CustomProperties, Property
 from cybox.common.vocabs import ObjectRelationship
 from cybox.objects.custom_object import Custom
 from cybox.utils import set_id_method, IDGenerator
 from model import Inspector
+from repositories.custom_cybox_objects.contact import Contact
 from util.inspectors_helper import create_file_object, execute_query
 
 
@@ -23,28 +25,42 @@ class ContactFacebookInspector(Inspector):
 
         inspected_objects = []
 
-        properties = ['display_name', 'first_name', 'last_name', 'cell', 'email',
-                      'user_image_url', 'birthday_day', 'birthday_month', 'birthday_year']
-
-        query = 'SELECT ' + ', '.join(properties) + ' FROM friends'
+        query = """
+                SELECT display_name, first_name, last_name, cell, email,
+                       user_image_url, birthday_day, birthday_month, birthday_year
+                FROM friends
+                """
 
         cursor, conn = execute_query(fb_db_file_path, query)
 
         for row in cursor:
-            custom = Custom()
-            custom.custom_name = 'uy.edu.fing.gsi.android_inspector:Contact' #TODO: Verificar la forma de expresar el namespace
-            custom.custom_properties = CustomProperties()
+            contact = Contact()
+            if row['display_name']:
+                contact.display_name = row['display_name']
+            if row['first_name']:
+                contact.first_name = row['first_name']
+            if row['last_name']:
+                contact.last_name = row['last_name']
+            if row['cell']:
+                contact.phone_number = row['cell']
+            if row['email']:
+                contact.email = row['email']
+            if row['user_image_url']:
+                contact.profile_picture = row['user_image_url']
 
-            for p in properties:
-                if row[p]:
-                    prop = Property()
-                    prop.name = p
-                    prop.value = str(row[p])
-                    custom.custom_properties.append(prop)
+            birthday = []
+            if not (row['birthday_day'] == -1 or row['birthday_month'] == -1):
+                birthday.append(str(row['birthday_day']))
+                birthday.append(str(row['birthday_month']))
 
-            custom.add_related(source_objects[0], ObjectRelationship.TERM_EXTRACTED_FROM, inline=False)
+                if row['birthday_year'] != -1:
+                    birthday.append(str(row['birthday_year']))
 
-            inspected_objects.append(custom)
+                contact.birthday = '/'.join(birthday)
+
+            contact.add_related(source_objects[0], ObjectRelationship.TERM_EXTRACTED_FROM, inline=False)
+
+            inspected_objects.append(contact)
 
         cursor.close()
         conn.close()
