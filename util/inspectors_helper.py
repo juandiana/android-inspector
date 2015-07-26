@@ -1,10 +1,12 @@
 # coding=utf-8
 import hashlib
 import os
+import subprocess
 
 import magic
 from cybox.objects.file_object import File
 import sqlite3
+import re
 from model import OperationError
 
 
@@ -51,3 +53,15 @@ def execute_query(headers_db_file_path, sql_query):
         # TODO: Log the error message.
         raise OperationError('Inspection failed: Could not perform SQL query on {0}.'.format(headers_db_file_path))
     return c, conn
+
+
+def get_app_version_name(apk_file_path):
+    command = ['aapt', 'dump', 'badging', apk_file_path]
+    try:
+        p = subprocess.Popen(command, cwd=os.getcwd(), stdout=subprocess.PIPE)
+        for line in p.stdout:
+            if line.__contains__('versionName='):
+                match = re.search("versionName='(.*?)'", line)
+                return match.group(1)
+    except subprocess.CalledProcessError:
+        raise

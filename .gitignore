@@ -107,3 +107,5 @@ crashlytics-build.properties
 test/results/
 test/definitions.db
 test/test_definitions.db
+test/application_extractor_data
+test/Facebook-16.apk
