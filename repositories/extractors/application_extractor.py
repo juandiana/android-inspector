@@ -1,29 +1,38 @@
 # coding=utf-8
 
 import subprocess
+
+import adb_wrapper
 from model.operation import Extractor, OperationError
 
 
 class ApplicationExtractor(Extractor):
-    @staticmethod
-    def __pull__(file_path, output_dir):
-        cmd = 'adb pull ' + file_path
-        p = subprocess.Popen(cmd.split(), cwd=output_dir, stderr=subprocess.PIPE)
-        for line in p.stderr:
-            print '\t[adb] {0}'.format(line),
+    def __init__(self):
+        self.device = adb_wrapper.get_device()
 
     def execute(self, extracted_data_dir_path, param_values):
         app_package_name = param_values['package_name']
 
         try:
-            cmd = 'adb shell pm path {0}'.format(app_package_name)
-            p = subprocess.Popen(cmd.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-            stdout, stderr = p.communicate()
+            output = self.device.shell(['pm', 'path', app_package_name])
 
-            apk_path = stdout.replace('package:', '')
+            apk_path = self.obtain_apk_path_from_output(app_package_name, output)
             data_path = '/data/data/{0}'.format(app_package_name)
 
-            self.__pull__(apk_path, extracted_data_dir_path)
-            self.__pull__(data_path, extracted_data_dir_path)
+            print "Fetching '{}' file...".format(apk_path)
+            self.device.pull(remote=apk_path, local=extracted_data_dir_path)
+
+            print "Fetching '{}' directory...".format(data_path)
+            self.device.pull(remote=data_path, local=extracted_data_dir_path)
+
+            print 'Extraction finished.'
         except subprocess.CalledProcessError:
             raise OperationError('Extraction failed.')
+
+    @staticmethod
+    def obtain_apk_path_from_output(app_package_name, output):
+        for line in output.splitlines():
+            if line.__contains__('package:'):
+                return line.replace('package:', '')
+
+        raise OperationError('Extraction failed. Could not find the APK for package {}.'.format(app_package_name))
