@@ -2,11 +2,12 @@
 import hashlib
 import os
 import subprocess
+import sqlite3
+import re
 
 import magic
 from cybox.objects.file_object import File
-import sqlite3
-import re
+
 from model import OperationError
 
 

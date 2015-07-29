@@ -13,6 +13,12 @@ INSPECTED_DATA_FILE_NAME = 'inspected_data.xml'
 SOURCE_DATA_FILE_NAME = 'source_data.xml'
 
 
+def write_observables_xml_file(observables, file_path, simple_output):
+    xml_data = observables.to_xml(include_namespaces=not simple_output)
+    with open(file_path, mode='w') as _file:
+        _file.write(xml_data)
+
+
 class Extractor(object):
     __metaclass__ = ABCMeta
 
@@ -90,11 +96,9 @@ class Operation(object):
         inspected_observables.observable_package_source = measure_source
         source_observables.observable_package_source = measure_source
 
-        inspected_xml = inspected_observables.to_xml(include_namespaces=not simple_output)
-        source_xml = source_observables.to_xml(include_namespaces=not simple_output)
-
-        with open(os.path.join(data_dir_path, INSPECTED_DATA_FILE_NAME), 'w') as file1:
-            file1.write(inspected_xml)
-
-        with open(os.path.join(data_dir_path, SOURCE_DATA_FILE_NAME), 'w') as file2:
-            file2.write(source_xml)
+        write_observables_xml_file(inspected_observables,
+                                   os.path.join(data_dir_path, INSPECTED_DATA_FILE_NAME),
+                                   simple_output)
+        write_observables_xml_file(source_observables,
+                                   os.path.join(data_dir_path, SOURCE_DATA_FILE_NAME),
+                                   simple_output)

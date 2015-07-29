@@ -9,7 +9,8 @@ from cybox.common import Hash, DateTime
 from cybox.objects.email_message_object import EmailMessage
 from cybox.objects.file_object import File
 
-from model import Extractor, Inspector, DeviceInfo, Operation, EXTRACTED_DATA_DIR_NAME
+from model import Extractor, Inspector, DeviceInfo, Operation, EXTRACTED_DATA_DIR_NAME, INSPECTED_DATA_FILE_NAME, \
+    SOURCE_DATA_FILE_NAME
 
 
 # TODO: @implements?
@@ -56,9 +57,11 @@ class TestOperation(unittest.TestCase):
 
     def test_operation(self):
         op = Operation(self.extractor, self.inspector, self.param_values)
-        op.execute(self.device_info, self.data_dir_path)
+        op.execute(self.device_info, self.data_dir_path, simple_output=True)
 
         self.assertTrue(os.path.exists(os.path.join(self.data_dir_path, EXTRACTED_DATA_DIR_NAME)))
+        self.assertTrue(os.path.exists(os.path.join(self.data_dir_path, INSPECTED_DATA_FILE_NAME)))
+        self.assertTrue(os.path.exists(os.path.join(self.data_dir_path, SOURCE_DATA_FILE_NAME)))
 
 
 if __name__ == "__main__":
