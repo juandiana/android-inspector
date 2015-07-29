@@ -10,7 +10,7 @@ from util import inspectors_helper
 
 class ContactStockInspector(Inspector):
     def execute(self, device_info, extracted_data_dir_path, simple_output):
-        original_app_path = '/data/data/com.android.providers.telephony'
+        original_app_path = '/data/data/com.android.providers.contacts'
         contacts_db_rel_file_path = os.path.join('databases', 'contacts2.db')
 
         original_contacts_db_file_path = os.path.join(original_app_path, contacts_db_rel_file_path)
