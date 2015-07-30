@@ -45,9 +45,6 @@ class ContactStockInspector(Inspector):
                 contact.first_name = alt_name.group(2)
                 contact.last_name = alt_name.group(1)
 
-            # if row['email']:
-            #     contact.email = row['email']
-
             if row['photo_id']:
                 profile_picture_rel_file_path = os.path.join('files',
                                                              'thumbnail_photo_' + str(row['photo_id']) + '.jpg')
@@ -84,16 +81,25 @@ class ContactStockInspector(Inspector):
 
             cursor2.close()
 
-            # Add Email to contact.
-            query = 'SELECT data AS email FROM view_v1_contact_methods WHERE person = {0}'.format(contact_id)
+            # Query emails from contacts (kind = 1 means that the contact_method is an email)
+            query = """
+                    SELECT data AS email, isprimary
+                    FROM view_v1_contact_methods
+                    WHERE person = {0} and kind = 1
+                    """.format(contact_id)
 
             cursor2 = conn.cursor()
             cursor2.execute(query)
 
-            row = cursor2.fetchone()
+            # Get the primary email of the contact, or the last email.
+            email = None
+            for row_email in cursor2:
+                email = row_email['email']
+                if row_email['isprimary'] == 1:
+                    break
 
-            if row:
-                contact.email = row['email']
+            if email:
+                contact.email = email
 
             cursor2.close()
 
