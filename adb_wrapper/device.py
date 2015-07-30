@@ -209,6 +209,9 @@ class AndroidDevice(object):
     def wait(self):
         return self._simple_call(['wait-for-device'])
 
+    def backup(self, package_name):
+        return self._simple_call(['backup', '-apk', package_name])
+
     def get_prop(self, prop_name):
         output = self.shell(['getprop', prop_name])
         if len(output) != 1:
