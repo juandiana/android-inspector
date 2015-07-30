@@ -24,17 +24,19 @@ class ContactStockInspector(Inspector):
         inspected_objects = []
 
         query = """
-                SELECT pp.display_name AS display_name, pp.display_name_alt AS alt_name,
+                SELECT pp._id AS id, pp.display_name AS display_name, pp.display_name_alt AS alt_name,
                        pp.account_name AS account_name, pp.account_type AS account_type,
-                       c.photo_id AS photo_id, ph.number AS phone_number
-                FROM view_v1_people pp, view_v1_phones ph, contacts c
-                WHERE pp._id = c._id AND c._id = ph.person
+                       c.photo_id AS photo_id
+                FROM view_v1_people pp, contacts c
+                WHERE pp._id = c._id
                 """
 
         cursor, conn = inspectors_helper.execute_query(contacts_db_file_path, query)
 
         for row in cursor:
             contact = Contact()
+            contact_id = row['id']
+
             if row['display_name']:
                 contact.display_name = row['display_name']
 
@@ -43,15 +45,9 @@ class ContactStockInspector(Inspector):
                 contact.first_name = alt_name.group(2)
                 contact.last_name = alt_name.group(1)
 
-            if row['phone_number']:
-                contact.phone_number = row['phone_number']
-
-            # if row['account_type'] and row['account_name']:
-            #     if 'google' in row['account_name'] or 'yahoo' in row['account_name']:
-            #         contact.email = row['account_name']  # TODO: FIX
-
             if row['photo_id']:
-                profile_picture_rel_file_path = os.path.join('files', 'thumbnail_photo_' + str(row['photo_id']) + '.jpg')
+                profile_picture_rel_file_path = os.path.join('files',
+                                                             'thumbnail_photo_' + str(row['photo_id']) + '.jpg')
                 profile_picture_file_path = os.path.join(extracted_data_dir_path, profile_picture_rel_file_path)
 
                 # If there's a file in the extracted_data directory
@@ -71,6 +67,41 @@ class ContactStockInspector(Inspector):
                     contact.profile_picture = 'file://' + original_profile_picture_file_path
 
                     contact.add_related(image_file, ObjectRelationship.TERM_RELATED_TO, inline=False)
+
+            # Add Phone number to contact.
+            query = 'SELECT number FROM view_v1_phones WHERE person = {0}'.format(contact_id)
+
+            cursor2 = conn.cursor()
+            cursor2.execute(query)
+
+            row = cursor2.fetchone()
+
+            if row:
+                contact.phone_number = row['number']
+
+            cursor2.close()
+
+            # Query emails from contacts (kind = 1 means that the contact_method is an email)
+            query = """
+                    SELECT data AS email, isprimary
+                    FROM view_v1_contact_methods
+                    WHERE person = {0} and kind = 1
+                    """.format(contact_id)
+
+            cursor2 = conn.cursor()
+            cursor2.execute(query)
+
+            # Get the primary email of the contact, or the last email.
+            email = None
+            for row_email in cursor2:
+                email = row_email['email']
+                if row_email['isprimary'] == 1:
+                    break
+
+            if email:
+                contact.email = email
+
+            cursor2.close()
 
             contact.add_related(source_objects[0], ObjectRelationship.TERM_EXTRACTED_FROM, inline=False)
 
