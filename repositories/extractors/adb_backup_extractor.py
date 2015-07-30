@@ -30,10 +30,11 @@ class AdbBackupExtractor(Extractor):
 
     @staticmethod
     def __order_data__(package_name):
+        app_data_dir_path = os.path.join('apps', package_name)
         # Copy extracted files to root output_dir
-        for extracted_file in os.listdir(os.path.join('apps', package_name)):
-            current = os.path.join('apps', package_name, extracted_file)
-            destination = os.path.join(extracted_file)
+        for current_node in os.listdir(app_data_dir_path):
+            current = os.path.join(app_data_dir_path, current_node)
+            destination = os.path.join(os.getcwd(), current_node)
             if os.path.isdir(current):
                 shutil.copytree(current, destination)
             else:
@@ -44,8 +45,13 @@ class AdbBackupExtractor(Extractor):
         os.remove('backup.tar')
         os.remove('backup.ab')
 
-        # Rename extracted databases folder.
-        os.rename('db', 'databases')
+        # Rename extracted folders.
+        if os.path.exists('db'):
+            os.rename('db', 'databases')
+        if os.path.exists('f'):
+            os.rename('f', 'files')
+        if os.path.exists('sp'):
+            os.rename('sp', 'shared_prefs')
 
     def execute(self, extracted_data_dir_path, param_values):
         app_package_name = param_values['package_name']
