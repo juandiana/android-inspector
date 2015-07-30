@@ -109,5 +109,3 @@ test/definitions.db
 test/test_definitions.db
 test/application_extractor_data
 test/Facebook-16.apk
-test/inspected_data.xml
-test/source_data.xml
