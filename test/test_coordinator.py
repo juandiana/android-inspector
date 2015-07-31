@@ -10,6 +10,7 @@ from model import DeviceInfo
 
 class MyTestCase(unittest.TestCase):
     def setUp(self):
+        # TODO: Seguramente debamos borrar esta base de datos en el tearDown
         definitions_database = DefinitionsDatabaseManager('test/test_definitions.db',
                                                           'create_db.sql',
                                                           'insert_default_operations.sql')
