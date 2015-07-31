@@ -1,7 +1,6 @@
 # coding=utf-8
 from unittest import TestCase
 from components.repositories_manager import RepositoriesManager
-from test_repositories.extractors import valid_extractor, invalid_extractor, invalid_extractor2
 
 
 class TestRepositoriesManager(TestCase):

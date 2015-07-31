@@ -1,14 +1,15 @@
 # coding=utf-8
+import os
 import unittest
-from components.definitions_database import DefinitionsDatabase
+from components.definitions_database_manager import DefinitionsDatabaseManager
 from model import DataSource, DeviceInfo, OperationInfo
 
 
-class TestDefinitionsDatabase(unittest.TestCase):
+class TestDefinitionsDatabaseManager(unittest.TestCase):
     def setUp(self):
-        self.db_helper = DefinitionsDatabase('test_definitions.db',
-                                             'my_test_create_db.sql',
-                                             'my_test_insert_default_operations.sql')
+        self.db_helper = DefinitionsDatabaseManager('test/test_definitions.db',
+                                                    'test/my_test_create_db.sql',
+                                                    'test/my_test_insert_default_operations.sql')
         self.ds_aosp_email = DataSource('Application', {'package_name': 'com.android.email'})
         self.ds_facebook = DataSource('Application', {'package_name': 'com.facebook.katana'})
         self.ds_aosp_sms = DataSource('Application', {'package_name': 'com.android.providers.telephony'})
@@ -23,6 +24,9 @@ class TestDefinitionsDatabase(unittest.TestCase):
                                                     ['GT-I9300', 'XT1053'], [('2.3.7', '5.1.1')])
         self.op_info_sms_aosp_sms = OperationInfo('com.example:SmsMessageAOSPSmsApp', 'SmsMessage', self.ds_aosp_sms,
                                                   ['GT-I9300', 'LG-D820'], [('2.0', '4.4.4')])
+
+    def tearDown(self):
+        os.remove('test/test_definitions.db')
 
     def test_query_operation_for_email_message(self):
         result = self.db_helper.query_operations_info('EmailMessage', self.ds_aosp_email, self.dv_info)
@@ -53,7 +57,8 @@ class TestDefinitionsDatabase(unittest.TestCase):
         self.assertEqual(self.db_helper.query_operations_info('Non_existent', self.ds_aosp_email, self.dv_info), [])
 
     def test_get_operation_exec_info(self):
-        extractor_id, inspector_id, param_values = self.db_helper.get_operation_exec_info('com.example:EmailMessageAOSPEmailApp')
+        extractor_id, inspector_id, param_values = self.db_helper.get_operation_exec_info(
+            'com.example:EmailMessageAOSPEmailApp')
 
         self.assertEqual(extractor_id, 'ApplicationExtractor')
         self.assertEqual(inspector_id, 'EmailMessageInspector')
