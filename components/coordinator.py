@@ -45,6 +45,7 @@ class Coordinator(object):
         device_info_to_use = device_info if (device_info is None) else self.device_info
 
         op_count = 0
+        op_successful_count = 0
         for id_ in ids:
             op_count += 1
             op = self.operations_manager.get_operation(id_)
@@ -53,9 +54,13 @@ class Coordinator(object):
             print "[{0}/{1}] Executing... ".format(op_count, len(ids))
             try:
                 op.execute(device_info_to_use, data_dir_path)
+                op_successful_count += 1
             except OperationError as error:
                 print "Failed. Reason: {0}".format(error.message)
             print "Completed. Data stored to {0}".format(data_dir_path)
+
+        if op_successful_count < op_count:
+            raise RuntimeError
 
     def add_data_type(self, def_path):
         """

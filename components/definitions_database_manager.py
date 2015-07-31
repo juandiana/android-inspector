@@ -4,7 +4,7 @@ import sqlite3
 from model import OperationInfo, DataSource
 
 
-class DefinitionsDatabase(object):
+class DefinitionsDatabaseManager(object):
     def __init__(self, db_file_name, create_db_script_path, insert_default_operations_script_path):
         db_file_path = db_file_name
 
