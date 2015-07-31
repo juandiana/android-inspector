@@ -60,6 +60,7 @@ class Coordinator(object):
             print "Completed. Data stored to {0}".format(data_dir_path)
 
         if op_successful_count < op_count:
+            # TODO: Debemos atrapar esto en la parte de UI.
             raise RuntimeError
 
     def add_data_type(self, def_path):
