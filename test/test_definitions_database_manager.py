@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import unittest
+
 from components.definitions_database_manager import DefinitionsDatabaseManager
 from model import DataSource, DeviceInfo, OperationInfo
 

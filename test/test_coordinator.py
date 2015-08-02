@@ -1,6 +1,6 @@
 # coding=utf-8
-from datetime import datetime
 import unittest
+
 from components.coordinator import Coordinator
 from components.definitions_database_manager import DefinitionsDatabaseManager
 from components.operations_manager import OperationsManager

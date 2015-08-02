@@ -1,5 +1,4 @@
 # coding=utf-8
-from model import Extractor
 
 
 # Extractor should inherit from interface Extractor.
