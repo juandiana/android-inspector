@@ -1,6 +1,7 @@
 # coding=utf-8
-
+import os
 import subprocess
+import shutil
 
 import adb_wrapper
 from model.operation import Extractor, OperationError
@@ -11,6 +12,10 @@ class ApplicationExtractor(Extractor):
         self.device = adb_wrapper.get_device()
 
     def execute(self, extracted_data_dir_path, param_values):
+        if os.path.exists(extracted_data_dir_path):
+            shutil.rmtree(extracted_data_dir_path)
+        os.mkdir(extracted_data_dir_path)
+
         app_package_name = param_values['package_name']
 
         try:
@@ -35,4 +40,4 @@ class ApplicationExtractor(Extractor):
             if line.__contains__('package:'):
                 return line.replace('package:', '')
 
-        raise OperationError('Extraction failed. Could not find the APK for package {}.'.format(app_package_name))
+        raise OperationError("Extraction failed. Could not find the APK for package '{}'.".format(app_package_name))

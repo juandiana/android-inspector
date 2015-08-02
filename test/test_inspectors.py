@@ -11,8 +11,6 @@ from repositories.inspectors.contact_whatsapp_inspector import ContactWhatsAppIn
 from repositories.inspectors.email_message_inspector import EmailMessageInspector
 from repositories.inspectors.sms_message_inspector import SmsMessageInspector
 
-TEST_EXTRACTED_DATA_DIR_NAME = 'test_extracted_data'
-
 
 class TestInspectors(unittest.TestCase):
     def setUp(self):
@@ -20,7 +18,7 @@ class TestInspectors(unittest.TestCase):
 
     def run_inspector_test(self, inspector, directory_name):
         # Output paths
-        output_dir_path = os.path.join(TEST_EXTRACTED_DATA_DIR_NAME, directory_name)
+        output_dir_path = os.path.join('test', 'test_extracted_data', directory_name)
         inspected_data_file_path = os.path.join(output_dir_path, INSPECTED_DATA_FILE_NAME)
         source_data_file_path = os.path.join(output_dir_path, SOURCE_DATA_FILE_NAME)
 
