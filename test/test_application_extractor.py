@@ -15,16 +15,16 @@ class TestApplicationExtractor(unittest.TestCase):
             shutil.rmtree(self.extracted_data_dir)
         os.mkdir(self.extracted_data_dir)
 
-    def test_execute(self):
+    def test_default_application_extractor(self):
         ApplicationExtractor().execute(self.extracted_data_dir, {'package_name': 'com.google.android.gm'})
 
-    def test_adb_backup_execute(self):
+    def test_alternative_application_extractor(self):
         AdbBackupExtractor().execute(self.extracted_data_dir, {'package_name': 'com.android.email'})
 
-    def test_failing_execute(self):
+    def test_non_existent_app_package(self):
         self.assertRaises(OperationError,
                           ApplicationExtractor().execute, self.extracted_data_dir,
-                          {'package_name': 'non.existant.package'})
+                          {'package_name': 'non.existent.package'})
 
 
 if __name__ == '__main__':

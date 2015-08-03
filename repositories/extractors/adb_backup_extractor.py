@@ -3,6 +3,9 @@ import os
 import shutil
 import subprocess
 import tarfile
+import io
+import tempfile
+import zlib
 
 import adb_wrapper
 from model import Extractor, OperationError
@@ -10,46 +13,34 @@ from model import Extractor, OperationError
 
 class AdbBackupExtractor(Extractor):
     @staticmethod
-    def __adb_backup__(package_name):
-        print 'Please press "Back up my data" on the device.'
-        device = adb_wrapper.get_device()
-        print device.backup(package_name)
+    def _unpack_ab(ab_path, output_dir_path):
+        """
+        Unpacks an android backup file to the current directory.
+
+        :param ab_path: Path to the android backup file.
+        """
+        with open(ab_path, mode='rb') as f:
+            # The android backup format consists of a 24-byte header, followed by the content compressed.
+            header = f.read(24)
+            magic, format_version, compression_flag, encryption_algorithm = header.splitlines()
+            if magic != 'ANDROID BACKUP':
+                raise RuntimeError('Invalid android backup file format')
+            if encryption_algorithm != 'none':
+                raise RuntimeError('Android backup file is encrypted')
+            content = f.read()
+
+        tar_bytestream = zlib.decompress(content)
+        with tarfile.open(fileobj=io.BytesIO(tar_bytestream)) as tar:
+            tar.extractall(path=output_dir_path)
 
     @staticmethod
-    def __unpack__(jar_path):
-        # TODO: Unpack using deflater. http://stackoverflow.com/a/29055723
-        print 'Unpacking backup...'
-        cmd = 'java -jar ' + os.path.join(jar_path, 'abe.jar') + ' unpack backup.ab backup.tar'
-        p = subprocess.Popen(cmd.split(), stderr=subprocess.PIPE)
-        for line in p.stderr:
-            print '\t[unpacking] {0}'.format(line),
-        os.remove('backup.ab')
-
-    @staticmethod
-    def __extract_tar__():
-        print 'Untaring file...'
-        tar_path = os.path.join('backup.tar')
-        tar = tarfile.open(tar_path)
-        tar.extractall()
-        tar.close()
-        os.remove('backup.tar')
-
-    @staticmethod
-    def __order_data__(package_name):
-        app_data_dir_path = os.path.join('apps', package_name)
-        # Copy extracted files to root output_dir
-        for current_node in os.listdir(app_data_dir_path):
-            current = os.path.join(app_data_dir_path, current_node)
-            destination = os.path.join(os.getcwd(), current_node)
-            if os.path.isdir(current):
-                shutil.copytree(current, destination)
-            else:
-                shutil.copy2(current, destination)
-
-        # Delete apps directory
-        shutil.rmtree('apps')
+    def _reorder_and_copy_data(app_package_name, source_path, dest_path):
+        app_data_dir_path = os.path.join(source_path, 'apps', app_package_name)
+        shutil.copytree(app_data_dir_path, dest_path)
 
         # Rename extracted folders.
+        cwd = os.getcwd()
+        os.chdir(dest_path)
         if os.path.exists('db'):
             os.rename('db', 'databases')
         if os.path.exists('f'):
@@ -60,20 +51,30 @@ class AdbBackupExtractor(Extractor):
             for _file in os.listdir('a'):
                 shutil.move(os.path.join('a', _file), '.')
             os.rmdir('a')
+        os.chdir(cwd)
 
     def execute(self, extracted_data_dir_path, param_values):
         app_package_name = param_values['package_name']
-        jar_path = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+        tmp_dir_path = tempfile.mkdtemp()
+        ab_path = os.path.join(tmp_dir_path, '{}_backup.ab'.format(app_package_name))
 
-        owd = os.getcwd()
-        os.chdir(extracted_data_dir_path)
+        if os.path.exists(extracted_data_dir_path):
+            shutil.rmtree(extracted_data_dir_path)
 
         try:
-            self.__adb_backup__(app_package_name)
-            self.__unpack__(jar_path)
-            self.__extract_tar__()
-            self.__order_data__(app_package_name)
+            device = adb_wrapper.get_device()
+
+            print "Getting the android backup file for '{}'. Please press 'Back up my data' on the device..." \
+                .format(app_package_name)
+            device.backup(app_package_name, ab_path)
+
+            print 'Unpacking the backup file...'
+            self._unpack_ab(ab_path, tmp_dir_path)
+            os.remove(ab_path)
+
+            print 'Re-ordering the extracted data...'
+            self._reorder_and_copy_data(app_package_name, tmp_dir_path, extracted_data_dir_path)
         except subprocess.CalledProcessError:
             raise OperationError('Extraction failed.')
-
-        os.chdir(owd)
+        finally:
+            shutil.rmtree(tmp_dir_path)
