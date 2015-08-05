@@ -4,8 +4,6 @@ import re
 import os
 import shutil
 
-from cybox.common import ObjectProperties
-
 from model import Extractor, Inspector
 
 
@@ -73,10 +71,3 @@ class RepositoriesManager(object):
         :rtype : Inspector
         """
         return get_class_from_file(self.repositories_dir_name + '.inspectors.', name, Inspector)
-
-    def get_custom_cybox_object(self, name):
-        """
-        :type name: string
-        :rtype : ObjectProperties
-        """
-        return get_class_from_file(self.repositories_dir_name + '.custom_cybox_objects.', name, ObjectProperties)

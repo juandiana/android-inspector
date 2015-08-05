@@ -1,5 +1,6 @@
 # coding=utf-8
 
+
 class ExtensionsManager(object):
     def add_data_type(self, def_path):
         """
