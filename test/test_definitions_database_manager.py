@@ -1,15 +1,16 @@
 # coding=utf-8
 import os
 import unittest
+
 from components.definitions_database_manager import DefinitionsDatabaseManager
 from model import DataSource, DeviceInfo, OperationInfo
 
 
 class TestDefinitionsDatabaseManager(unittest.TestCase):
     def setUp(self):
-        self.db_helper = DefinitionsDatabaseManager('test/test_definitions.db',
-                                                    'test/my_test_create_db.sql',
-                                                    'test/my_test_insert_default_operations.sql')
+        self.db_helper = DefinitionsDatabaseManager(os.path.join('test', 'test_definitions.db'),
+                                                    os.path.join('test', 'my_test_create_db.sql'),
+                                                    os.path.join('test', 'my_test_insert_default_operations.sql'))
         self.ds_aosp_email = DataSource('Application', {'package_name': 'com.android.email'})
         self.ds_facebook = DataSource('Application', {'package_name': 'com.facebook.katana'})
         self.ds_aosp_sms = DataSource('Application', {'package_name': 'com.android.providers.telephony'})

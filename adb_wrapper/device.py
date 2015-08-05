@@ -16,6 +16,7 @@
 import os
 import re
 import subprocess
+import time
 
 
 class FindDeviceError(RuntimeError):
@@ -139,6 +140,10 @@ class AndroidDevice(object):
             self.adb_cmd + cmd, stderr=subprocess.STDOUT)
 
     def shell(self, cmd):
+        # Wait 500ms, in case a command was already sent previously.
+        # Adb does not handle many consecutive requests well.
+        time.sleep(0.5)
+
         cmd = self._make_shell_cmd(cmd)
         out = subprocess.check_output(cmd)
         rc, out = self._parse_shell_output(out)
@@ -209,8 +214,8 @@ class AndroidDevice(object):
     def wait(self):
         return self._simple_call(['wait-for-device'])
 
-    def backup(self, package_name):
-        return self._simple_call(['backup', '-apk', package_name])
+    def backup(self, package_name, dest_path):
+        return self._simple_call(['backup', '-apk', package_name, '-f', dest_path])
 
     def get_prop(self, prop_name):
         output = self.shell(['getprop', prop_name])

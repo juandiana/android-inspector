@@ -10,22 +10,29 @@ from repositories.extractors.application_extractor import ApplicationExtractor
 
 class TestApplicationExtractor(unittest.TestCase):
     def setUp(self):
-        self.extracted_data_dir = 'application_extractor_data'
-        if os.path.exists(self.extracted_data_dir):
-            shutil.rmtree(self.extracted_data_dir)
-        os.mkdir(self.extracted_data_dir)
+        self.output_path = os.path.join('test', 'application_extractor_data')
+        if os.path.exists(self.output_path):
+            shutil.rmtree(self.output_path)
+        os.mkdir(self.output_path)
 
-    def test_execute(self):
-        ApplicationExtractor().execute(self.extracted_data_dir, {'package_name': 'com.google.android.gm'})
+    def test_default_application_extractor(self):
+        app_package_name = 'com.google.android.gm'
+        ApplicationExtractor().execute(os.path.join(self.output_path, app_package_name),
+                                       {'package_name': app_package_name})
 
-    def test_adb_backup_execute(self):
-        AdbBackupExtractor().execute(self.extracted_data_dir, {'package_name': 'com.android.email'})
+    def test_alternative_application_extractor(self):
+        app_package_name = 'com.android.email'
+        AdbBackupExtractor().execute(os.path.join(self.output_path, app_package_name),
+                                     {'package_name': app_package_name})
 
-    def test_failing_execute(self):
+    def test_non_existent_app_package(self):
+        app_package_name = 'non.existent.package.name'
         self.assertRaises(OperationError,
-                          ApplicationExtractor().execute, self.extracted_data_dir,
-                          {'package_name': 'non.existant.package'})
+                          ApplicationExtractor().execute, self.output_path,
+                          {'package_name': app_package_name})
 
+    def tearDown(self):
+        shutil.rmtree(self.output_path)
 
 if __name__ == '__main__':
     unittest.main()
