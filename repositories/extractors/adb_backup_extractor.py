@@ -7,7 +7,7 @@ import io
 import tempfile
 import zlib
 
-import adb_wrapper
+from util import adb
 from model import Extractor, OperationError
 
 
@@ -62,7 +62,7 @@ class AdbBackupExtractor(Extractor):
             shutil.rmtree(extracted_data_dir_path)
 
         try:
-            device = adb_wrapper.get_device()
+            device = adb.get_device()
 
             print "Getting the android backup file for '{}'. Please press 'Back up my data' on the device..." \
                 .format(app_package_name)

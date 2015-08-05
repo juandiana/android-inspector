@@ -3,13 +3,13 @@ import os
 import subprocess
 import shutil
 
-import adb_wrapper
+from util import adb
 from model.operation import Extractor, OperationError
 
 
 class ApplicationExtractor(Extractor):
     def __init__(self):
-        self.device = adb_wrapper.get_device()
+        self.device = adb.get_device()
 
     def execute(self, extracted_data_dir_path, param_values):
         if os.path.exists(extracted_data_dir_path):
