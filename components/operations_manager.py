@@ -42,7 +42,7 @@ class OperationsManager(object):
 
         extractor_id, inspector_id, param_values = self.definitions_database.get_operation_exec_info(id_)
 
-        extractor = self.repositories_manager.get_extractor(extractor_id)  # TODO: Check if it raises exception
-        inspector = self.repositories_manager.get_inspector(inspector_id)  # TODO: Check if it raises exception
+        extractor = self.repositories_manager.get_extractor_instance(extractor_id)  # TODO: Check if it raises exception
+        inspector = self.repositories_manager.get_inspector_instance(inspector_id)  # TODO: Check if it raises exception
 
         return Operation(extractor, inspector, param_values)

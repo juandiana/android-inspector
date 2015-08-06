@@ -27,7 +27,7 @@ def get_class_from_file(prefix, name, interface_class):
         raise TypeError(
             "'{0}' must implement the '{1}' interface.".format(concrete_class.__name__, interface_class.__name__))
 
-    return concrete_class()
+    return concrete_class
 
 
 class RepositoriesManager(object):
@@ -58,16 +58,18 @@ class RepositoriesManager(object):
         except OSError:
             raise
 
-    def get_extractor(self, name):
+    def get_extractor_instance(self, name):
         """
         :type name: string
         :type : Extractor
         """
-        return get_class_from_file(self.repositories_dir_name + '.extractors.', name, Extractor)
+        extractor_class = get_class_from_file(self.repositories_dir_name + '.extractors.', name, Extractor)
+        return extractor_class()
 
-    def get_inspector(self, name):
+    def get_inspector_instance(self, name):
         """
         :type name: string
         :rtype : Inspector
         """
-        return get_class_from_file(self.repositories_dir_name + '.inspectors.', name, Inspector)
+        inspector_class = get_class_from_file(self.repositories_dir_name + '.inspectors.', name, Inspector)
+        return inspector_class()
