@@ -13,6 +13,8 @@ class TestCoordinator(unittest.TestCase):
     def setUp(self):
         definitions_database = DefinitionsDatabaseManager(os.path.join('test', 'definitions.db'),
                                                           'create_db.sql',
+                                                          'insert_default_data_types.sql',
+                                                          'insert_default_data_source_types.sql',
                                                           'insert_default_operations.sql')
         repositories_manager = RepositoriesManager('repositories')
         operations_manager = OperationsManager(definitions_database, repositories_manager)

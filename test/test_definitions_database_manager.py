@@ -10,6 +10,8 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
     def setUp(self):
         self.db_helper = DefinitionsDatabaseManager(os.path.join('test', 'test_definitions.db'),
                                                     os.path.join('test', 'my_test_create_db.sql'),
+                                                    os.path.join('test', 'my_test_insert_default_data_types.sql'),
+                                                    os.path.join('test', 'my_test_insert_default_data_source_types.sql'),
                                                     os.path.join('test', 'my_test_insert_default_operations.sql'))
         self.ds_aosp_email = DataSource('Application', {'package_name': 'com.android.email'})
         self.ds_facebook = DataSource('Application', {'package_name': 'com.facebook.katana'})

@@ -1,10 +1,4 @@
 -- Operation to extract EmailMessage from the AOSP application.
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:EmailMessage', 'EmailMessage','EmailMessageObject');
-INSERT INTO data_source_types (id, name, extractor_name)
-VALUES ('com.example:Application', 'Application','ApplicationExtractor');
-INSERT INTO required_params (data_source_type_id, param_name)
-VALUES ('com.example:Application', 'package_name');
 INSERT INTO operations (id, data_type_id, data_source_type_id, inspector_name)
 VALUES ('com.example:EmailMessageAOSPEmailApp', 'com.example:EmailMessage', 'com.example:Application', 'EmailMessageInspector');
 INSERT INTO device_models (operation_id, model_number)

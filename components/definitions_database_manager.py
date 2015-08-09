@@ -5,14 +5,19 @@ from model import OperationInfo, DataSource
 
 
 class DefinitionsDatabaseManager(object):
-    def __init__(self, db_file_name, create_db_script_path, insert_default_operations_script_path):
+    def __init__(self, db_file_name, create_db_script_path, insert_data_types_script_path,
+                 insert_data_source_types_script_path, insert_operations_script_path):
         db_file_path = db_file_name
 
         if not path.exists(db_file_path):
             # Create the db schema
             execute_sql_script(db_file_path, create_db_script_path)
+            # Insert default data_types
+            execute_sql_script(db_file_path, insert_data_types_script_path)
+            # Insert default data_source_types
+            execute_sql_script(db_file_path, insert_data_source_types_script_path)
             # Insert default operations
-            execute_sql_script(db_file_path, insert_default_operations_script_path)
+            execute_sql_script(db_file_path, insert_operations_script_path)
 
         self.conn = sqlite3.connect(db_file_path)
         # TODO: Close connection, somewhere.
