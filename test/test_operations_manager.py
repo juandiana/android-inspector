@@ -1,4 +1,5 @@
 # coding=utf-8
+import os
 import unittest
 
 from components.definitions_database_manager import DefinitionsDatabaseManager
@@ -46,13 +47,18 @@ class TestOperationsManager(unittest.TestCase):
             print error.message
 
     def test_defined_data_type_but_not_used_in_any_operation(self):
-        definitions_database = DefinitionsDatabaseManager('definitions.db', 'create_db.sql',
+        definitions_database = DefinitionsDatabaseManager(os.path.join('test', 'definitions.db'),
+                                                          os.path.join('test', 'my_test_create_db.sql'),
+                                                          'insert_default_data_types.sql',
+                                                          'insert_default_data_source_types.sql',
                                                           'insert_default_operations.sql')
         repositories_manager = RepositoriesManager('repositories')
         operations_manager = OperationsManager(definitions_database, repositories_manager)
-        op_info = operations_manager.get_operations_info('ImageFile', None, None)
+        op_info = operations_manager.get_operations_info('ImageFile', None, DeviceInfo('4.4.4', 'XT1053'))
         self.assertEqual(op_info, [])
 
+    def tearDown(self):
+        os.remove(os.path.join('test', 'definitions.db'))
 
 if __name__ == '__main__':
     unittest.main()

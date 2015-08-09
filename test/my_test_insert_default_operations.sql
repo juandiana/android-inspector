@@ -1,4 +1,3 @@
-
 -- Operation: EmailMessage from AOSP email application.
 INSERT INTO operations (id, data_type_id, data_source_type_id, inspector_name)
 VALUES ('com.example:EmailMessageAOSPEmailApp', 'com.example:EmailMessage', 'com.example:Application', 'EmailMessageInspector');
