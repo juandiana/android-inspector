@@ -27,7 +27,7 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
                                                   ['GT-I9300', 'LG-D820'], [('2.0', '4.4.4')])
 
     def tearDown(self):
-        os.remove('test/test_definitions.db')
+        os.remove(os.path.join('test', 'test_definitions.db'))
 
     def test_query_operation_for_email_message(self):
         result = self.db_helper.query_operations_info('EmailMessage', self.ds_aosp_email, self.dv_info)

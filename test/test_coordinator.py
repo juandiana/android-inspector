@@ -9,10 +9,9 @@ from components.repositories_manager import RepositoriesManager
 from model import DeviceInfo
 
 
-class MyTestCase(unittest.TestCase):
+class TestCoordinator(unittest.TestCase):
     def setUp(self):
-        # TODO: Seguramente debamos borrar esta base de datos en el tearDown
-        definitions_database = DefinitionsDatabaseManager(os.path.join('test', 'test_definitions.db'),
+        definitions_database = DefinitionsDatabaseManager(os.path.join('test', 'definitions.db'),
                                                           'create_db.sql',
                                                           'insert_default_operations.sql')
         repositories_manager = RepositoriesManager('repositories')
@@ -26,6 +25,8 @@ class MyTestCase(unittest.TestCase):
 
         self.coordinator.execute_operations(ids, device_info, results_dir_path)
 
+    def tearDown(self):
+        os.remove(os.path.join('test', 'definitions.db'))
 
 if __name__ == '__main__':
     unittest.main()
