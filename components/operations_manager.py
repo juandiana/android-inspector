@@ -19,6 +19,9 @@ class OperationsManager(object):
         :type device_info: DeviceInfo
         :rtype : set(OperationInfo)
         """
+        if device_info is None:
+            raise ValueError("get_operations_info must always receive a DeviceInfo instance.")
+
         if data_type is not None and not self.definitions_database.exists_data_type(data_type):
             raise ValueError("'{0}' is not a defined DataType.".format(data_type))
 
