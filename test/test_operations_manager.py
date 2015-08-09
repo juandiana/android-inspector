@@ -1,12 +1,13 @@
 # coding=utf-8
 import unittest
 
+from components.definitions_database_manager import DefinitionsDatabaseManager
 from components.operations_manager import OperationsManager
 from components.repositories_manager import RepositoriesManager
 from model import DataSource, OperationInfo, DeviceInfo
 
 
-class MockedDefinitionsDatabase(object):
+class MockedDefinitionsDatabaseManager(object):
     def query_operations_info(self, data_type, data_source, device_info):
         op_info = OperationInfo(
             id_='com.example/gmail/email',
@@ -31,20 +32,26 @@ class MockedDefinitionsDatabase(object):
 
 
 class TestOperationsManager(unittest.TestCase):
-    def setUp(self):
-        definitions_database = MockedDefinitionsDatabase()
-        repositories_manager = RepositoriesManager('repositories')
-        self.operations_manager = OperationsManager(definitions_database, repositories_manager)
-
     def test_operations_manager(self):
+        definitions_database = MockedDefinitionsDatabaseManager()
+        repositories_manager = RepositoriesManager('repositories')
+        operations_manager = OperationsManager(definitions_database, repositories_manager)
         data_type = 'EmailMessage'
         data_source = DataSource('Application', {'package_name': 'com.google.gm'})
         device_info = DeviceInfo('4.4.4', 'XT1053')
         try:
-            op_info = self.operations_manager.get_operations_info(data_type, data_source, device_info)
+            op_info = operations_manager.get_operations_info(data_type, data_source, device_info)
             print op_info
         except ValueError as error:
             print error.message
+
+    def test_defined_data_type_but_not_used_in_any_operation(self):
+        definitions_database = DefinitionsDatabaseManager('definitions.db', 'create_db.sql',
+                                                          'insert_default_operations.sql')
+        repositories_manager = RepositoriesManager('repositories')
+        operations_manager = OperationsManager(definitions_database, repositories_manager)
+        op_info = operations_manager.get_operations_info('ImageFile', None, None)
+        self.assertEqual(op_info, [])
 
 
 if __name__ == '__main__':
