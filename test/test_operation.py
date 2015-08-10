@@ -13,7 +13,6 @@ from model import Extractor, Inspector, DeviceInfo, Operation, EXTRACTED_DATA_DI
     SOURCE_DATA_FILE_NAME
 
 
-# TODO: @implements?
 class MockedApplicationExtractor(Extractor):
     def execute(self, extracted_data_dir_path, param_values):
         pass

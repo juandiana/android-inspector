@@ -19,6 +19,9 @@ class OperationsManager(object):
         :type device_info: DeviceInfo
         :rtype : set(OperationInfo)
         """
+        if device_info is None:
+            raise ValueError("get_operations_info must always receive a DeviceInfo instance.")
+
         if data_type is not None and not self.definitions_database.exists_data_type(data_type):
             raise ValueError("'{0}' is not a defined DataType.".format(data_type))
 
@@ -26,7 +29,7 @@ class OperationsManager(object):
             raise ValueError("'{0}' of the specified DataSource is not a defined DataSourceType."
                              .format(data_source.type_))
 
-        if device_info is not None and not self.definitions_database.has_all_required_param_values(data_source):
+        if data_source is not None and not self.definitions_database.has_all_required_param_values(data_source):
             raise ValueError("DataSource with type '{0}' must specify all its corresponding parameters."
                              .format(data_source.type_))
 
