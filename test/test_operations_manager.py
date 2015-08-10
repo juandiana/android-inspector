@@ -35,7 +35,7 @@ class MockedDefinitionsDatabaseManager(object):
 class TestOperationsManager(unittest.TestCase):
     def setUp(self):
         real_definitions_database = DefinitionsDatabaseManager(os.path.join('test', 'definitions.db'),
-                                                               os.path.join('test', 'create_db.sql'),
+                                                               'create_db.sql',
                                                                'insert_default_data_types.sql',
                                                                'insert_default_data_source_types.sql',
                                                                'insert_default_operations.sql')
