@@ -11,7 +11,8 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         self.db_helper = DefinitionsDatabaseManager(os.path.join('test', 'test_definitions.db'),
                                                     'create_db.sql',
                                                     os.path.join('test', 'my_test_insert_default_data_types.sql'),
-                                                    os.path.join('test', 'my_test_insert_default_data_source_types.sql'),
+                                                    os.path.join('test',
+                                                                 'my_test_insert_default_data_source_types.sql'),
                                                     os.path.join('test', 'my_test_insert_default_operations.sql'))
         self.ds_aosp_email = DataSource('Application', {'package_name': 'com.android.email'})
         self.ds_facebook = DataSource('Application', {'package_name': 'com.facebook.katana'})
@@ -19,13 +20,13 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         self.bad_ds = DataSource('Application', {})
         self.dv_info = DeviceInfo('3.0.0', 'GT-I9300')
 
-        self.op_info_email_aosp_email = OperationInfo('com.example:EmailMessageAOSPEmailApp', 'EmailMessage',
-                                                      self.ds_aosp_email, ['GT-I9300'], [('2.3.7', '5.1.1')])
-        self.op_info_image_aosp_email = OperationInfo('com.example:ImageFileAOSPEmailApp', 'ImageFile',
-                                                      self.ds_aosp_email, ['GT-I9300'], [('2.3.7', '5.1.1')])
-        self.op_info_image_facebook = OperationInfo('com.example:ImageFileFacebook', 'ImageFile', self.ds_facebook,
+        self.op_info_email_aosp_email = OperationInfo(1, 'EmailMessage', self.ds_aosp_email, ['GT-I9300'],
+                                                      [('2.3.7', '5.1.1')])
+        self.op_info_image_aosp_email = OperationInfo(2, 'ImageFile', self.ds_aosp_email, ['GT-I9300'],
+                                                      [('2.3.7', '5.1.1')])
+        self.op_info_image_facebook = OperationInfo(3, 'ImageFile', self.ds_facebook,
                                                     ['GT-I9300', 'XT1053'], [('2.3.7', '5.1.1')])
-        self.op_info_sms_aosp_sms = OperationInfo('com.example:SmsMessageAOSPSmsApp', 'SmsMessage', self.ds_aosp_sms,
+        self.op_info_sms_aosp_sms = OperationInfo(4, 'SmsMessage', self.ds_aosp_sms,
                                                   ['GT-I9300', 'LG-D820'], [('2.0', '4.4.4')])
 
     def tearDown(self):
@@ -60,8 +61,7 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         self.assertEqual(self.db_helper.query_operations_info('Non_existent', self.ds_aosp_email, self.dv_info), [])
 
     def test_get_operation_exec_info(self):
-        extractor_id, inspector_id, param_values = self.db_helper.get_operation_exec_info(
-            'com.example:EmailMessageAOSPEmailApp')
+        extractor_id, inspector_id, param_values = self.db_helper.get_operation_exec_info('EmailMessageAOSPEmail')
 
         self.assertEqual(extractor_id, 'ApplicationExtractor')
         self.assertEqual(inspector_id, 'EmailMessageInspector')
@@ -74,7 +74,7 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         self.assertEqual(param_values, {})
 
     def test_exists_operation(self):
-        self.assertTrue(self.db_helper.exists_operation('com.example:EmailMessageAOSPEmailApp'))
+        self.assertTrue(self.db_helper.exists_operation('SmsMessageAOSPSms'))
         self.assertFalse(self.db_helper.exists_operation('Non_existent'))
 
     def test_exists_data_type(self):

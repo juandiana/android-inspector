@@ -27,7 +27,7 @@ class DefinitionsDatabaseManager(object):
         The data_type exists in definitions.db
         The data_source.type_ exists in definitions.db and has all the required params.
         The device_info contains a model and an os_version.
-        :type data_type: DataType
+        :type data_type: string
         :type data_source: DataSource
         :type device_info: DeviceInfo
         :rtype : list(OperationInfo)
@@ -37,7 +37,7 @@ class DefinitionsDatabaseManager(object):
         c = self.conn.cursor()
 
         query = """
-                SELECT o.id as id, dt.name as data_type, dst.name as data_source_type
+                SELECT o.id as id
                 FROM operations AS o, data_types AS dt, data_source_types AS dst, device_models AS dm,
                      android_versions AS av
                 WHERE o.data_type_id = dt.id AND o.data_source_type_id = dst.id AND o.id = dm.operation_id
@@ -98,8 +98,8 @@ class DefinitionsDatabaseManager(object):
                 """, [id_])
 
         res = c1.fetchone()
-        data_type = res[0]
-        data_source_type = res[1]
+        data_type = res[0].__str__()
+        data_source_type = res[1].__str__()
 
         c1.close()
 
@@ -134,12 +134,12 @@ class DefinitionsDatabaseManager(object):
 
         c4.close()
 
-        return OperationInfo(id_, data_type.__str__(), DataSource(data_source_type, param_values),
+        return OperationInfo(id_, data_type, DataSource(data_source_type, param_values),
                              supported_models, supported_os_versions)
 
-    def get_operation_exec_info(self, id_):
+    def get_operation_exec_info(self, name):
         """
-        :type id_: UUID
+        :type name: UUID
         :rtype : extractor_id: string, inspector_id: string, params_values: dict(string)
         """
         extractor_id = ''
@@ -150,8 +150,8 @@ class DefinitionsDatabaseManager(object):
         c.execute("""
                 SELECT o.id, dst.extractor_name, o.inspector_name
                 FROM operations AS o, data_source_types AS dst
-                WHERE o.data_source_type_id = dst.id and o.id = ?
-                """, [id_])
+                WHERE o.data_source_type_id = dst.id AND o.name = ?
+                """, [name])
 
         row = c.fetchone()
         if row is not None:
@@ -167,25 +167,26 @@ class DefinitionsDatabaseManager(object):
 
         return extractor_id, inspector_id, param_values
 
-    def exists_operation(self, id_):
+    def exists_operation(self, name):
         """
-        :type id_: UUID
+        :type name: string
         :rtype : bool
         """
         c = self.conn.cursor()
-        c.execute('SELECT 1 FROM operations AS o WHERE o.id = ?', [id_])
+        c.execute('SELECT 1 FROM operations AS o WHERE o.name = ?', [name])
 
         row = c.fetchone()
 
         return row is not None
 
-    def exists_data_type(self, data_type):
+    def exists_data_type(self, name):
         """
-        :type data_type: string
+        :type name: string
         :rtype : bool
         """
         c = self.conn.cursor()
-        c.execute('SELECT 1 FROM data_types AS dt WHERE dt.name = ?', [data_type])
+        c.execute('SELECT 1 FROM data_types AS dt WHERE dt.name = ?',
+                  [name])
 
         row = c.fetchone()
 
@@ -197,7 +198,8 @@ class DefinitionsDatabaseManager(object):
         :rtype : bool
         """
         c = self.conn.cursor()
-        c.execute('SELECT 1 FROM data_source_types AS dst WHERE dst.name = ?', [data_source_type])
+        c.execute('SELECT 1 FROM data_source_types AS dst WHERE dst.name = ?',
+                  [data_source_type])
 
         row = c.fetchone()
 

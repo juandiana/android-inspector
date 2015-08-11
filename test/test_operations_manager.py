@@ -22,7 +22,7 @@ class MockedDefinitionsDatabaseManager(object):
     def get_operation_exec_info(self, id_):
         return 'com.example.extractor1', 'com.example.inspector1', {'package_name': 'com.google.gm'}
 
-    def exists_data_type(self, data_type):
+    def exists_data_type(self, name):
         return True
 
     def exists_data_source_type(self, data_source_type):
@@ -51,7 +51,6 @@ class TestOperationsManager(unittest.TestCase):
 
         op_info = self.mocked_operations_manager.get_operations_info(data_type, data_source, device_info)
         self.assertEqual(len(op_info), 1)
-
 
     def test_defined_data_type_but_not_used_in_any_operation(self):
         data_type = 'ImageFile'

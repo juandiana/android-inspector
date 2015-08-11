@@ -1,6 +1,6 @@
 INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:EmailMessage', 'EmailMessage','EmailMessageObject');
+VALUES (1, 'EmailMessage', 'EmailMessageObject');
 INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:ImageFile', 'ImageFile','ImageFileObject');
+VALUES (2, 'ImageFile', 'ImageFileObject');
 INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:SmsMessage', 'SmsMessage','SmsMessageObject');
+VALUES (3, 'SmsMessage', 'SmsMessageObject');
