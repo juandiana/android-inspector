@@ -1,15 +1,29 @@
 # coding=utf-8
 
+
+class DataType(object):
+    def __init__(self, namespace, name):
+        self.namespace = namespace
+        self.name = name
+
+    def __repr__(self):
+        return '{0}:{1}'.format(self.namespace, self.name)
+
+    def __eq__(self, other):
+        return self.namespace == other.namespace and self.name == other.name
+
+
 class DataSource(object):
-    def __init__(self, type_, info):
+    def __init__(self, namespace, type_, info):
+        self.namespace = namespace
         self.type_ = type_
         self.info = info
 
     def __repr__(self):
-        return '{0}:{1}'.format(self.type_, self.info)
+        return '{0}:{1}:{2}'.format(self.namespace, self.type_, self.info)
 
     def __eq__(self, other):
-        return self.type_ == other.type_ and self.info == other.info
+        return self.namespace == other.namespace and self.type_ == other.type_ and self.info == other.info
 
 
 class OperationInfo(object):

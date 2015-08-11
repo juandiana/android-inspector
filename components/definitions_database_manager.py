@@ -1,7 +1,7 @@
 # coding=utf-8
 from os import path
 import sqlite3
-from model import OperationInfo, DataSource
+from model import OperationInfo, DataSource, DataType
 
 
 class DefinitionsDatabaseManager(object):
@@ -37,15 +37,15 @@ class DefinitionsDatabaseManager(object):
         c = self.conn.cursor()
 
         query = """
-                SELECT o.id as id, dt.name as data_type, dst.name as data_source_type
+                SELECT o.id as id
                 FROM operations AS o, data_types AS dt, data_source_types AS dst, device_models AS dm,
                      android_versions AS av
                 WHERE o.data_type_id = dt.id AND o.data_source_type_id = dst.id AND o.id = dm.operation_id
                         AND o.id = av.operation_id"""
         if data_type is not None:
-            query += ' AND dt.name = "{0}"'.format(data_type)
+            query += ' AND dt.namespace = "{0}" AND dt.name = "{1}"'.format(data_type.namespace, data_type.name)
         if data_source is not None:
-            query += ' AND dst.name = "{0}"'.format(data_source.type_)
+            query += ' AND dst.namespace = "{0}" AND dst.name = "{1}"'.format(data_source.namespace, data_source.type_)
         if device_info.device_model is not None:
             query += ' AND dm.model_number = "{0}"'.format(device_info.device_model)
         if device_info.os_version is not None:
@@ -92,14 +92,15 @@ class DefinitionsDatabaseManager(object):
         """
         c1 = self.conn.cursor()
         c1.execute("""
-                SELECT dt.name, dst.name
+                SELECT dt.namespace, dt.name, dst.namespace, dst.name
                 FROM operations AS o, data_types AS dt, data_source_types AS dst
                 WHERE o.data_type_id = dt.id AND o.data_source_type_id = dst.id AND o.id = ?
                 """, [id_])
 
         res = c1.fetchone()
-        data_type = res[0]
-        data_source_type = res[1]
+        data_type = DataType(res[0].__str__(), res[1].__str__())
+        data_source_namespace = res[2].__str__()
+        data_source_type = res[3].__str__()
 
         c1.close()
 
@@ -134,7 +135,7 @@ class DefinitionsDatabaseManager(object):
 
         c4.close()
 
-        return OperationInfo(id_, data_type.__str__(), DataSource(data_source_type, param_values),
+        return OperationInfo(id_, data_type, DataSource(data_source_namespace, data_source_type, param_values),
                              supported_models, supported_os_versions)
 
     def get_operation_exec_info(self, id_):
@@ -167,13 +168,13 @@ class DefinitionsDatabaseManager(object):
 
         return extractor_id, inspector_id, param_values
 
-    def exists_operation(self, id_):
+    def exists_operation(self, name):
         """
-        :type id_: UUID
+        :type name: string
         :rtype : bool
         """
         c = self.conn.cursor()
-        c.execute('SELECT 1 FROM operations AS o WHERE o.id = ?', [id_])
+        c.execute('SELECT 1 FROM operations AS o WHERE o.name = ?', [name])
 
         row = c.fetchone()
 
@@ -181,23 +182,25 @@ class DefinitionsDatabaseManager(object):
 
     def exists_data_type(self, data_type):
         """
-        :type data_type: string
+        :type data_type: DataType
         :rtype : bool
         """
         c = self.conn.cursor()
-        c.execute('SELECT 1 FROM data_types AS dt WHERE dt.name = ?', [data_type])
+        c.execute('SELECT 1 FROM data_types AS dt WHERE dt.namespace = ? AND dt.name = ?',
+                  [data_type.namespace, data_type.name])
 
         row = c.fetchone()
 
         return row is not None
 
-    def exists_data_source_type(self, data_source_type):
+    def exists_data_source_type(self, data_source_namespace, data_source_type):
         """
         :type data_source_type: string
         :rtype : bool
         """
         c = self.conn.cursor()
-        c.execute('SELECT 1 FROM data_source_types AS dst WHERE dst.name = ?', [data_source_type])
+        c.execute('SELECT 1 FROM data_source_types AS dst WHERE dst.namespace = ? AND dst.name = ?',
+                  [data_source_namespace, data_source_type])
 
         row = c.fetchone()
 
@@ -211,8 +214,8 @@ class DefinitionsDatabaseManager(object):
         c = self.conn.cursor()
         c.execute("""
                 SELECT param_name FROM data_source_types AS dst, required_params AS rp
-                WHERE dst.id = rp.data_source_type_id and dst.name = ?
-                """, [data_source.type_])
+                WHERE dst.id = rp.data_source_type_id and dst.namespace = ? and dst.name = ?
+                """, [data_source.namespace, data_source.type_])
 
         for row in c:
             if not data_source.info.get(row[0]):

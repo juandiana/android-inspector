@@ -1,114 +1,58 @@
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:API', 'API','APIObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:ARPCache', 'ARPCache','ARPCacheObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:AS', 'AS','ASObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Account', 'Account','AccountObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Address', 'Address','AddressObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:ArchiveFile', 'ArchiveFile','ArchiveFileObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Artifact', 'Artifact','ArtifactObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Code', 'Code','CodeObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Custom', 'Custom','CustomObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:DNSCache', 'DNSCache','DNSCacheObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:DNSQuery', 'DNSQuery','DNSQueryObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:DNSRecord', 'DNSRecord','DNSRecordObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Device', 'Device','DeviceObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Disk', 'Disk','DiskObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:DiskPartition', 'DiskPartition','DiskPartitionObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:DomainName', 'DomainName','DomainNameObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:EmailMessage', 'EmailMessage','EmailMessageObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:File', 'File','FileObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:GUIDialogbox', 'GUIDialogbox','GUIDialogboxObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:GUI', 'GUI','GUIObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:GUIWindow', 'GUIWindow','GUIWindowObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:HTTPSession', 'HTTPSession','HTTPSessionObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Hostname', 'Hostname','HostnameObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:ImageFile', 'ImageFile','ImageFileObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Library', 'Library','LibraryObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Link', 'Link','LinkObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:LinuxPackage', 'LinuxPackage','LinuxPackageObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Memory', 'Memory','MemoryObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Mutex', 'Mutex','MutexObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:NetworkConnection', 'NetworkConnection','NetworkConnectionObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:NetworkFlow', 'NetworkFlow','NetworkFlowObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:NetworkPacket', 'NetworkPacket','NetworkPacketObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:NetworkRouteEntry', 'NetworkRouteEntry','NetworkRouteEntryObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:NetworkRoute', 'NetworkRoute','NetworkRouteObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:NetworkSocket', 'NetworkSocket','NetworkSocketObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:NetworkSubnet', 'NetworkSubnet','NetworkSubnetObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:PDFFile', 'PDFFile','PDFFileObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Pipe', 'Pipe','PipeObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Port', 'Port','PortObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Process', 'Process','ProcessObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Product', 'Product','ProductObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:SMSMessage', 'SMSMessage','SMSMessageObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Semaphore', 'Semaphore','SemaphoreObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:SocketAddress', 'SocketAddress','SocketAddressObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:System', 'System','SystemObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:URI', 'URI','URIObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:URLHistory', 'URLHistory','URLHistoryObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:UnixFile', 'UnixFile','UnixFileObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:UnixNetworkRouteEntry', 'UnixNetworkRouteEntry','UnixNetworkRouteEntryObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:UnixPipe', 'UnixPipe','UnixPipeObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:UnixProcess', 'UnixProcess','UnixProcessObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:UnixUserAccount', 'UnixUserAccount','UnixUserAccountObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:UnixVolume', 'UnixVolume','UnixVolumeObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:UserAccount', 'UserAccount','UserAccountObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:UserSession', 'UserSession','UserSessionObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Volume', 'Volume','VolumeObject');
-INSERT INTO data_types (id, name, cybox_object_name)
-VALUES ('com.example:Whois', 'Whois','WhoisObject');
+INSERT INTO data_types (name, namespace, cybox_object_name) VALUES
+ ('API', 'com.example', 'API','APIObject'),
+ ('ARPCache', 'com.example', 'ARPCache','ARPCacheObject'),
+ ('AS', 'com.example', 'AS','ASObject'),
+ ('Account', 'com.example', 'Account','AccountObject'),
+ ('Address', 'com.example', 'Address','AddressObject'),
+ ('ArchiveFile', 'com.example', 'ArchiveFile','ArchiveFileObject'),
+ ('Artifact', 'com.example', 'Artifact','ArtifactObject'),
+ ('Code', 'com.example', 'Code','CodeObject'),
+ ('Custom', 'com.example', 'Custom','CustomObject'),
+ ('DNSCache', 'com.example', 'DNSCache','DNSCacheObject'),
+ ('DNSQuery', 'com.example', 'DNSQuery','DNSQueryObject'),
+ ('DNSRecord', 'com.example', 'DNSRecord','DNSRecordObject'),
+ ('Device', 'com.example', 'Device','DeviceObject'),
+ ('Disk', 'com.example', 'Disk','DiskObject'),
+ ('DiskPartition', 'com.example', 'DiskPartition','DiskPartitionObject'),
+ ('DomainName', 'com.example', 'DomainName','DomainNameObject'),
+ ('EmailMessage', 'com.example', 'EmailMessage','EmailMessageObject'),
+ ('File', 'com.example', 'File','FileObject'),
+ ('GUIDialogbox', 'com.example', 'GUIDialogbox','GUIDialogboxObject'),
+ ('GUI', 'com.example', 'GUI','GUIObject'),
+ ('GUIWindow', 'com.example', 'GUIWindow','GUIWindowObject'),
+ ('HTTPSession', 'com.example', 'HTTPSession','HTTPSessionObject'),
+ ('Hostname', 'com.example', 'Hostname','HostnameObject'),
+ ('ImageFile', 'com.example', 'ImageFile','ImageFileObject'),
+ ('Library', 'com.example', 'Library','LibraryObject'),
+ ('Link', 'com.example', 'Link','LinkObject'),
+ ('LinuxPackage', 'com.example', 'LinuxPackage','LinuxPackageObject'),
+ ('Memory', 'com.example', 'Memory','MemoryObject'),
+ ('Mutex', 'com.example', 'Mutex','MutexObject'),
+ ('NetworkConnection', 'com.example', 'NetworkConnection','NetworkConnectionObject'),
+ ('NetworkFlow', 'com.example', 'NetworkFlow','NetworkFlowObject'),
+ ('NetworkPacket', 'com.example', 'NetworkPacket','NetworkPacketObject'),
+ ('NetworkRouteEntry', 'com.example', 'NetworkRouteEntry','NetworkRouteEntryObject'),
+ ('NetworkRoute', 'com.example', 'NetworkRoute','NetworkRouteObject'),
+ ('NetworkSocket', 'com.example', 'NetworkSocket','NetworkSocketObject'),
+ ('NetworkSubnet', 'com.example', 'NetworkSubnet','NetworkSubnetObject'),
+ ('PDFFile', 'com.example', 'PDFFile','PDFFileObject'),
+ ('Pipe', 'com.example', 'Pipe','PipeObject'),
+ ('Port', 'com.example', 'Port','PortObject'),
+ ('Process', 'com.example', 'Process','ProcessObject'),
+ ('Product', 'com.example', 'Product','ProductObject'),
+ ('SMSMessage', 'com.example', 'SMSMessage','SMSMessageObject'),
+ ('Semaphore', 'com.example', 'Semaphore','SemaphoreObject'),
+ ('SocketAddress', 'com.example', 'SocketAddress','SocketAddressObject'),
+ ('System', 'com.example', 'System','SystemObject'),
+ ('URI', 'com.example', 'URI','URIObject'),
+ ('URLHistory', 'com.example', 'URLHistory','URLHistoryObject'),
+ ('UnixFile', 'com.example', 'UnixFile','UnixFileObject'),
+ ('UnixNetworkRouteEntry', 'com.example', 'UnixNetworkRouteEntry','UnixNetworkRouteEntryObject'),
+ ('UnixPipe', 'com.example', 'UnixPipe','UnixPipeObject'),
+ ('UnixProcess', 'com.example', 'UnixProcess','UnixProcessObject'),
+ ('UnixUserAccount', 'com.example', 'UnixUserAccount','UnixUserAccountObject'),
+ ('UnixVolume', 'com.example', 'UnixVolume','UnixVolumeObject'),
+ ('UserAccount', 'com.example', 'UserAccount','UserAccountObject'),
+ ('UserSession', 'com.example', 'UserSession','UserSessionObject'),
+ ('Volume', 'com.example', 'Volume','VolumeObject'),
+ ('Whois', 'com.example', 'Whois','WhoisObject');
