@@ -1,24 +1,21 @@
-CREATE TABLE data_types ( id INT PRIMARY KEY,
+CREATE TABLE data_types ( id INT NOT NULL,
                           name TEXT,
-                          namespace TEXT,
-                          cybox_object_name TEXT);
-CREATE INDEX dt_name_index ON data_types (name, namespace);
+                          cybox_object_name TEXT,
+                          PRIMARY KEY(id));
 
-CREATE TABLE data_source_types ( id INT PRIMARY KEY,
+CREATE TABLE data_source_types ( id INT NOT NULL,
                                  name TEXT,
-                                 namespace TEXT,
-                                 extractor_name TEXT);
-CREATE INDEX dst_name_index ON data_source_types (name, namespace);
+                                 extractor_name TEXT,
+                                 PRIMARY KEY(id));
 
 CREATE TABLE required_params ( data_source_type_id INT NOT NULL REFERENCES data_source_types(id),
                                param_name TEXT,
                                PRIMARY KEY(data_source_type_id, param_name));
 
-CREATE TABLE operations (   id INT,
+CREATE TABLE operations (   id INT NOT NULL,
                             data_type_id INT NOT NULL REFERENCES data_types(id),
                             data_source_type_id INT NOT NULL REFERENCES data_source_types(id),
                             name TEXT,
-                            namespace TEXT,
                             inspector_name TEXT,
                             PRIMARY KEY(id));
 

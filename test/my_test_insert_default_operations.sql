@@ -1,6 +1,6 @@
 -- Operation: EmailMessage from AOSP email application.
-INSERT INTO operations (id, name, namespace, data_type_id, data_source_type_id, inspector_name)
-VALUES (1, 'EmailMessageAOSPEmail', 'com.example', 1, 1, 'EmailMessageInspector');
+INSERT INTO operations (id, name, data_type_id, data_source_type_id, inspector_name)
+VALUES (1, 'EmailMessageAOSPEmail', 1, 1, 'EmailMessageInspector');
 INSERT INTO device_models (operation_id, model_number)
 VALUES (1, 'GT-I9300');
 INSERT INTO android_versions (operation_id, from_version, to_version)
@@ -9,8 +9,8 @@ INSERT INTO data_source_params_values (operation_id, param_name, param_value)
 VALUES (1, 'package_name', 'com.android.email');
 
 -- Operation: Images from the AOSP email application.
-INSERT INTO operations (id, name, namespace, data_type_id, data_source_type_id, inspector_name)
-VALUES (2, 'ImageFileAOSPEmail', 'com.example', 2, 1, 'ImageFileAOSPEmailInspector');
+INSERT INTO operations (id, name, data_type_id, data_source_type_id, inspector_name)
+VALUES (2, 'ImageFileAOSPEmail', 2, 1, 'ImageFileAOSPEmailInspector');
 INSERT INTO device_models (operation_id, model_number)
 VALUES (2, 'GT-I9300');
 INSERT INTO android_versions (operation_id, from_version, to_version)
@@ -19,8 +19,8 @@ INSERT INTO data_source_params_values (operation_id, param_name, param_value)
 VALUES (2, 'package_name', 'com.android.email');
 
 -- Operation: Images from Facebook application.
-INSERT INTO operations (id, name, namespace, data_type_id, data_source_type_id, inspector_name)
-VALUES (3, 'ImageFileFacebook', 'com.example', 2, 1, 'ImageFileFacebookInspector');
+INSERT INTO operations (id, name, data_type_id, data_source_type_id, inspector_name)
+VALUES (3, 'ImageFileFacebook', 2, 1, 'ImageFileFacebookInspector');
 INSERT INTO device_models (operation_id, model_number)
 VALUES (3, 'GT-I9300');
 INSERT INTO device_models (operation_id, model_number)
@@ -31,8 +31,8 @@ INSERT INTO data_source_params_values (operation_id, param_name, param_value)
 VALUES (3, 'package_name', 'com.facebook.katana');
 
 -- Operation to extract SmsMessage from the AOSP SMS messages application.
-INSERT INTO operations (id, name, namespace, data_type_id, data_source_type_id, inspector_name)
-VALUES (4, 'SmsMessageAOSPSms', 'com.example', 3, 1, 'SmsMessageInspector');
+INSERT INTO operations (id, name, data_type_id, data_source_type_id, inspector_name)
+VALUES (4, 'SmsMessageAOSPSms', 3, 1, 'SmsMessageInspector');
 INSERT INTO device_models (operation_id, model_number)
 VALUES (4, 'GT-I9300');
 INSERT INTO device_models (operation_id, model_number)
@@ -43,8 +43,8 @@ INSERT INTO data_source_params_values (operation_id, param_name, param_value)
 VALUES (4, 'package_name', 'com.android.providers.telephony');
 
 -- Operation to extract SmsMessage from the AOSP application for old Android Versions.
-INSERT INTO operations (id, name, namespace, data_type_id, data_source_type_id, inspector_name)
-VALUES (5, 'SmsMessageAOSPSms_old', 'com.example', 3, 1, 'SmsMessageInspector_old');
+INSERT INTO operations (id, name, data_type_id, data_source_type_id, inspector_name)
+VALUES (5, 'SmsMessageAOSPSms_old', 3, 1, 'SmsMessageInspector_old');
 INSERT INTO device_models (operation_id, model_number)
 VALUES (5, 'Nexus 1');
 INSERT INTO android_versions (operation_id, from_version, to_version)

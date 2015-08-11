@@ -14,7 +14,7 @@ class OperationsManager(object):
 
     def get_operations_info(self, data_type, data_source, device_info):
         """
-        :type data_type: string
+        :type data_type: DataType
         :type data_source: DataSource
         :type device_info: DeviceInfo
         :rtype : set(OperationInfo)

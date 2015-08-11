@@ -1,9 +1,6 @@
 -- Operation to extract EmailMessage from the AOSP application.
-INSERT INTO operations (id, name, namespace, inspector_name, data_type_id, data_source_type_id)
-VALUES (1, 'EmailMessageAOSPEmail', 'com.example', 'EmailMessageInspector',
-        SELECT id FROM data_types WHERE name = 'EmailMessage',
-        SELECT id FROM data_source_types WHERE name = 'Application'
-        );
+INSERT INTO operations (id, name, inspector_name, data_type_id, data_source_type_id)
+VALUES (1, 'EmailMessageAOSPEmail', 'EmailMessageInspector', 1, 1);
 
 INSERT INTO device_models (operation_id, model_number)
 VALUES (1, 'GT-I9300');
