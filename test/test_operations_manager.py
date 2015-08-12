@@ -11,7 +11,7 @@ from model import DataSource, OperationInfo, DeviceInfo
 class MockedDefinitionsDatabaseManager(object):
     def query_operations_info(self, data_type, data_source, device_info):
         op_info = OperationInfo(
-            id_='com.example/gmail/email',
+            name='com.example/gmail/email',
             data_type='EmailMessage',
             data_source=DataSource('Application', {'package_name': 'com.google.gm'}),
             supported_device_models=['XT1053'],
