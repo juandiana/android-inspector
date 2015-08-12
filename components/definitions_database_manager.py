@@ -1,7 +1,94 @@
 # coding=utf-8
+from abc import ABCMeta, abstractmethod
 from os import path
 import sqlite3
 from model import OperationInfo, DataSource
+
+
+class Filter(object):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def get_join_clause(self):
+        pass
+
+    @abstractmethod
+    def get_where_clause(self):
+        pass
+
+
+class DataTypeFilter(Filter):
+    def __init__(self, dt):
+        self.data_type = dt
+
+    def get_join_clause(self):
+        return 'JOIN data_types AS dt ON op.data_type_id = dt.id'
+
+    def get_where_clause(self):
+        return 'dt.name = "{0}"'.format(self.data_type)
+
+
+class DataSourceTypeFilter(Filter):
+    def __init__(self, dst):
+        self.data_source_type = dst
+
+    def get_join_clause(self):
+        return 'JOIN data_source_types AS dst ON op.data_source_type_id = dst.id'
+
+    def get_where_clause(self):
+        return 'dst.name = "{0}"'.format(self.data_source_type)
+
+
+class DeviceModelFilter(Filter):
+    def __init__(self, dm):
+        self.device_model = dm
+
+    def get_join_clause(self):
+        return 'JOIN device_models AS dm ON op.id = dm.operation_id'
+
+    def get_where_clause(self):
+        return 'dm.model_number = "{0}"'.format(self.device_model)
+
+
+class AndroidVersionFilter(Filter):
+    def __init__(self, os_version):
+        self.os_version = os_version
+
+    def get_join_clause(self):
+        return 'JOIN android_versions AS av ON op.id = av.operation_id'
+
+    def get_where_clause(self):
+        return 'av.from_version <= "{0}" AND "{0}" <= av.to_version'.format(self.os_version)
+
+
+class QueryBuilder(object):
+    def __init__(self):
+        self.filters = []
+
+    def add_filter(self, f):
+        self.filters.append(f)
+
+    def build(self):
+        query = 'SELECT op.id FROM operations AS op '
+        joins = []
+        wheres = []
+
+        for f in self.filters:
+            join = f.get_join_clause()
+            joins.append(join)
+            where = f.get_where_clause()
+            wheres.append(where)
+
+        query += ' '.join(joins)
+        if wheres.__len__() > 0:
+            query += ' WHERE '
+            query += ' AND '.join(wheres)
+
+        print "++++++++++++++++++"
+        print query
+        print "++++++++++++++++++"
+
+        return query
 
 
 class DefinitionsDatabaseManager(object):
@@ -36,20 +123,19 @@ class DefinitionsDatabaseManager(object):
         result = []
         c = self.conn.cursor()
 
-        query = """
-                SELECT o.id as id
-                FROM operations AS o, data_types AS dt, data_source_types AS dst, device_models AS dm,
-                     android_versions AS av
-                WHERE o.data_type_id = dt.id AND o.data_source_type_id = dst.id AND o.id = dm.operation_id
-                        AND o.id = av.operation_id"""
-        if data_type is not None:
-            query += ' AND dt.name = "{0}"'.format(data_type)
-        if data_source is not None:
-            query += ' AND dst.name = "{0}"'.format(data_source.type_)
-        if device_info.device_model is not None:
-            query += ' AND dm.model_number = "{0}"'.format(device_info.device_model)
-        if device_info.os_version is not None:
-            query += ' AND "{0}" between av.from_version AND av.to_version'.format(device_info.os_version)
+        query_builder = QueryBuilder()
+
+        if data_type:
+            query_builder.add_filter(DataTypeFilter(data_type))
+        if data_source:
+            query_builder.add_filter(DataSourceTypeFilter(data_source.type_))
+        if device_info:
+            if device_info.device_model:
+                query_builder.add_filter(DeviceModelFilter(device_info.device_model))
+            if device_info.os_version:
+                query_builder.add_filter(AndroidVersionFilter(device_info.os_version))
+
+        query = query_builder.build()
 
         c.execute(query)
 
