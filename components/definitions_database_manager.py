@@ -175,14 +175,15 @@ class DefinitionsDatabaseManager(object):
         """
         c1 = self.conn.cursor()
         c1.execute("""
-                SELECT dt.name, dst.name
+                SELECT dt.name, dst.name, o.name
                 FROM operations AS o, data_types AS dt, data_source_types AS dst
                 WHERE o.data_type_id = dt.id AND o.data_source_type_id = dst.id AND o.id = ?
                 """, [id_])
 
         res = c1.fetchone()
-        data_type = res[0].__str__()
-        data_source_type = res[1].__str__()
+        data_type = str(res[0])
+        data_source_type = str(res[1])
+        op_name = str(res[2])
 
         c1.close()
 
@@ -195,7 +196,7 @@ class DefinitionsDatabaseManager(object):
 
         param_values = {}
         for pv in c2:
-            param_values[pv[0].__str__()] = pv[1].__str__()
+            param_values[str(pv[0])] = str(pv[1])
 
         c2.close()
 
@@ -204,7 +205,7 @@ class DefinitionsDatabaseManager(object):
 
         supported_models = []
         for dm in c3:
-            supported_models.append(dm[0].__str__())
+            supported_models.append(str(dm[0]))
 
         c3.close()
 
@@ -213,11 +214,11 @@ class DefinitionsDatabaseManager(object):
 
         supported_os_versions = []
         for av in c4:
-            supported_os_versions.append((av[0].__str__(), av[1].__str__()))
+            supported_os_versions.append((str(av[0]), str(av[1])))
 
         c4.close()
 
-        return OperationInfo(id_, data_type, DataSource(data_source_type, param_values),
+        return OperationInfo(op_name, data_type, DataSource(data_source_type, param_values),
                              supported_models, supported_os_versions)
 
     def get_operation_exec_info(self, name):
@@ -238,8 +239,8 @@ class DefinitionsDatabaseManager(object):
 
         row = c.fetchone()
         if row is not None:
-            extractor_id = row[1].__str__()
-            inspector_id = row[2].__str__()
+            extractor_id = str(row[1])
+            inspector_id = str(row[2])
 
             c2 = self.conn.cursor()
             c2.execute('SELECT param_name, param_value FROM data_source_params_values dspv WHERE dspv.operation_id = ?',

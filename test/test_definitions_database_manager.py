@@ -20,14 +20,15 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         self.bad_ds = DataSource('Application', {})
         self.dv_info = DeviceInfo('3.0.0', 'GT-I9300')
 
-        self.op_info_email_aosp_email = OperationInfo(1, 'EmailMessage', self.ds_aosp_email, ['GT-I9300'],
-                                                      [('2.3.7', '5.1.1')])
-        self.op_info_image_aosp_email = OperationInfo(2, 'ImageFile', self.ds_aosp_email, ['GT-I9300'],
-                                                      [('2.3.7', '5.1.1')])
-        self.op_info_image_facebook = OperationInfo(3, 'ImageFile', self.ds_facebook,
+        self.op_info_email_aosp_email = OperationInfo('EmailMessageAOSPEmail', 'EmailMessage', self.ds_aosp_email,
+                                                      ['GT-I9300'], [('2.3.7', '5.1.1')])
+        self.op_info_image_aosp_email = OperationInfo('ImageFileAOSPEmail', 'ImageFile', self.ds_aosp_email,
+                                                      ['GT-I9300'], [('2.3.7', '5.1.1')])
+        self.op_info_image_facebook = OperationInfo('ImageFileFacebook', 'ImageFile', self.ds_facebook,
                                                     ['GT-I9300', 'XT1053'], [('2.3.7', '5.1.1')])
-        self.op_info_sms_aosp_sms = OperationInfo(4, 'SmsMessage', self.ds_aosp_sms,
-                                                  ['GT-I9300', 'LG-D820'], [('2.0', '4.4.4')])
+        self.info = OperationInfo('SmsMessageAOSPSms', 'SmsMessage', self.ds_aosp_sms, ['GT-I9300', 'LG-D820'],
+                                  [('2.0', '4.4.4')])
+        self.op_info_sms_aosp_sms = self.info
 
     def tearDown(self):
         os.remove(os.path.join('test', 'test_definitions.db'))

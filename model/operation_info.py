@@ -13,8 +13,8 @@ class DataSource(object):
 
 
 class OperationInfo(object):
-    def __init__(self, id_, data_type, data_source, supported_device_models, supported_os_versions):
-        self.id_ = id_
+    def __init__(self, name, data_type, data_source, supported_device_models, supported_os_versions):
+        self.name = name
         self.data_type = data_type
         self.data_source = data_source
         self.supported_device_models = supported_device_models
@@ -22,17 +22,17 @@ class OperationInfo(object):
 
     def __repr__(self):
         return '{{\n' \
-               '\tid: {0}\n' \
+               '\tname: {0}\n' \
                '\tdata_type: {1}\n' \
                '\tdata_source: {2}\n' \
                '\tsupported_device_models: {3}\n' \
                '\tsupported_os_models: {4}\n' \
                '}}\n' \
-            .format(self.id_, self.data_type, self.data_source, self.supported_device_models,
+            .format(self.name, self.data_type, self.data_source, self.supported_device_models,
                     self.supported_os_versions)
 
     def __eq__(self, other):
-        return self.id_ == other.id_ \
+        return self.name == other.name \
                and self.data_type == other.data_type \
                and self.data_source.__eq__(other.data_source) \
                and self.supported_device_models == other.supported_device_models \
