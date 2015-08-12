@@ -84,10 +84,6 @@ class QueryBuilder(object):
             query += ' WHERE '
             query += ' AND '.join(wheres)
 
-        print "++++++++++++++++++"
-        print query
-        print "++++++++++++++++++"
-
         return query
 
 
@@ -251,6 +247,9 @@ class DefinitionsDatabaseManager(object):
             for pv in c2:
                 param_values[pv[0]] = pv[1]
 
+            c2.close()
+        c.close()
+
         return extractor_id, inspector_id, param_values
 
     def exists_operation(self, name):
@@ -262,6 +261,8 @@ class DefinitionsDatabaseManager(object):
         c.execute('SELECT 1 FROM operations AS o WHERE o.name = ?', [name])
 
         row = c.fetchone()
+
+        c.close()
 
         return row is not None
 
@@ -276,6 +277,8 @@ class DefinitionsDatabaseManager(object):
 
         row = c.fetchone()
 
+        c.close()
+
         return row is not None
 
     def exists_data_source_type(self, data_source_type):
@@ -288,6 +291,8 @@ class DefinitionsDatabaseManager(object):
                   [data_source_type])
 
         row = c.fetchone()
+
+        c.close()
 
         return row is not None
 
@@ -305,6 +310,9 @@ class DefinitionsDatabaseManager(object):
         for row in c:
             if not data_source.info.get(row[0]):
                 return False
+
+        c.close()
+
         return True
 
     def add_operation(self, id_, data_type_id, data_source_type_id, inspector_id, param_values, device_models,
