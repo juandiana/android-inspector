@@ -2,6 +2,7 @@
 from abc import ABCMeta, abstractmethod
 from os import path
 import sqlite3
+
 from model import OperationInfo, DataSource
 
 
@@ -61,7 +62,7 @@ class AndroidVersionFilter(Filter):
         return 'av.from_version <= "{0}" AND "{0}" <= av.to_version'.format(self.os_version)
 
 
-class QueryBuilder(object):
+class QueryMatchingOperationsBuilder(object):
     def __init__(self):
         self.filters = []
 
@@ -79,10 +80,10 @@ class QueryBuilder(object):
             where = f.get_where_clause()
             wheres.append(where)
 
-        query += ' '.join(joins)
-        if wheres.__len__() > 0:
-            query += ' WHERE '
-            query += ' AND '.join(wheres)
+        if len(joins) > 0:
+            query += ' '.join(joins)
+        if len(wheres) > 0:
+            query += ' WHERE ' + ' AND '.join(wheres)
 
         return query
 
@@ -119,7 +120,7 @@ class DefinitionsDatabaseManager(object):
         result = []
         c = self.conn.cursor()
 
-        query_builder = QueryBuilder()
+        query_builder = QueryMatchingOperationsBuilder()
 
         if data_type:
             query_builder.add_filter(DataTypeFilter(data_type))
