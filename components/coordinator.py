@@ -3,13 +3,12 @@ from os import path
 from datetime import datetime
 
 from model import OperationError
-from operations_manager import OperationsManager
 
 
 class Coordinator(object):
     def __init__(self, operations_manager):
         """
-        :type operations_manager: OperationsManager
+        :type operations_manager: operations_manager.OperationsManager
         """
         self.operations_manager = operations_manager
         self.device_info = None

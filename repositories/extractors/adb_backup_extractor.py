@@ -23,7 +23,7 @@ class AdbBackupExtractor(Extractor):
             # The android backup format consists of a 24-byte header, followed by the content compressed.
             header = f.read(24)
             magic, format_version, compression_flag, encryption_algorithm = header.splitlines()
-            if magic != 'ANDROID BACKUP':
+            if magic != 'ANDROID BACKUP' or format_version != '1':
                 raise RuntimeError('Invalid android backup file format')
             if encryption_algorithm != 'none':
                 raise RuntimeError('Android backup file is encrypted')

@@ -5,7 +5,7 @@ from cybox.objects.custom_object import Custom
 
 class Contact(Custom):
     def __init__(self):
-        super(Contact, self).__init__()
+        Custom.__init__(self)
         self.custom_name = 'Contact'
         self.custom_properties = CustomProperties()
 
