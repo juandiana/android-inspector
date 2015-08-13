@@ -31,6 +31,7 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         self.op_info_sms_aosp_sms = self.info
 
     def tearDown(self):
+        self.db_helper.conn.close()
         os.remove(os.path.join('test', 'test_definitions.db'))
 
     def test_query_operation_for_email_message(self):
@@ -89,6 +90,17 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
     def test_has_all_required_param_values(self):
         self.assertTrue(self.db_helper.has_all_required_param_values(self.ds_aosp_email))
         self.assertFalse(self.db_helper.has_all_required_param_values(self.bad_ds))
+
+    def test_add_operation(self):
+        self.assertTrue(self.db_helper.add_operation('newOperation', 'EmailMessage', 'Application', 'new_op_inspector',
+                                                     {'package': 'com.example.email'}, ['GT-i9300'],
+                                                     [('2.2.0', '4.4.4')]))
+
+    def test_add_operation_with_non_existent_data_type(self):
+        self.assertRaises(ValueError, self.db_helper.add_operation,
+                          'newOperation', 'dt_non_existent', 'Application', 'new_op_inspector',
+                          {'package': 'com.example.email'}, ['GT-i9300'], [('2.2.0', '4.4.4')]
+                          )
 
     def assertEqualList(self, expected_result, result):
         self.assertEqual(len(result), len(expected_result))

@@ -3,7 +3,7 @@ import os
 from cybox.common.vocabs import ObjectRelationship
 from cybox.utils import set_id_method, IDGenerator
 from model import Inspector
-from repositories.custom_cybox_objects.contact import Contact
+from repositories.custom_cybox_objects.contact_object import Contact
 from util.inspectors_helper import create_file_object, execute_query
 
 

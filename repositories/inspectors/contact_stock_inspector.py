@@ -4,7 +4,7 @@ from cybox.common.vocabs import ObjectRelationship
 from cybox.utils import set_id_method, IDGenerator
 import re
 from model import Inspector
-from repositories.custom_cybox_objects.contact import Contact
+from repositories.custom_cybox_objects.contact_object import Contact
 from util import inspectors_helper
 
 
