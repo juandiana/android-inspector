@@ -170,7 +170,7 @@ class DefinitionsDatabaseManager(object):
 
     def get_operation_info_by_id(self, id_):
         """
-        :type id_: integer
+        :type id_: int
         :rtype : OperationInfo
         """
         c1 = self.conn.cursor()
