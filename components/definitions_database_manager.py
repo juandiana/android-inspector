@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 from os import path
 import sqlite3
 
-from model import OperationInfo, DataSource, OperationError
+from model import OperationInfo, DataSource
 
 
 class Filter(object):
@@ -103,6 +103,7 @@ class DefinitionsDatabaseManager(object):
             # Insert default operations
             execute_sql_script(db_file_path, insert_operations_script_path)
 
+        print 'sqlite3 version: ' + sqlite3.version
         self.conn = sqlite3.connect(db_file_path)
         # TODO: Close connection, somewhere.
 
