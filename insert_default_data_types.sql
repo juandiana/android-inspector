@@ -1,5 +1,8 @@
 INSERT INTO data_types (name, cybox_object_name) VALUES
   ('EmailMessage', 'EmailMessageObject'),
+  ('SMSMessage', 'SMSMessageObject'),
+  ('Contact', 'ContactObject'),         -- TODO: Ver si lo dejamos por defecto o lo agregamos despues.
+  ('ImageFile', 'ImageFileObject'),
   ('API', 'APIObject'),
   ('ARPCache', 'ARPCacheObject'),
   ('AS', 'ASObject'),
@@ -22,7 +25,6 @@ INSERT INTO data_types (name, cybox_object_name) VALUES
   ('GUIWindow', 'GUIWindowObject'),
   ('HTTPSession', 'HTTPSessionObject'),
   ('Hostname', 'HostnameObject'),
-  ('ImageFile', 'ImageFileObject'),
   ('Library', 'LibraryObject'),
   ('Link', 'LinkObject'),
   ('LinuxPackage', 'LinuxPackageObject'),
@@ -40,7 +42,6 @@ INSERT INTO data_types (name, cybox_object_name) VALUES
   ('Port', 'PortObject'),
   ('Process', 'ProcessObject'),
   ('Product', 'ProductObject'),
-  ('SMSMessage', 'SMSMessageObject'),
   ('Semaphore', 'SemaphoreObject'),
   ('SocketAddress', 'SocketAddressObject'),
   ('System', 'SystemObject'),
