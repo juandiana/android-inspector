@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 from os import path
 import sqlite3
 
-from model import OperationInfo, DataSource
+from model import OperationInfo, DataSource, OperationError
 
 
 class Filter(object):
@@ -170,7 +170,7 @@ class DefinitionsDatabaseManager(object):
 
     def get_operation_info_by_id(self, id_):
         """
-        :type id_: UUID
+        :type id_: integer
         :rtype : OperationInfo
         """
         c1 = self.conn.cursor()
@@ -223,7 +223,7 @@ class DefinitionsDatabaseManager(object):
 
     def get_operation_exec_info(self, name):
         """
-        :type name: UUID
+        :type name: string
         :rtype : extractor_id: string, inspector_id: string, params_values: dict(string)
         """
         extractor_id = ''
@@ -317,23 +317,134 @@ class DefinitionsDatabaseManager(object):
 
         return True
 
-    def add_operation(self, id_, data_type_id, data_source_type_id, inspector_id, param_values, device_models,
+    def add_operation(self, name, data_type_name, data_source_type_name, inspector_name, param_values, device_models,
                       android_versions):
-        pass
+        """
 
-    def remove_operation(self, id_):
+        :param name: string
+        :param data_type_name: string
+        :param data_source_type_name: string
+        :param inspector_name: string
+        :param param_values: dict(string)
+        :param device_models: list(string)
+        :param android_versions: list((string, string))
+        :return: :raise RuntimeError:
+        """
+
+        # Get data_type id using the data_type_name
+        query = 'SELECT id FROM data_types WHERE name = "{0}"'.format(data_type_name)
+        c = self.conn.cursor()
+        c.execute(query)
+
+        row = c.fetchone()
+        c.close()
+
+        if row is not None:
+            dt_id = str(row[0])
+
+            # Get data_source_type id using the data_source_type_name
+            query = 'SELECT id FROM data_source_types WHERE name = "{0}"'.format(data_source_type_name)
+            c = self.conn.cursor()
+            c.execute(query)
+
+            row = c.fetchone()
+            c.close()
+
+            if row is not None:
+                dst_id = str(row[0])
+
+                # Insert a new row in operations table
+                query = """
+                        INSERT INTO operations (name, data_type_id, data_source_type_id, inspector_name)
+                        VALUES ("{0}", "{1}", "{2}", "{3}")
+                        """.format(name, dt_id, dst_id, inspector_name)
+
+                c = self.conn.cursor()
+
+                try:
+                    c.execute(query)
+                except sqlite3.IntegrityError:
+                    raise RuntimeError("The opeartion \''{0}'\' could not be added.".format(name))
+
+                c.close()
+
+                # Get the id of the new operation
+                query = 'SELECT MAX(id) FROM operations'
+
+                c = self.conn.cursor()
+
+                c.execute(query)
+                row = c.fetchone()
+                c.close()
+
+                op_id = row[0]
+
+                # Insert the param_values
+                query = """
+                        INSERT INTO data_source_params_values (operation_id, param_name, param_value)
+                        VALUES ("{0}", "{1}", "{2}")
+                        """
+
+                c = self.conn.cursor()
+
+                for key in param_values:
+                    try:
+                        c.execute(query.format(op_id, key, param_values[key]))
+                    except sqlite3.IntegrityError:
+                        raise RuntimeError(
+                            "The param_value \''{0}':'{1}'\' could not be inserted.".format(key, param_values[key]))
+
+                c.close()
+
+                # Insert the device_models
+                query = 'INSERT INTO device_models (operation_id, model_number) VALUES ("{0}", "{1}")'
+
+                c = self.conn.cursor()
+
+                for dm in device_models:
+                    try:
+                        c.execute(query.format(op_id, dm))
+                    except sqlite3.IntegrityError:
+                        raise RuntimeError('The device_model \'"{0}"\' could not be inserted.'.format(dm))
+
+                c.close()
+
+                # Insert the android_versions
+                query = """
+                        INSERT INTO android_versions (operation_id, from_version, to_version)
+                        VALUES ("{0}", "{1}", "{2}")
+                        """
+
+                c = self.conn.cursor()
+
+                for av in android_versions:
+                    try:
+                        c.execute(query.format(op_id, av[0], av[1]))
+                    except sqlite3.IntegrityError:
+                        raise RuntimeError(
+                            'The android_version \'("{0}"-"{1}")\' could not be inserted.'.format(av[0], av[1]))
+
+                c.close()
+            else:
+                raise ValueError("\''{0}'\' is not a defined DataSourceType".format(data_source_type_name))
+        else:
+            raise ValueError("\''{0}'\' is not a defined DataType".format(data_type_name))
+
+        return True
+
+    def remove_operation(self, name):
         pass
 
     def add_data_type(self, name, cybox_object_name):
         pass
 
-    def remove_data_type(self, id_):
+    def remove_data_type(self, name):
         pass
 
-    def add_data_source_type(self, id_, name, extractor_name):
+    def add_data_source_type(self, name, extractor_name):
         pass
 
-    def remove_data_source_type(self, id_):
+    def remove_data_source_type(self, name):
         pass
 
 

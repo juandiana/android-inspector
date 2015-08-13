@@ -35,15 +35,15 @@ class OperationsManager(object):
 
         return self.definitions_database.query_operations_info(data_type, data_source, device_info)
 
-    def get_operation(self, id_):
+    def get_operation(self, name):
         """
-        :type id_: UUID
+        :type name: string
         :rtype : Operation
         """
-        if not self.definitions_database.exists_operation(id_):
-            raise ValueError("'{0}' is not a defined Operation.".format(id_))
+        if not self.definitions_database.exists_operation(name):
+            raise ValueError("'{0}' is not a defined Operation.".format(name))
 
-        extractor_id, inspector_id, param_values = self.definitions_database.get_operation_exec_info(id_)
+        extractor_id, inspector_id, param_values = self.definitions_database.get_operation_exec_info(name)
 
         extractor = self.repositories_manager.get_extractor_instance(extractor_id)  # TODO: Check if it raises exception
         inspector = self.repositories_manager.get_inspector_instance(inspector_id)  # TODO: Check if it raises exception

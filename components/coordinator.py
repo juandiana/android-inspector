@@ -31,9 +31,9 @@ class Coordinator(object):
         device_info_to_use = device_info if (device_info is None) else self.device_info
         return self.operations_manager.get_operations_info(data_type, data_source, device_info_to_use)
 
-    def execute_operations(self, ids, device_info, results_dir_path):
+    def execute_operations(self, names, device_info, results_dir_path):
         """
-        :type ids: list(UUID)
+        :type names: list(string)
         :type device_info: DeviceInfo
         :type results_dir_path: string
         :rtype : None
@@ -46,12 +46,12 @@ class Coordinator(object):
 
         op_count = 0
         op_successful_count = 0
-        for id_ in ids:
+        for name in names:
             op_count += 1
-            op = self.operations_manager.get_operation(id_)
+            op = self.operations_manager.get_operation(name)
             data_dir_name = datetime.now().strftime("%Y%m%d_%H%M%S")
             data_dir_path = path.join(results_dir_path, data_dir_name)
-            print "[{0}/{1}] Executing... ".format(op_count, len(ids))
+            print "[{0}/{1}] Executing... ".format(op_count, len(names))
             try:
                 op.execute(device_info_to_use, data_dir_path)
                 op_successful_count += 1
@@ -70,9 +70,9 @@ class Coordinator(object):
         """
         pass
 
-    def remove_data_type(self, id_):
+    def remove_data_type(self, name):
         """
-        :type id_: UUID
+        :type name: string
         :rtype : None
         """
         pass
@@ -84,9 +84,9 @@ class Coordinator(object):
         """
         pass
 
-    def remove_data_source_type(self, id_):
+    def remove_data_source_type(self, name):
         """
-        :type id_: UUID
+        :type name: string
         :rtype : None
         """
         pass
@@ -98,9 +98,9 @@ class Coordinator(object):
         """
         pass
 
-    def remove_operation(self, id_):
+    def remove_operation(self, name):
         """
-        :type id_: UUID
+        :type name: string
         :rtype : None
         """
         pass

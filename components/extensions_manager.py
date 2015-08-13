@@ -9,9 +9,9 @@ class ExtensionsManager(object):
         """
         pass
 
-    def remove_data_type(self, id_):
+    def remove_data_type(self, name):
         """
-        :type id_: UUID
+        :type name: string
         :rtype : bool
         """
         pass
@@ -23,9 +23,9 @@ class ExtensionsManager(object):
         """
         pass
 
-    def remove_data_source_type(self, id_):
+    def remove_data_source_type(self, name):
         """
-        :type id_: UUID
+        :type name: string
         :rtype : bool
         """
         pass
@@ -37,9 +37,9 @@ class ExtensionsManager(object):
         """
         pass
 
-    def remove_operation(self, id_):
+    def remove_operation(self, name):
         """
-        :type id_: UUID
+        :type name: string
         :rtype : bool
         """
         pass
