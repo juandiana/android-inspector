@@ -424,6 +424,11 @@ class DefinitionsDatabaseManager(object):
         return True
 
     def remove_operation(self, name):
+        """
+        :param name: string
+        :return: :raise ValueError: bool
+        """
+
         # Get operation id
         query = 'SELECT id FROM operations WHERE name = "{0}"'.format(name)
         c = self.conn.cursor()
@@ -446,20 +451,95 @@ class DefinitionsDatabaseManager(object):
         try:
             c.executescript(query)
         except sqlite3.IntegrityError:
-            RuntimeError('The operation \'"{0}"\' could not be deleted.'.format(name))
+            RuntimeError("The operation '{0}' could not be deleted.".format(name))
 
+        c.close()
         return True
 
     def add_data_type(self, name, cybox_object_name):
-        pass
+        """
+        :param name: string
+        :param cybox_object_name: string
+        """
+        query = 'SELECT 1 FROM data_types dt WHERE dt.name = "{0}"'.format(name)
+
+        c = self.conn.cursor()
+        c.execute(query)
+        row = c.fetchone()
+
+        if row is not None:
+            raise ValueError("The data_type '{0}' already exists.".format(name))
+
+        query = """
+                INSERT INTO data_types (name, cybox_object_name)
+                VALUES ("{0}", "{1}")
+                """.format(name, cybox_object_name)
+
+        c = self.conn.cursor()
+        try:
+            c.execute(query)
+            self.conn.commit()
+        except sqlite3.IntegrityError:
+            raise RuntimeError("The data_type '{0}' could not be added.".format(name))
+
+        c.close()
+        return True
 
     def remove_data_type(self, name):
-        pass
+        """
+        :param name: string
+        :return: :raise ValueError: bool
+        """
+        # Check if the data_type exists
+        query = """
+                SELECT 1 FROM data_types dt WHERE dt.name = '{0}'
+                """.format(name)
+
+        c = self.conn.cursor()
+        c.execute(query)
+        row = c.fetchone()
+
+        if row is None:
+            raise ValueError("'{0}' is not a defined DataType.".format(name))
+
+        # Check if there are operations using this data_type
+        query = """
+                SELECT 1 FROM operations o, data_types dt
+                WHERE o.data_type_id == dt.id AND dt.name = '{0}'
+                """.format(name)
+
+        c = self.conn.cursor()
+        c.execute(query)
+        row = c.fetchone()
+
+        if row is not None:
+            raise ValueError("The data_type '{0}' cannot be deleted. "
+                             "There are existing operations to extract this data_type.".format(name))
+
+        # Delete the data_type
+        query = "DELETE FROM data_types WHERE name = '{0}'".format(name)
+
+        try:
+            c.execute(query)
+            self.conn.commit()
+        except sqlite3.IntegrityError:
+            raise RuntimeError("The data_type '{0}' could not be deleted.".format(name))
+
+        c.close()
+        return True
 
     def add_data_source_type(self, name, extractor_name):
+        """
+        :param name: string
+        :param extractor_name: string
+        """
         pass
 
     def remove_data_source_type(self, name):
+        """
+        :param name: string
+        :return: :raise ValueError: bool
+        """
         pass
 
 

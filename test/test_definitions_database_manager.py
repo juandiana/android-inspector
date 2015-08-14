@@ -30,9 +30,9 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
                                   [('2.0', '4.4.4')])
         self.op_info_sms_aosp_sms = self.info
 
-    # def tearDown(self):
-    #     self.db_helper.conn.close()
-    #     os.remove(os.path.join('test', 'test_definitions.db'))
+    def tearDown(self):
+        self.db_helper.conn.close()
+        os.remove(os.path.join('test', 'test_definitions.db'))
 
     def test_query_operation_for_email_message(self):
         result = self.db_helper.query_operations_info('EmailMessage', self.ds_aosp_email, self.dv_info)
@@ -109,6 +109,25 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
     def test_remove_operation_with_non_existing_operation(self):
         self.assertRaisesRegexp(ValueError, "'non_existent' is not a defined Operation.",
                                 self.db_helper.remove_operation, 'non_existent')
+
+    def test_add_data_type(self):
+        self.assertTrue(self.db_helper.add_data_type('newDataType', 'newCyboxObject'))
+
+    def test_add_data_type_that_already_exists(self):
+        self.assertRaisesRegexp(ValueError, "The data_type 'newDataType' already exists.",
+                                self.db_helper.add_data_type, 'newDataType', 'newCyboxObject')
+
+    def test_remove_data_type(self):
+        self.assertTrue(self.db_helper.remove_data_type('newDataType'))
+
+    def test_remove_data_type_with_non_existing_data_type(self):
+        self.assertRaisesRegexp(ValueError, "'non_existent' is not a defined DataType.",
+                                self.db_helper.remove_data_type, 'non_existent')
+
+    def test_remove_data_type_with_used_by_operation_data_type(self):
+        self.assertRaisesRegexp(ValueError, "The data_type 'EmailMessage' cannot be deleted. "
+                                            "There are existing operations to extract this data_type.",
+                                self.db_helper.remove_data_type, 'EmailMessage')
 
     def assertEqualList(self, expected_result, result):
         self.assertEqual(len(result), len(expected_result))
