@@ -7,6 +7,7 @@ import errno
 
 from cybox.common import MeasureSource, ToolInformation, ToolInformationList, ToolType, Time
 from cybox.core import Observables
+from cybox.utils import IDGenerator, set_id_method
 
 EXTRACTED_DATA_DIR_NAME = 'extracted_data'
 INSPECTED_DATA_FILE_NAME = 'inspected_data.xml'
@@ -36,11 +37,10 @@ class Inspector(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def execute(self, device_info, extracted_data_dir_path, simple_output):
+    def execute(self, device_info, extracted_data_dir_path):
         """
         :type device_info: DeviceInfo
         :type extracted_data_dir_path: string
-        :type simple_output: bool
         :rtype : (list(Object), list(FileObject))
         """
         pass
@@ -75,8 +75,11 @@ class Operation(object):
                 raise
 
         self.extractor.execute(extracted_data_dir_path, self.param_values)
-        inspected_objects, source_objects = self.inspector.execute(device_info, extracted_data_dir_path, simple_output)
 
+        if simple_output:
+            set_id_method(IDGenerator.METHOD_INT)
+
+        inspected_objects, source_objects = self.inspector.execute(device_info, extracted_data_dir_path)
         inspected_observables = Observables(inspected_objects)
         source_observables = Observables(source_objects)
 

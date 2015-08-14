@@ -1,24 +1,21 @@
 # coding=utf-8
 from datetime import datetime
 import os
-from cybox.utils import IDGenerator
-from cybox.utils import set_id_method
-from model import Inspector
-from util.inspectors_helper import create_file_object, execute_query
+
 from cybox.objects.sms_message_object import SMSMessage
 from cybox.common.vocabs import ObjectRelationship
 
+from model import Inspector
+from util.inspectors_helper import create_file_object, execute_query
+
 
 class SmsMessageInspector(Inspector):
-    def execute(self, device_info, extracted_data_dir_path, simple_output):
+    def execute(self, device_info, extracted_data_dir_path):
         original_app_path = '/data/data/com.android.providers.telephony'
         sms_db_rel_file_path = os.path.join('databases', 'mmssms.db')
 
         original_sms_db_file_path = os.path.join(original_app_path, sms_db_rel_file_path)
         sms_db_file_path = os.path.join(extracted_data_dir_path, sms_db_rel_file_path)
-
-        if simple_output:
-            set_id_method(IDGenerator.METHOD_INT)
 
         source_objects = [create_file_object(sms_db_file_path, original_sms_db_file_path)]
 
