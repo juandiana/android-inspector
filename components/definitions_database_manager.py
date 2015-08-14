@@ -337,98 +337,78 @@ class DefinitionsDatabaseManager(object):
         c.execute(query)
 
         row = c.fetchone()
-        c.close()
 
-        if row is not None:
-            dt_id = str(row[0])
+        if row is None:
+            raise ValueError("'{0}' is not a defined DataType".format(data_type_name))
 
-            # Get data_source_type id using the data_source_type_name
-            query = 'SELECT id FROM data_source_types WHERE name = "{0}"'.format(data_source_type_name)
-            c = self.conn.cursor()
+        dt_id = str(row[0])
+
+        # Get data_source_type id using the data_source_type_name
+        query = 'SELECT id FROM data_source_types WHERE name = "{0}"'.format(data_source_type_name)
+
+        c.execute(query)
+
+        row = c.fetchone()
+
+        if row is None:
+            raise ValueError("'{0}' is not a defined DataSourceType".format(data_source_type_name))
+
+        dst_id = str(row[0])
+
+        # Insert a new row in operations table
+        query = """
+                INSERT INTO operations (name, data_type_id, data_source_type_id, inspector_name)
+                VALUES ("{0}", "{1}", "{2}", "{3}")
+                """.format(name, dt_id, dst_id, inspector_name)
+
+        try:
             c.execute(query)
+            self.conn.commit()
+        except sqlite3.IntegrityError:
+            raise RuntimeError("The opeartion \''{0}'\' could not be added.".format(name))
 
-            row = c.fetchone()
-            c.close()
+        # Get the id of the new operation
+        op_id = c.lastrowid
 
-            if row is not None:
-                dst_id = str(row[0])
+        # Insert the param_values
+        query = """
+                INSERT INTO data_source_params_values (operation_id, param_name, param_value)
+                VALUES ("{0}", "{1}", "{2}")
+                """
 
-                # Insert a new row in operations table
-                query = """
-                        INSERT INTO operations (name, data_type_id, data_source_type_id, inspector_name)
-                        VALUES ("{0}", "{1}", "{2}", "{3}")
-                        """.format(name, dt_id, dst_id, inspector_name)
+        for key in param_values:
+            try:
+                c.execute(query.format(op_id, key, param_values[key]))
+                self.conn.commit()
+            except sqlite3.IntegrityError:
+                raise RuntimeError(
+                    "The param_value \''{0}':'{1}'\' could not be inserted.".format(key, param_values[key]))
 
-                c = self.conn.cursor()
+        # Insert the device_models
+        query = 'INSERT INTO device_models (operation_id, model_number) VALUES ("{0}", "{1}")'
 
-                try:
-                    c.execute(query)
-                except sqlite3.IntegrityError:
-                    raise RuntimeError("The opeartion \''{0}'\' could not be added.".format(name))
+        for dm in device_models:
+            try:
+                c.execute(query.format(op_id, dm))
+                self.conn.commit()
+            except sqlite3.IntegrityError:
+                raise RuntimeError('The device_model \'"{0}"\' could not be inserted.'.format(dm))
 
-                c.close()
+        # Insert the android_versions
+        query = """
+                INSERT INTO android_versions (operation_id, from_version, to_version)
+                VALUES ("{0}", "{1}", "{2}")
+                """
 
-                # Get the id of the new operation
-                query = 'SELECT MAX(id) FROM operations'
+        for av in android_versions:
+            try:
+                c.execute(query.format(op_id, av[0], av[1]))
+                self.conn.commit()
+            except sqlite3.IntegrityError:
+                raise RuntimeError(
+                    'The android_version \'("{0}"-"{1}")\' could not be inserted.'.format(av[0], av[1]))
 
-                c = self.conn.cursor()
-
-                c.execute(query)
-                row = c.fetchone()
-                c.close()
-
-                op_id = row[0]
-
-                # Insert the param_values
-                query = """
-                        INSERT INTO data_source_params_values (operation_id, param_name, param_value)
-                        VALUES ("{0}", "{1}", "{2}")
-                        """
-
-                c = self.conn.cursor()
-
-                for key in param_values:
-                    try:
-                        c.execute(query.format(op_id, key, param_values[key]))
-                    except sqlite3.IntegrityError:
-                        raise RuntimeError(
-                            "The param_value \''{0}':'{1}'\' could not be inserted.".format(key, param_values[key]))
-
-                c.close()
-
-                # Insert the device_models
-                query = 'INSERT INTO device_models (operation_id, model_number) VALUES ("{0}", "{1}")'
-
-                c = self.conn.cursor()
-
-                for dm in device_models:
-                    try:
-                        c.execute(query.format(op_id, dm))
-                    except sqlite3.IntegrityError:
-                        raise RuntimeError('The device_model \'"{0}"\' could not be inserted.'.format(dm))
-
-                c.close()
-
-                # Insert the android_versions
-                query = """
-                        INSERT INTO android_versions (operation_id, from_version, to_version)
-                        VALUES ("{0}", "{1}", "{2}")
-                        """
-
-                c = self.conn.cursor()
-
-                for av in android_versions:
-                    try:
-                        c.execute(query.format(op_id, av[0], av[1]))
-                    except sqlite3.IntegrityError:
-                        raise RuntimeError(
-                            'The android_version \'("{0}"-"{1}")\' could not be inserted.'.format(av[0], av[1]))
-
-                c.close()
-            else:
-                raise ValueError("\''{0}'\' is not a defined DataSourceType".format(data_source_type_name))
-        else:
-            raise ValueError("\''{0}'\' is not a defined DataType".format(data_type_name))
+        c.close()
 
         return True
 
