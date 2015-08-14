@@ -23,7 +23,7 @@ class TestInspectors(unittest.TestCase):
         source_data_file_path = os.path.join(output_dir_path, SOURCE_DATA_FILE_NAME)
 
         # Execute the inspector
-        inspected_objects, source_objects = inspector.execute(self.device_info, output_dir_path, True)
+        inspected_objects, source_objects = inspector.execute(self.device_info, output_dir_path)
 
         # write the results
         write_observables_xml_file(Observables(inspected_objects), inspected_data_file_path, simple_output=True)

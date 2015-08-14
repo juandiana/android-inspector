@@ -37,7 +37,7 @@ class MockedEmailInspector(Inspector):
         email1.add_related(source_file, "Extracted_From", inline=False)
         return [email1]
 
-    def execute(self, device_info, extracted_data_dir_path, simple_output):
+    def execute(self, device_info, extracted_data_dir_path):
         source_objects = self.__get_source_objs()
         inspected_objects = self.__get_inspected_objs(source_objects[0])
         return inspected_objects, source_objects
