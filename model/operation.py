@@ -76,8 +76,7 @@ class Operation(object):
 
         self.extractor.execute(extracted_data_dir_path, self.param_values)
 
-        if simple_output:
-            set_id_method(IDGenerator.METHOD_INT)
+        set_id_method(IDGenerator.METHOD_INT if simple_output else IDGenerator.METHOD_UUID)
 
         inspected_objects, source_objects = self.inspector.execute(device_info, extracted_data_dir_path)
         inspected_observables = Observables(inspected_objects)
