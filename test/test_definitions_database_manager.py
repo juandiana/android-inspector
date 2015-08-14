@@ -97,10 +97,11 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
                                                      [('2.2.0', '4.4.4')]))
 
     def test_add_operation_with_non_existent_data_type(self):
-        self.assertRaises(ValueError, self.db_helper.add_operation,
-                          'newOperation', 'dt_non_existent', 'Application', 'new_op_inspector',
-                          {'package': 'com.example.email'}, ['GT-i9300'], [('2.2.0', '4.4.4')]
-                          )
+        self.assertRaisesRegexp(ValueError, "'dt_non_existent' is not a defined DataType",
+                                self.db_helper.add_operation,
+                                'newOperation', 'dt_non_existent', 'Application', 'new_op_inspector',
+                                {'package': 'com.example.email'}, ['GT-i9300'], [('2.2.0', '4.4.4')]
+                                )
 
     def assertEqualList(self, expected_result, result):
         self.assertEqual(len(result), len(expected_result))
