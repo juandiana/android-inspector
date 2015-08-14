@@ -1,22 +1,20 @@
 # coding=utf-8
 import os
+
 from cybox.common.vocabs import ObjectRelationship
-from cybox.utils import set_id_method, IDGenerator
+
 from model import Inspector
 from repositories.custom_cybox_objects.contact_object import Contact
 from util import inspectors_helper
 
 
 class ContactWhatsAppInspector(Inspector):
-    def execute(self, device_info, extracted_data_dir_path, simple_output):
+    def execute(self, device_info, extracted_data_dir_path):
         original_app_path = '/data/data/com.whatsapp'
         wa_db_rel_file_path = os.path.join('databases', 'wa.db')
 
         original_wa_db_file_path = os.path.join(original_app_path, wa_db_rel_file_path)
         wa_db_file_path = os.path.join(extracted_data_dir_path, wa_db_rel_file_path)
-
-        if simple_output:
-            set_id_method(IDGenerator.METHOD_INT)
 
         source_objects = [inspectors_helper.create_file_object(wa_db_file_path, original_wa_db_file_path)]
 
