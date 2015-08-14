@@ -368,12 +368,7 @@ class DefinitionsDatabaseManager(object):
             raise RuntimeError("The opeartion \''{0}'\' could not be added.".format(name))
 
         # Get the id of the new operation
-        query = 'SELECT MAX(id) FROM operations'
-
-        c.execute(query)
-        row = c.fetchone()
-
-        op_id = row[0]
+        op_id = c.lastrowid
 
         # Insert the param_values
         query = """
