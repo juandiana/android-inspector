@@ -104,6 +104,7 @@ class DefinitionsDatabaseManager(object):
             execute_sql_script(db_file_path, insert_operations_script_path)
 
         self.conn = sqlite3.connect(db_file_path)
+        self.conn.text_factory = str
         # TODO: Close connection, somewhere.
 
     def query_operations_info(self, data_type, data_source, device_info):
@@ -181,9 +182,9 @@ class DefinitionsDatabaseManager(object):
                 """, [id_])
 
         res = c1.fetchone()
-        data_type = str(res[0])
-        data_source_type = str(res[1])
-        op_name = str(res[2])
+        data_type = res[0]
+        data_source_type = res[1]
+        op_name = res[2]
 
         c1.close()
 
@@ -196,7 +197,7 @@ class DefinitionsDatabaseManager(object):
 
         param_values = {}
         for pv in c2:
-            param_values[str(pv[0])] = str(pv[1])
+            param_values[pv[0]] = pv[1]
 
         c2.close()
 
@@ -205,7 +206,7 @@ class DefinitionsDatabaseManager(object):
 
         supported_models = []
         for dm in c3:
-            supported_models.append(str(dm[0]))
+            supported_models.append(dm[0])
 
         c3.close()
 
@@ -214,7 +215,7 @@ class DefinitionsDatabaseManager(object):
 
         supported_os_versions = []
         for av in c4:
-            supported_os_versions.append((str(av[0]), str(av[1])))
+            supported_os_versions.append((av[0], av[1]))
 
         c4.close()
 
@@ -239,8 +240,8 @@ class DefinitionsDatabaseManager(object):
 
         row = c.fetchone()
         if row is not None:
-            extractor_id = str(row[1])
-            inspector_id = str(row[2])
+            extractor_id = row[1]
+            inspector_id = row[2]
 
             c2 = self.conn.cursor()
             c2.execute('SELECT param_name, param_value FROM data_source_params_values dspv WHERE dspv.operation_id = ?',
@@ -341,7 +342,7 @@ class DefinitionsDatabaseManager(object):
         if row is None:
             raise ValueError("'{0}' is not a defined DataType".format(data_type_name))
 
-        dt_id = str(row[0])
+        dt_id = row[0]
 
         # Get data_source_type id using the data_source_type_name
         query = 'SELECT id FROM data_source_types WHERE name = "{0}"'.format(data_source_type_name)
@@ -353,7 +354,7 @@ class DefinitionsDatabaseManager(object):
         if row is None:
             raise ValueError("'{0}' is not a defined DataSourceType".format(data_source_type_name))
 
-        dst_id = str(row[0])
+        dst_id = row[0]
 
         # Insert a new row in operations table
         query = """
