@@ -30,9 +30,9 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
                                   [('2.0', '4.4.4')])
         self.op_info_sms_aosp_sms = self.info
 
-    def tearDown(self):
-        self.db_helper.conn.close()
-        os.remove(os.path.join('test', 'test_definitions.db'))
+    # def tearDown(self):
+    #     self.db_helper.conn.close()
+    #     os.remove(os.path.join('test', 'test_definitions.db'))
 
     def test_query_operation_for_email_message(self):
         result = self.db_helper.query_operations_info('EmailMessage', self.ds_aosp_email, self.dv_info)
@@ -97,11 +97,18 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
                                                      [('2.2.0', '4.4.4')]))
 
     def test_add_operation_with_non_existent_data_type(self):
-        self.assertRaisesRegexp(ValueError, "'dt_non_existent' is not a defined DataType",
+        self.assertRaisesRegexp(ValueError, "'dt_non_existent' is not a defined DataType.",
                                 self.db_helper.add_operation,
                                 'newOperation', 'dt_non_existent', 'Application', 'new_op_inspector',
                                 {'package': 'com.example.email'}, ['GT-i9300'], [('2.2.0', '4.4.4')]
                                 )
+
+    def test_remove_operation(self):
+        self.assertTrue(self.db_helper.remove_operation('newOperation'))
+
+    def test_remove_operation_with_non_existing_operation(self):
+        self.assertRaisesRegexp(ValueError, "'non_existent' is not a defined Operation.",
+                                self.db_helper.remove_operation, 'non_existent')
 
     def assertEqualList(self, expected_result, result):
         self.assertEqual(len(result), len(expected_result))

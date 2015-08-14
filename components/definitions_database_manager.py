@@ -222,6 +222,16 @@ class DefinitionsDatabaseManager(object):
         return OperationInfo(op_name, data_type, DataSource(data_source_type, param_values),
                              supported_models, supported_os_versions)
 
+    def get_operation_inspector_name(self, op_name):
+        c = self.conn.cursor()
+        c.execute('SELECT o.inspector_name FROM operations AS o WHERE o.name = ?', [op_name])
+
+        row = c.fetchone()
+        if row is None:
+            return
+
+        return row[0]
+
     def get_operation_exec_info(self, name):
         """
         :type name: string
@@ -340,7 +350,7 @@ class DefinitionsDatabaseManager(object):
         row = c.fetchone()
 
         if row is None:
-            raise ValueError("'{0}' is not a defined DataType".format(data_type_name))
+            raise ValueError("'{0}' is not a defined DataType.".format(data_type_name))
 
         dt_id = row[0]
 
@@ -352,7 +362,7 @@ class DefinitionsDatabaseManager(object):
         row = c.fetchone()
 
         if row is None:
-            raise ValueError("'{0}' is not a defined DataSourceType".format(data_source_type_name))
+            raise ValueError("'{0}' is not a defined DataSourceType.".format(data_source_type_name))
 
         dst_id = row[0]
 
@@ -414,7 +424,31 @@ class DefinitionsDatabaseManager(object):
         return True
 
     def remove_operation(self, name):
-        pass
+        # Get operation id
+        query = 'SELECT id FROM operations WHERE name = "{0}"'.format(name)
+        c = self.conn.cursor()
+        c.execute(query)
+
+        row = c.fetchone()
+
+        if row is None:
+            raise ValueError("'{0}' is not a defined Operation.".format(name))
+
+        op_id = row[0]
+
+        query = """
+                DELETE FROM device_models WHERE operation_id = '{0}';
+                DELETE FROM android_versions WHERE operation_id = '{0}';
+                DELETE FROM data_source_params_values WHERE operation_id = '{0}';
+                DELETE FROM operations WHERE id = '{0}';
+                """.format(op_id)
+
+        try:
+            c.executescript(query)
+        except sqlite3.IntegrityError:
+            RuntimeError('The operation \'"{0}"\' could not be deleted.'.format(name))
+
+        return True
 
     def add_data_type(self, name, cybox_object_name):
         pass
