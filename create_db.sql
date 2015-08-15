@@ -18,9 +18,9 @@ CREATE TABLE required_params (
 
 CREATE TABLE operations (
   id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
   data_type_id        INTEGER NOT NULL REFERENCES data_types (id),
   data_source_type_id INTEGER NOT NULL REFERENCES data_source_types (id),
-  name                TEXT,
   inspector_name      TEXT
 );
 
