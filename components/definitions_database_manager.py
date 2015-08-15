@@ -223,12 +223,16 @@ class DefinitionsDatabaseManager(object):
                              supported_models, supported_os_versions)
 
     def get_operation_inspector_name(self, op_name):
+        """
+        :type op_name: string
+        :rtype: string
+        """
         c = self.conn.cursor()
         c.execute('SELECT o.inspector_name FROM operations AS o WHERE o.name = ?', [op_name])
 
         row = c.fetchone()
         if row is None:
-            return
+            return None
 
         return row[0]
 
@@ -331,15 +335,14 @@ class DefinitionsDatabaseManager(object):
     def add_operation(self, name, data_type_name, data_source_type_name, inspector_name, param_values, device_models,
                       android_versions):
         """
-
-        :param name: string
-        :param data_type_name: string
-        :param data_source_type_name: string
-        :param inspector_name: string
-        :param param_values: dict(string)
-        :param device_models: list(string)
-        :param android_versions: list((string, string))
-        :return: :raise RuntimeError:
+        :type name: string
+        :type data_type_name: string
+        :type data_source_type_name: string
+        :type inspector_name: string
+        :type param_values: dict(string)
+        :type device_models: list(string)
+        :type android_versions: list((string, string))
+        :rtype: bool
         """
 
         # Get data_type id using the data_type_name
@@ -425,8 +428,8 @@ class DefinitionsDatabaseManager(object):
 
     def remove_operation(self, name):
         """
-        :param name: string
-        :return: :raise ValueError: bool
+        :type name: string
+        :rtype: bool
         """
 
         # Get operation id
@@ -458,8 +461,9 @@ class DefinitionsDatabaseManager(object):
 
     def add_data_type(self, name, cybox_object_name):
         """
-        :param name: string
-        :param cybox_object_name: string
+        :type name:string
+        :type cybox_object_name: string
+        :rtype: bool
         """
         query = 'SELECT 1 FROM data_types dt WHERE dt.name = "{0}"'.format(name)
 
@@ -487,8 +491,8 @@ class DefinitionsDatabaseManager(object):
 
     def remove_data_type(self, name):
         """
-        :param name: string
-        :return: :raise ValueError: bool
+        :type name: string
+        :rtype: bool
         """
         # Check if the data_type exists
         query = """
@@ -530,15 +534,16 @@ class DefinitionsDatabaseManager(object):
 
     def add_data_source_type(self, name, extractor_name):
         """
-        :param name: string
-        :param extractor_name: string
+        :type name: string
+        :type extractor_name: string
+        :rtype : bool
         """
         pass
 
     def remove_data_source_type(self, name):
         """
-        :param name: string
-        :return: :raise ValueError: bool
+        :type name: string
+        :rtype: bool
         """
         pass
 

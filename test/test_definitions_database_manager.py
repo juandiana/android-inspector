@@ -104,7 +104,7 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
                                 )
 
     def test_remove_operation(self):
-        self.assertTrue(self.db_helper.remove_operation('newOperation'))
+        self.assertTrue(self.db_helper.remove_operation('EmailMessageAOSPEmail'))
 
     def test_remove_operation_with_non_existing_operation(self):
         self.assertRaisesRegexp(ValueError, "'non_existent' is not a defined Operation.",
@@ -114,11 +114,13 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         self.assertTrue(self.db_helper.add_data_type('newDataType', 'newCyboxObject'))
 
     def test_add_data_type_that_already_exists(self):
-        self.assertRaisesRegexp(ValueError, "The data_type 'newDataType' already exists.",
-                                self.db_helper.add_data_type, 'newDataType', 'newCyboxObject')
+        self.db_helper.add_data_type('existingDataType', 'existingCyboxObject')
+        self.assertRaisesRegexp(ValueError, "The data_type 'existingDataType' already exists.",
+                                self.db_helper.add_data_type, 'existingDataType', 'existingCyboxObject')
 
     def test_remove_data_type(self):
-        self.assertTrue(self.db_helper.remove_data_type('newDataType'))
+        self.db_helper.add_data_type('removeDataType', 'removeCyboxObject')
+        self.assertTrue(self.db_helper.remove_data_type('removeDataType'))
 
     def test_remove_data_type_with_non_existing_data_type(self):
         self.assertRaisesRegexp(ValueError, "'non_existent' is not a defined DataType.",
