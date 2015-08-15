@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 from os import path
 import sqlite3
 
-from model import OperationInfo, DataSource
+from model import OperationInfo, DataSource, OperationError
 
 
 class Filter(object):
