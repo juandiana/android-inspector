@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 from os import path
 import sqlite3
 
-from model import OperationInfo, DataSource, OperationError
+from model import OperationInfo, DataSource
 
 
 class Filter(object):
@@ -307,7 +307,7 @@ class DefinitionsDatabaseManager(object):
         c = self.conn.cursor()
         c.execute("""
                 SELECT param_name FROM data_source_types AS dst, required_params AS rp
-                WHERE dst.id = rp.data_source_type_id and dst.name = ?
+                WHERE dst.id = rp.data_source_type_id AND dst.name = ?
                 """, [data_source.type_])
 
         for row in c:
