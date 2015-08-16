@@ -101,14 +101,14 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         os_versions = [('2.2.0', '4.4.4')]
 
         ds = DataSource(dst_name, param_values)
-        dev_info = DeviceInfo(dev_models[0], '4.3')
+        dev_info = DeviceInfo('4.3', dev_models[0])
 
         self.assertTrue(self.db_helper.add_operation(op_name, dt_name, dst_name, inspector_name,
                                                      param_values, dev_models, os_versions))
 
         result = self.db_helper.query_operations_info(dt_name, ds, dev_info)
 
-        self.assertTrue(result.__eq__(OperationInfo(op_name, dt_name, ds, dev_models, os_versions)))
+        self.assertEqualList(result, [OperationInfo(op_name, dt_name, ds, dev_models, os_versions)])
 
     def test_add_operation_with_non_existent_data_type(self):
         self.assertRaisesRegexp(ValueError, "'dt_non_existent' is not a defined DataType.",
@@ -123,7 +123,9 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
 
         ext_id, ins_id, params = self.db_helper.get_operation_exec_info(op_name)
 
-        self.assertTrue(ext_id == '' and ins_id == '' and params == {})
+        self.assertEqual(ext_id, '')
+        self.assertEqual(ins_id, '')
+        self.assertEqual(params, {})
 
     def test_remove_operation_with_non_existing_operation(self):
         self.assertRaisesRegexp(ValueError, "'non_existent' is not a defined Operation.",
@@ -145,7 +147,7 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         data_type_name = 'removeDataType'
         self.db_helper.add_data_type(data_type_name, 'removeCyboxObject')
         self.assertTrue(self.db_helper.remove_data_type(data_type_name))
-        self.assertTrue(not self.db_helper.exists_data_type(data_type_name))
+        self.assertFalse(self.db_helper.exists_data_type(data_type_name))
 
     def test_remove_data_type_with_non_existing_data_type(self):
         self.assertRaisesRegexp(ValueError, "'non_existent' is not a defined DataType.",
