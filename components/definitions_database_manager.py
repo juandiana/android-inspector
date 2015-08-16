@@ -370,13 +370,13 @@ class DefinitionsDatabaseManager(object):
         dst_id = row[0]
 
         # Insert a new row in operations table
-        query = """
+        insert = """
                 INSERT INTO operations (name, data_type_id, data_source_type_id, inspector_name)
                 VALUES ("{0}", "{1}", "{2}", "{3}")
                 """.format(name, dt_id, dst_id, inspector_name)
 
         try:
-            c.execute(query)
+            c.execute(insert)
         except sqlite3.IntegrityError:
             self.conn.rollback()
             raise RuntimeError("The opeartion \''{0}'\' could not be added.".format(name))
@@ -385,38 +385,38 @@ class DefinitionsDatabaseManager(object):
         op_id = c.lastrowid
 
         # Insert the param_values
-        query = """
+        insert = """
                 INSERT INTO data_source_params_values (operation_id, param_name, param_value)
                 VALUES ("{0}", "{1}", "{2}")
                 """
 
         for key in param_values:
             try:
-                c.execute(query.format(op_id, key, param_values[key]))
+                c.execute(insert.format(op_id, key, param_values[key]))
             except sqlite3.IntegrityError:
                 self.conn.rollback()
                 raise RuntimeError(
                     "The param_value \''{0}':'{1}'\' could not be inserted.".format(key, param_values[key]))
 
         # Insert the device_models
-        query = 'INSERT INTO device_models (operation_id, model_number) VALUES ("{0}", "{1}")'
+        insert = 'INSERT INTO device_models (operation_id, model_number) VALUES ("{0}", "{1}")'
 
         for dm in device_models:
             try:
-                c.execute(query.format(op_id, dm))
+                c.execute(insert.format(op_id, dm))
             except sqlite3.IntegrityError:
                 self.conn.rollback()
                 raise RuntimeError('The device_model \'"{0}"\' could not be inserted.'.format(dm))
 
         # Insert the android_versions
-        query = """
+        insert = """
                 INSERT INTO android_versions (operation_id, from_version, to_version)
                 VALUES ("{0}", "{1}", "{2}")
                 """
 
         for av in android_versions:
             try:
-                c.execute(query.format(op_id, av[0], av[1]))
+                c.execute(insert.format(op_id, av[0], av[1]))
             except sqlite3.IntegrityError:
                 self.conn.rollback()
                 raise RuntimeError(
@@ -445,7 +445,7 @@ class DefinitionsDatabaseManager(object):
 
         op_id = row[0]
 
-        query = """
+        deletes = """
                 DELETE FROM device_models WHERE operation_id = '{0}';
                 DELETE FROM android_versions WHERE operation_id = '{0}';
                 DELETE FROM data_source_params_values WHERE operation_id = '{0}';
@@ -453,7 +453,7 @@ class DefinitionsDatabaseManager(object):
                 """.format(op_id)
 
         try:
-            c.executescript(query)
+            c.executescript(deletes)
         except sqlite3.IntegrityError:
             self.conn.rollback()
             RuntimeError("The operation '{0}' could not be deleted.".format(name))
@@ -477,14 +477,14 @@ class DefinitionsDatabaseManager(object):
         if row is not None:
             raise ValueError("The data_type '{0}' already exists.".format(name))
 
-        query = """
+        insert = """
                 INSERT INTO data_types (name, cybox_object_name)
                 VALUES ("{0}", "{1}")
                 """.format(name, cybox_object_name)
 
         c = self.conn.cursor()
         try:
-            c.execute(query)
+            c.execute(insert)
         except sqlite3.IntegrityError:
             self.conn.rollback()
             raise RuntimeError("The data_type '{0}' could not be added.".format(name))
@@ -525,10 +525,10 @@ class DefinitionsDatabaseManager(object):
                              "There are existing operations to extract this data_type.".format(name))
 
         # Delete the data_type
-        query = "DELETE FROM data_types WHERE name = '{0}'".format(name)
+        delete = "DELETE FROM data_types WHERE name = '{0}'".format(name)
 
         try:
-            c.execute(query)
+            c.execute(delete)
         except sqlite3.IntegrityError:
             self.conn.rollback()
             raise RuntimeError("The data_type '{0}' could not be deleted.".format(name))
