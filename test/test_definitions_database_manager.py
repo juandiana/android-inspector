@@ -114,13 +114,16 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         self.assertTrue(self.db_helper.add_data_type('newDataType', 'newCyboxObject'))
 
     def test_add_data_type_that_already_exists(self):
-        self.db_helper.add_data_type('existingDataType', 'existingCyboxObject')
-        self.assertRaisesRegexp(ValueError, "The data_type 'existingDataType' already exists.",
-                                self.db_helper.add_data_type, 'existingDataType', 'existingCyboxObject')
+        data_type_name = 'existingDataType'
+        cybox_object_name = 'existingCyboxObject'
+        self.db_helper.add_data_type(data_type_name, cybox_object_name)
+        self.assertRaisesRegexp(ValueError, "The data_type '{0}' already exists.".format(data_type_name),
+                                self.db_helper.add_data_type, data_type_name, cybox_object_name)
 
     def test_remove_data_type(self):
-        self.db_helper.add_data_type('removeDataType', 'removeCyboxObject')
-        self.assertTrue(self.db_helper.remove_data_type('removeDataType'))
+        data_type_name = 'removeDataType'
+        self.db_helper.add_data_type(data_type_name, 'removeCyboxObject')
+        self.assertTrue(self.db_helper.remove_data_type(data_type_name))
 
     def test_remove_data_type_with_non_existing_data_type(self):
         self.assertRaisesRegexp(ValueError, "'non_existent' is not a defined DataType.",
@@ -132,8 +135,10 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
                                 self.db_helper.remove_data_type, 'EmailMessage')
 
     def test_add_data_source_type(self):
-        self.assertTrue(self.db_helper.add_data_source_type('newDataSourceType', 'newExtractor',
-                                                            ['param1', 'param2']))
+        data_source_type_name = 'newDataSourceType'
+        extractor_name = 'newExtractor'
+        param_values = ['param1', 'param2']
+        self.assertTrue(self.db_helper.add_data_source_type(data_source_type_name, extractor_name, param_values))
 
         rows = self.db_helper.conn.execute(
             """
@@ -141,26 +146,30 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
             FROM data_source_types dst, required_params rp
             WHERE dst.id = rp.data_source_type_id AND dst.name = '{0}'
             AND dst.extractor_name = '{1}'
-            """.format('newDataSourceType', 'newExtractor')
+            """.format(data_source_type_name, extractor_name)
         )
 
         params = []
         for rp in rows:
             params.append(rp[0])
 
-        self.assertEqualList(['param1', 'param2'], params)
+        self.assertEqualList(param_values, params)
 
     def test_add_data_source_type_that_already_exists(self):
-        self.db_helper.add_data_source_type('existing', 'existingExtractor', ['param1'])
-        self.assertRaisesRegexp(ValueError, "The data_source_type 'existing' already exists.",
-                                self.db_helper.add_data_source_type, 'existing', 'existingExtractor', ['param1'])
+        data_source_type_name = 'existing'
+        extractor_name = 'existingExtractor'
+        params = ['param1']
+        self.db_helper.add_data_source_type(data_source_type_name, extractor_name, params)
+        self.assertRaisesRegexp(ValueError, "The data_source_type '{0}' already exists.".format(data_source_type_name),
+                                self.db_helper.add_data_source_type, data_source_type_name, extractor_name, params)
 
     def test_remove_data_source_type(self):
-        self.db_helper.add_data_source_type('removeDataType', 'removeExtractor', ['param1'])
-        self.assertTrue(self.db_helper.remove_data_source_type('removeDataType'))
+        data_source_type_name = 'removeDataType'
+        self.db_helper.add_data_source_type(data_source_type_name, 'removeExtractor', ['param1'])
+        self.assertTrue(self.db_helper.remove_data_source_type(data_source_type_name))
 
         c = self.db_helper.conn.cursor()
-        c.execute('SELECT * FROM data_source_types WHERE name = "{0}"'.format('removeDataType'))
+        c.execute('SELECT * FROM data_source_types WHERE name = "{0}"'.format(data_source_type_name))
 
         dst = c.fetchone()
 
