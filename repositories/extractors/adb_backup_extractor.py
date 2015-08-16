@@ -14,24 +14,40 @@ from model import Extractor, OperationError
 
 class AdbBackupExtractor(Extractor):
     @staticmethod
+    def get_ab(ab_path, app_package_name):
+        device = adb.get_device()
+        # Wait 500ms to make sure the device is ready.
+        time.sleep(0.5)
+        device.backup(app_package_name, ab_path)
+
+    @staticmethod
     def _unpack_ab(ab_path, output_dir_path):
         """
         Unpacks an android backup file to the current directory.
 
         :param ab_path: Path to the android backup file.
         """
-        content = ''
+        content = None
+        is_compressed = False
         with open(ab_path, mode='rb') as f:
             # The android backup format consists of a 24-byte header, followed by the content compressed.
             header = f.read(24)
             magic, format_version, compression_flag, encryption_algorithm = header.splitlines()
+
             if magic != 'ANDROID BACKUP' or format_version != '1':
                 raise RuntimeError('Invalid android backup file format')
+
+            is_compressed = compression_flag == '1'
+
             if encryption_algorithm != 'none':
                 raise RuntimeError('Android backup file is encrypted')
+
             content = f.read()
 
-        tar_bytestream = zlib.decompress(content)
+        if content is None:
+            raise OperationError('Extraction failed. Could not unpack {}.'.format(ab_path))
+
+        tar_bytestream = zlib.decompress(content) if is_compressed else content
         with tarfile.open(fileobj=io.BytesIO(tar_bytestream)) as tar:
             tar.extractall(path=output_dir_path)
 
@@ -64,13 +80,10 @@ class AdbBackupExtractor(Extractor):
             shutil.rmtree(extracted_data_dir_path)
 
         try:
-            device = adb.get_device()
-            # Wait 500ms to make sure the device is ready.
-            time.sleep(0.5)
-
-            print "Getting the android backup file for '{}'. Please press 'Back up my data' on the device..." \
+            print "Getting the android backup file for '{}'...\n" \
+                  "** Please press 'Back up my data' on the device to continue **" \
                 .format(app_package_name)
-            device.backup(app_package_name, ab_path)
+            self.get_ab(ab_path, app_package_name)
 
             print 'Unpacking the backup file...'
             self._unpack_ab(ab_path, tmp_dir_path)
