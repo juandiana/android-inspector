@@ -1,5 +1,6 @@
 # coding=utf-8
 
+
 class DataSource(object):
     def __init__(self, type_, info):
         self.type_ = type_

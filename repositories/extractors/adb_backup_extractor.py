@@ -20,6 +20,7 @@ class AdbBackupExtractor(Extractor):
 
         :param ab_path: Path to the android backup file.
         """
+        content = ''
         with open(ab_path, mode='rb') as f:
             # The android backup format consists of a 24-byte header, followed by the content compressed.
             header = f.read(24)

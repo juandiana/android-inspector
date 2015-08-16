@@ -57,7 +57,7 @@ class TestOperationsManager(unittest.TestCase):
         data_source = None
         device_info = DeviceInfo('4.4.4', 'XT1053')
 
-        op_info = self.real_operations_manager.get_operations_info(data_type, None, device_info)
+        op_info = self.real_operations_manager.get_operations_info(data_type, data_source, device_info)
         self.assertEqual(op_info, [])
 
     def tearDown(self):
