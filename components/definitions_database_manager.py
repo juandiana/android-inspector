@@ -221,6 +221,20 @@ class DefinitionsDatabaseManager(object):
         return OperationInfo(op_name, data_type, DataSource(data_source_type, param_values),
                              supported_models, supported_os_versions)
 
+    def get_operation_inspector_name(self, op_name):
+        """
+        :type op_name: string
+        :rtype: string
+        """
+        c = self.conn.cursor()
+        c.execute('SELECT o.inspector_name FROM operations AS o WHERE o.name = ?', [op_name])
+
+        row = c.fetchone()
+        if row is None:
+            return None
+
+        return row[0]
+
     def get_operation_exec_info(self, name):
         """
         :type name: string
@@ -320,15 +334,14 @@ class DefinitionsDatabaseManager(object):
     def add_operation(self, name, data_type_name, data_source_type_name, inspector_name, param_values, device_models,
                       android_versions):
         """
-
-        :param name: string
-        :param data_type_name: string
-        :param data_source_type_name: string
-        :param inspector_name: string
-        :param param_values: dict(string)
-        :param device_models: list(string)
-        :param android_versions: list((string, string))
-        :return: :raise RuntimeError:
+        :type name: string
+        :type data_type_name: string
+        :type data_source_type_name: string
+        :type inspector_name: string
+        :type param_values: dict(string)
+        :type device_models: list(string)
+        :type android_versions: list((string, string))
+        :rtype: bool
         """
 
         # Get data_type id using the data_type_name
@@ -339,7 +352,7 @@ class DefinitionsDatabaseManager(object):
         row = c.fetchone()
 
         if row is None:
-            raise ValueError("'{0}' is not a defined DataType".format(data_type_name))
+            raise ValueError("'{0}' is not a defined DataType.".format(data_type_name))
 
         dt_id = row[0]
 
@@ -351,80 +364,191 @@ class DefinitionsDatabaseManager(object):
         row = c.fetchone()
 
         if row is None:
-            raise ValueError("'{0}' is not a defined DataSourceType".format(data_source_type_name))
+            raise ValueError("'{0}' is not a defined DataSourceType.".format(data_source_type_name))
 
         dst_id = row[0]
 
         # Insert a new row in operations table
-        query = """
+        insert = """
                 INSERT INTO operations (name, data_type_id, data_source_type_id, inspector_name)
                 VALUES ("{0}", "{1}", "{2}", "{3}")
                 """.format(name, dt_id, dst_id, inspector_name)
 
         try:
-            c.execute(query)
-            self.conn.commit()
+            c.execute(insert)
         except sqlite3.IntegrityError:
+            self.conn.rollback()
             raise RuntimeError("The opeartion \''{0}'\' could not be added.".format(name))
 
         # Get the id of the new operation
         op_id = c.lastrowid
 
         # Insert the param_values
-        query = """
+        insert = """
                 INSERT INTO data_source_params_values (operation_id, param_name, param_value)
                 VALUES ("{0}", "{1}", "{2}")
                 """
 
         for key in param_values:
             try:
-                c.execute(query.format(op_id, key, param_values[key]))
-                self.conn.commit()
+                c.execute(insert.format(op_id, key, param_values[key]))
             except sqlite3.IntegrityError:
+                self.conn.rollback()
                 raise RuntimeError(
                     "The param_value \''{0}':'{1}'\' could not be inserted.".format(key, param_values[key]))
 
         # Insert the device_models
-        query = 'INSERT INTO device_models (operation_id, model_number) VALUES ("{0}", "{1}")'
+        insert = 'INSERT INTO device_models (operation_id, model_number) VALUES ("{0}", "{1}")'
 
         for dm in device_models:
             try:
-                c.execute(query.format(op_id, dm))
-                self.conn.commit()
+                c.execute(insert.format(op_id, dm))
             except sqlite3.IntegrityError:
+                self.conn.rollback()
                 raise RuntimeError('The device_model \'"{0}"\' could not be inserted.'.format(dm))
 
         # Insert the android_versions
-        query = """
+        insert = """
                 INSERT INTO android_versions (operation_id, from_version, to_version)
                 VALUES ("{0}", "{1}", "{2}")
                 """
 
         for av in android_versions:
             try:
-                c.execute(query.format(op_id, av[0], av[1]))
-                self.conn.commit()
+                c.execute(insert.format(op_id, av[0], av[1]))
             except sqlite3.IntegrityError:
+                self.conn.rollback()
                 raise RuntimeError(
                     'The android_version \'("{0}"-"{1}")\' could not be inserted.'.format(av[0], av[1]))
 
+        self.conn.commit()
         c.close()
 
         return True
 
     def remove_operation(self, name):
-        pass
+        """
+        :type name: string
+        :rtype: bool
+        """
+
+        # Get operation id
+        query = 'SELECT id FROM operations WHERE name = "{0}"'.format(name)
+        c = self.conn.cursor()
+        c.execute(query)
+
+        row = c.fetchone()
+
+        if row is None:
+            raise ValueError("'{0}' is not a defined Operation.".format(name))
+
+        op_id = row[0]
+
+        deletes = """
+                DELETE FROM device_models WHERE operation_id = '{0}';
+                DELETE FROM android_versions WHERE operation_id = '{0}';
+                DELETE FROM data_source_params_values WHERE operation_id = '{0}';
+                DELETE FROM operations WHERE id = '{0}';
+                """.format(op_id)
+
+        try:
+            c.executescript(deletes)
+        except sqlite3.IntegrityError:
+            self.conn.rollback()
+            RuntimeError("The operation '{0}' could not be deleted.".format(name))
+
+        self.conn.commit()
+        c.close()
+        return True
 
     def add_data_type(self, name, cybox_object_name):
-        pass
+        """
+        :type name:string
+        :type cybox_object_name: string
+        :rtype: bool
+        """
+        query = 'SELECT 1 FROM data_types dt WHERE dt.name = "{0}"'.format(name)
+
+        c = self.conn.cursor()
+        c.execute(query)
+        row = c.fetchone()
+
+        if row is not None:
+            raise ValueError("The data_type '{0}' already exists.".format(name))
+
+        insert = """
+                INSERT INTO data_types (name, cybox_object_name)
+                VALUES ("{0}", "{1}")
+                """.format(name, cybox_object_name)
+
+        c = self.conn.cursor()
+        try:
+            c.execute(insert)
+        except sqlite3.IntegrityError:
+            self.conn.rollback()
+            raise RuntimeError("The data_type '{0}' could not be added.".format(name))
+
+        self.conn.commit()
+        c.close()
+        return True
 
     def remove_data_type(self, name):
-        pass
+        """
+        :type name: string
+        :rtype: bool
+        """
+        # Check if the data_type exists
+        query = """
+                SELECT 1 FROM data_types dt WHERE dt.name = '{0}'
+                """.format(name)
+
+        c = self.conn.cursor()
+        c.execute(query)
+        row = c.fetchone()
+
+        if row is None:
+            raise ValueError("'{0}' is not a defined DataType.".format(name))
+
+        # Check if there are operations using this data_type
+        query = """
+                SELECT 1 FROM operations o, data_types dt
+                WHERE o.data_type_id == dt.id AND dt.name = '{0}'
+                """.format(name)
+
+        c = self.conn.cursor()
+        c.execute(query)
+        row = c.fetchone()
+
+        if row is not None:
+            raise ValueError("The data_type '{0}' cannot be deleted. "
+                             "There are existing operations to extract this data_type.".format(name))
+
+        # Delete the data_type
+        delete = "DELETE FROM data_types WHERE name = '{0}'".format(name)
+
+        try:
+            c.execute(delete)
+        except sqlite3.IntegrityError:
+            self.conn.rollback()
+            raise RuntimeError("The data_type '{0}' could not be deleted.".format(name))
+
+        self.conn.commit()
+        c.close()
+        return True
 
     def add_data_source_type(self, name, extractor_name):
+        """
+        :type name: string
+        :type extractor_name: string
+        :rtype : bool
+        """
         pass
 
     def remove_data_source_type(self, name):
+        """
+        :type name: string
+        :rtype: bool
+        """
         pass
 
 

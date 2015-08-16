@@ -97,11 +97,39 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
                                                      [('2.2.0', '4.4.4')]))
 
     def test_add_operation_with_non_existent_data_type(self):
-        self.assertRaisesRegexp(ValueError, "'dt_non_existent' is not a defined DataType",
+        self.assertRaisesRegexp(ValueError, "'dt_non_existent' is not a defined DataType.",
                                 self.db_helper.add_operation,
                                 'newOperation', 'dt_non_existent', 'Application', 'new_op_inspector',
                                 {'package': 'com.example.email'}, ['GT-i9300'], [('2.2.0', '4.4.4')]
                                 )
+
+    def test_remove_operation(self):
+        self.assertTrue(self.db_helper.remove_operation('EmailMessageAOSPEmail'))
+
+    def test_remove_operation_with_non_existing_operation(self):
+        self.assertRaisesRegexp(ValueError, "'non_existent' is not a defined Operation.",
+                                self.db_helper.remove_operation, 'non_existent')
+
+    def test_add_data_type(self):
+        self.assertTrue(self.db_helper.add_data_type('newDataType', 'newCyboxObject'))
+
+    def test_add_data_type_that_already_exists(self):
+        self.db_helper.add_data_type('existingDataType', 'existingCyboxObject')
+        self.assertRaisesRegexp(ValueError, "The data_type 'existingDataType' already exists.",
+                                self.db_helper.add_data_type, 'existingDataType', 'existingCyboxObject')
+
+    def test_remove_data_type(self):
+        self.db_helper.add_data_type('removeDataType', 'removeCyboxObject')
+        self.assertTrue(self.db_helper.remove_data_type('removeDataType'))
+
+    def test_remove_data_type_with_non_existing_data_type(self):
+        self.assertRaisesRegexp(ValueError, "'non_existent' is not a defined DataType.",
+                                self.db_helper.remove_data_type, 'non_existent')
+
+    def test_remove_data_type_with_used_by_operation_data_type(self):
+        self.assertRaisesRegexp(ValueError, "The data_type 'EmailMessage' cannot be deleted. "
+                                            "There are existing operations to extract this data_type.",
+                                self.db_helper.remove_data_type, 'EmailMessage')
 
     def assertEqualList(self, expected_result, result):
         self.assertEqual(len(result), len(expected_result))
