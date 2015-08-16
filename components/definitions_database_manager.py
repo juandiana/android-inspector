@@ -377,8 +377,8 @@ class DefinitionsDatabaseManager(object):
 
         try:
             c.execute(query)
-            self.conn.commit()
         except sqlite3.IntegrityError:
+            self.conn.rollback()
             raise RuntimeError("The opeartion \''{0}'\' could not be added.".format(name))
 
         # Get the id of the new operation
@@ -393,8 +393,8 @@ class DefinitionsDatabaseManager(object):
         for key in param_values:
             try:
                 c.execute(query.format(op_id, key, param_values[key]))
-                self.conn.commit()
             except sqlite3.IntegrityError:
+                self.conn.rollback()
                 raise RuntimeError(
                     "The param_value \''{0}':'{1}'\' could not be inserted.".format(key, param_values[key]))
 
@@ -404,8 +404,8 @@ class DefinitionsDatabaseManager(object):
         for dm in device_models:
             try:
                 c.execute(query.format(op_id, dm))
-                self.conn.commit()
             except sqlite3.IntegrityError:
+                self.conn.rollback()
                 raise RuntimeError('The device_model \'"{0}"\' could not be inserted.'.format(dm))
 
         # Insert the android_versions
@@ -417,11 +417,12 @@ class DefinitionsDatabaseManager(object):
         for av in android_versions:
             try:
                 c.execute(query.format(op_id, av[0], av[1]))
-                self.conn.commit()
             except sqlite3.IntegrityError:
+                self.conn.rollback()
                 raise RuntimeError(
                     'The android_version \'("{0}"-"{1}")\' could not be inserted.'.format(av[0], av[1]))
 
+        self.conn.commit()
         c.close()
 
         return True
@@ -454,8 +455,10 @@ class DefinitionsDatabaseManager(object):
         try:
             c.executescript(query)
         except sqlite3.IntegrityError:
+            self.conn.rollback()
             RuntimeError("The operation '{0}' could not be deleted.".format(name))
 
+        self.conn.commit()
         c.close()
         return True
 
@@ -482,10 +485,11 @@ class DefinitionsDatabaseManager(object):
         c = self.conn.cursor()
         try:
             c.execute(query)
-            self.conn.commit()
         except sqlite3.IntegrityError:
+            self.conn.rollback()
             raise RuntimeError("The data_type '{0}' could not be added.".format(name))
 
+        self.conn.commit()
         c.close()
         return True
 
@@ -525,10 +529,11 @@ class DefinitionsDatabaseManager(object):
 
         try:
             c.execute(query)
-            self.conn.commit()
         except sqlite3.IntegrityError:
+            self.conn.rollback()
             raise RuntimeError("The data_type '{0}' could not be deleted.".format(name))
 
+        self.conn.commit()
         c.close()
         return True
 
