@@ -481,7 +481,6 @@ class DefinitionsDatabaseManager(object):
                 VALUES ("{0}", "{1}")
                 """.format(name, cybox_object_name)
 
-        c = self.conn.cursor()
         try:
             c.execute(insert)
         except sqlite3.IntegrityError:
@@ -515,7 +514,6 @@ class DefinitionsDatabaseManager(object):
                 WHERE o.data_type_id == dt.id AND dt.name = '{0}'
                 """.format(name)
 
-        c = self.conn.cursor()
         c.execute(query)
         row = c.fetchone()
 
@@ -536,20 +534,103 @@ class DefinitionsDatabaseManager(object):
         c.close()
         return True
 
-    def add_data_source_type(self, name, extractor_name):
+    def add_data_source_type(self, name, extractor_name, required_params):
+        # Check if the data_source_type already exists.
         """
         :type name: string
         :type extractor_name: string
+        :type required_params: dict(string)
         :rtype : bool
         """
-        pass
+        query = 'SELECT 1 FROM data_source_types dt WHERE dt.name = "{0}"'.format(name)
+
+        c = self.conn.cursor()
+        c.execute(query)
+        row = c.fetchone()
+
+        if row is not None:
+            raise ValueError("The data_source_type '{0}' already exists.".format(name))
+
+        # Insert the data_source_type and its param_values.
+        query = """
+                INSERT INTO data_source_types (name, extractor_name)
+                VALUES ("{0}", "{1}")
+                """.format(name, extractor_name)
+
+        try:
+            c.execute(query)
+
+            dst_id = c.lastrowid
+
+            query = """
+                    INSERT INTO required_params (data_source_type_id, param_name)
+                    VALUES ("{0}", "{1}")
+                    """
+
+            for p in required_params:
+                c.execute(query.format(dst_id, p))
+        except sqlite3.IntegrityError:
+            self.conn.rollback()
+            raise RuntimeError("The data_source_type '{0}' could not be added.".format(name))
+
+        self.conn.commit()
+        c.close()
+        return True
 
     def remove_data_source_type(self, name):
+        # Check if the data_source_type exists.
         """
         :type name: string
-        :rtype: bool
+        :rtype : bool
         """
-        pass
+        query = """
+                SELECT 1 FROM data_source_types dst WHERE dst.name = '{0}'
+                """.format(name)
+
+        c = self.conn.cursor()
+        c.execute(query)
+        row = c.fetchone()
+
+        if row is None:
+            raise ValueError("'{0}' is not a defined DataSourceType.".format(name))
+
+        # Check if there are operations using this data_type
+        query = """
+                SELECT 1 FROM operations o, data_source_types dst
+                WHERE o.data_source_type_id == dst.id AND dst.name = '{0}'
+                """.format(name)
+
+        c = self.conn.cursor()
+        c.execute(query)
+        row = c.fetchone()
+
+        if row is not None:
+            raise ValueError("The data_source_type '{0}' cannot be deleted. "
+                             "There are existing operations to extract this data_source_type.".format(name))
+
+        # Get data_source_type id
+        query = 'SELECT id FROM data_source_types WHERE name = "{0}"'.format(name)
+        c = self.conn.cursor()
+        c.execute(query)
+
+        row = c.fetchone()
+
+        if row is None:
+            raise ValueError("'{0}' is not a defined DataSourceType.".format(name))
+
+        dst_id = row[0]
+
+        # Delete the data_source_type
+        try:
+            c.execute("DELETE FROM required_params WHERE data_source_type_id = '{0}'".format(dst_id))
+            c.execute("DELETE FROM data_source_types WHERE name = '{0}'".format(name))
+        except sqlite3.IntegrityError:
+            self.conn.rollback()
+            raise RuntimeError("The data_source_type '{0}' could not be deleted.".format(name))
+
+        self.conn.commit()
+        c.close()
+        return True
 
 
 def execute_sql_script(db_file_path, script_file_path):

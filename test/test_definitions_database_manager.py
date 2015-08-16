@@ -131,11 +131,59 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
                                             "There are existing operations to extract this data_type.",
                                 self.db_helper.remove_data_type, 'EmailMessage')
 
-    def assertEqualList(self, expected_result, result):
-        self.assertEqual(len(result), len(expected_result))
-        for i in range(len(expected_result)):
-            self.assertEqual(result[i], expected_result[i])
+    def test_add_data_source_type(self):
+        self.assertTrue(self.db_helper.add_data_source_type('newDataSourceType', 'newExtractor',
+                                                            ['param1', 'param2']))
 
+        rows = self.db_helper.conn.execute(
+            """
+            SELECT rp.param_name
+            FROM data_source_types dst, required_params rp
+            WHERE dst.id = rp.data_source_type_id AND dst.name = '{0}'
+            AND dst.extractor_name = '{1}'
+            """.format('newDataSourceType', 'newExtractor')
+        )
+
+        params = []
+        for rp in rows:
+            params.append(rp[0])
+
+        self.assertEqualList(['param1', 'param2'], params)
+
+    def test_add_data_source_type_that_already_exists(self):
+        self.db_helper.add_data_source_type('existing', 'existingExtractor', ['param1'])
+        self.assertRaisesRegexp(ValueError, "The data_source_type 'existing' already exists.",
+                                self.db_helper.add_data_source_type, 'existing', 'existingExtractor', ['param1'])
+
+    def test_remove_data_source_type(self):
+        self.db_helper.add_data_source_type('removeDataType', 'removeExtractor', ['param1'])
+        self.assertTrue(self.db_helper.remove_data_source_type('removeDataType'))
+
+        c = self.db_helper.conn.cursor()
+        c.execute('SELECT * FROM data_source_types WHERE name = "{0}"'.format('removeDataType'))
+
+        dst = c.fetchone()
+
+        c.execute('SELECT 1 FROM required_params WHERE data_source_type_id NOT IN (SELECT id FROM data_source_types)')
+        rp = c.fetchone()
+
+        c.close()
+
+        self.assertTrue(dst is None and rp is None)
+
+    def test_remove_data_source_type_with_non_existing_data_source_type(self):
+        self.assertRaisesRegexp(ValueError, "'non_existent' is not a defined DataSourceType.",
+                                self.db_helper.remove_data_source_type, 'non_existent')
+
+    def test_remove_data_source_type_with_used_by_operation_data_source_type(self):
+        self.assertRaisesRegexp(ValueError, "The data_source_type 'Application' cannot be deleted. "
+                                            "There are existing operations to extract this data_source_type.",
+                                self.db_helper.remove_data_source_type, 'Application')
+
+    def assertEqualList(self, expected_result, result):
+        self.assertEqual(len(expected_result), len(result))
+        for i in range(len(expected_result)):
+            self.assertEqual(expected_result[i], result[i])
 
 if __name__ == '__main__':
     unittest.main()
