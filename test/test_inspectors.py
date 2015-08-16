@@ -16,7 +16,7 @@ class TestInspectors(unittest.TestCase):
     def setUp(self):
         self.device_info = DeviceInfo('4.4.4', 'XT1053')
 
-    def run_inspector_test(self, inspector, directory_name):
+    def _run_inspector_test(self, inspector, directory_name):
         # Output paths
         output_dir_path = os.path.join('test', 'test_extracted_data', directory_name)
         inspected_data_file_path = os.path.join(output_dir_path, INSPECTED_DATA_FILE_NAME)
@@ -38,19 +38,19 @@ class TestInspectors(unittest.TestCase):
         os.remove(source_data_file_path)
 
     def test_sms_message_inspector(self):
-        self.run_inspector_test(SmsMessageInspector(), 'sms_message')
+        self._run_inspector_test(SmsMessageInspector(), 'sms_message')
 
     def test_email_message_inspector(self):
-        self.run_inspector_test(EmailMessageInspector(), 'email_message')
+        self._run_inspector_test(EmailMessageInspector(), 'email_message')
 
     def test_contact_facebook_inspector(self):
-        self.run_inspector_test(ContactFacebookInspector(), 'contact_facebook')
+        self._run_inspector_test(ContactFacebookInspector(), 'contact_facebook')
 
     def test_contact_whatsapp_inspector(self):
-        self.run_inspector_test(ContactWhatsAppInspector(), 'contact_whatsapp')
+        self._run_inspector_test(ContactWhatsAppInspector(), 'contact_whatsapp')
 
     def test_contact_stock_inspector(self):
-        self.run_inspector_test(ContactStockInspector(), 'contact_stock')
+        self._run_inspector_test(ContactStockInspector(), 'contact_stock')
 
 
 if __name__ == '__main__':
