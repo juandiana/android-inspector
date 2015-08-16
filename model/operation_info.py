@@ -35,7 +35,7 @@ class OperationInfo(object):
     def __eq__(self, other):
         return self.name == other.name \
                and self.data_type == other.data_type \
-               and self.data_source.__eq__(other.data_source) \
+               and self.data_source == other.data_source \
                and self.supported_device_models == other.supported_device_models \
                and self.supported_os_versions == other.supported_os_versions
 
