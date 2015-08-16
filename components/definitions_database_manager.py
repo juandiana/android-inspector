@@ -104,7 +104,7 @@ class DefinitionsDatabaseManager(object):
             execute_sql_script(db_file_path, insert_operations_script_path)
 
         self.conn = sqlite3.connect(db_file_path)
-        self.conn.text_factory = str
+        self.conn.text_factory = lambda x: unicode(x, 'utf-8', 'ignore')
         # TODO: Close connection, somewhere.
 
     def query_operations_info(self, data_type, data_source, device_info):
