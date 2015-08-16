@@ -6,6 +6,7 @@ import tarfile
 import io
 import tempfile
 import zlib
+import time
 
 from util import adb
 from model import Extractor, OperationError
@@ -63,6 +64,8 @@ class AdbBackupExtractor(Extractor):
 
         try:
             device = adb.get_device()
+            # Wait 500ms to make sure the device is ready.
+            time.sleep(0.5)
 
             print "Getting the android backup file for '{}'. Please press 'Back up my data' on the device..." \
                 .format(app_package_name)

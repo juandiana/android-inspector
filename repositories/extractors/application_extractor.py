@@ -2,6 +2,7 @@
 import os
 import subprocess
 import shutil
+import time
 
 from util import adb
 from model.operation import Extractor, OperationError
@@ -10,6 +11,8 @@ from model.operation import Extractor, OperationError
 class ApplicationExtractor(Extractor):
     def __init__(self):
         self.device = adb.get_device()
+        # Wait 500ms to make sure the device is ready.
+        time.sleep(0.5)
 
     def execute(self, extracted_data_dir_path, param_values):
         if os.path.exists(extracted_data_dir_path):
