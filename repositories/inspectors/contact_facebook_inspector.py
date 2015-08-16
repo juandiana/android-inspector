@@ -45,7 +45,7 @@ class ContactFacebookInspector(Inspector):
 
             birthday = []
             if row['birthday_year'] != -1:
-                    birthday.append(str(row['birthday_year']))
+                birthday.append(str(row['birthday_year']))
 
             if not (row['birthday_day'] == -1 or row['birthday_month'] == -1):
                 birthday.append(str(row['birthday_month']))
