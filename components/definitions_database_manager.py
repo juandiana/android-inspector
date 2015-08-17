@@ -175,8 +175,8 @@ class DefinitionsDatabaseManager(object):
         :type id_: int
         :rtype : OperationInfo
         """
-        c1 = self.conn.cursor()
-        c1.execute(
+        c = self.conn.cursor()
+        c.execute(
             """
             SELECT dt.name, dst.name, o.name
             FROM operations AS o, data_types AS dt, data_source_types AS dst
@@ -184,15 +184,12 @@ class DefinitionsDatabaseManager(object):
             """, [id_]
         )
 
-        res = c1.fetchone()
+        res = c.fetchone()
         data_type = res[0]
         data_source_type = res[1]
         op_name = res[2]
 
-        c1.close()
-
-        c2 = self.conn.cursor()
-        c2.execute(
+        c.execute(
             """
             SELECT param_name, param_value
             FROM data_source_params_values dspv
@@ -201,28 +198,22 @@ class DefinitionsDatabaseManager(object):
         )
 
         param_values = {}
-        for pv in c2:
+        for pv in c:
             param_values[pv[0]] = pv[1]
 
-        c2.close()
-
-        c3 = self.conn.cursor()
-        c3.execute('SELECT model_number FROM device_models WHERE operation_id = ?', [id_])
+        c.execute('SELECT model_number FROM device_models WHERE operation_id = ?', [id_])
 
         supported_models = []
-        for dm in c3:
+        for dm in c:
             supported_models.append(dm[0])
 
-        c3.close()
-
-        c4 = self.conn.cursor()
-        c4.execute('SELECT from_version, to_version FROM android_versions WHERE operation_id = ?', [id_])
+        c.execute('SELECT from_version, to_version FROM android_versions WHERE operation_id = ?', [id_])
 
         supported_os_versions = []
-        for av in c4:
+        for av in c:
             supported_os_versions.append((av[0], av[1]))
 
-        c4.close()
+        c.close()
 
         return OperationInfo(op_name, data_type, DataSource(data_source_type, param_values),
                              supported_models, supported_os_versions)
