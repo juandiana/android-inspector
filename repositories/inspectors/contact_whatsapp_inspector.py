@@ -8,7 +8,7 @@ from repositories.custom_cybox_objects.contact_object import Contact
 from util import inspectors_helper
 
 
-class ContactWhatsAppInspector(Inspector):
+class ContactWhatsappInspector(Inspector):
     def execute(self, device_info, extracted_data_dir_path):
         original_app_path = '/data/data/com.whatsapp'
         wa_db_rel_file_path = os.path.join('databases', 'wa.db')
