@@ -1,15 +1,26 @@
 # coding=utf-8
+import fnmatch
 import os
 
 from cybox.common.vocabs import ObjectRelationship
 
-from model import Inspector
+from model import Inspector, OperationError
 from repositories.custom_cybox_objects.contact_object import Contact
-from util.inspectors_helper import create_file_object, execute_query
+from util.inspectors_helper import create_file_object, execute_query, get_app_version_name
 
 
 class ContactFacebookInspector(Inspector):
     def execute(self, device_info, extracted_data_dir_path):
+
+        apk_name = ''
+        for f in os.listdir(os.path.join(os.getcwd(), extracted_data_dir_path)):
+            if fnmatch.fnmatch(f, '*.apk'):
+                apk_name = f
+                break
+
+        if get_app_version_name(os.path.join(extracted_data_dir_path, apk_name)) != '37.0.0.48.234':
+            raise OperationError('Application version not supported.')
+
         original_app_path = '/data/data/com.facebook.katana'
         fb_db_rel_file_path = os.path.join('databases', 'fb.db')
 
