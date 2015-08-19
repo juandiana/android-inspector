@@ -42,7 +42,7 @@ VALUES (3, 'package_name', 'com.facebook.katana');
 
 -- Operation to extract Contacts from the Facebook.
 INSERT INTO operations (name, inspector_name, data_type_id, data_source_type_id)
-VALUES ('ContactWhatsapp', 'ContactWhatsappInspector', 3, 1);
+VALUES ('ContactWhatsApp', 'ContactWhatsAppInspector', 3, 1);
 
 INSERT INTO device_models (operation_id, model_number)
 VALUES (4, 'GT-I9300');

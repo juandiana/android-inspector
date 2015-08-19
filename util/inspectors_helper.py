@@ -61,7 +61,7 @@ def get_app_version_name(apk_file_path):
     try:
         p = subprocess.Popen(command, cwd=os.getcwd(), stdout=subprocess.PIPE)
         for line in p.stdout:
-            if line.__contains__('versionName='):
+            if 'versionName=' in line:
                 match = re.search("versionName='(.*?)'", line)
                 return match.group(1)
     except subprocess.CalledProcessError:

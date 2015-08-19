@@ -38,7 +38,7 @@ class Coordinator(object):
         :rtype : None
         """
         if device_info is None and self.device_info is None:
-            print "No device information set."
+            print 'No device information set.'
             return
 
         device_info_to_use = device_info if (device_info is None) else self.device_info
@@ -48,19 +48,21 @@ class Coordinator(object):
         for name in names:
             op_count += 1
             op = self.operations_manager.get_operation(name)
-            data_dir_name = datetime.now().strftime("%Y%m%d_%H%M%S")
+            data_dir_name = '{0}_{1}'.format(name, datetime.now().strftime("%Y%m%d_%H%M%S"))
             data_dir_path = path.join(results_dir_path, data_dir_name)
-            print "[{0}/{1}] Executing... ".format(op_count, len(names))
+            print "\n[{0}/{1}] Executing '{2}': ".format(op_count, len(names), name)
             try:
                 op.execute(device_info_to_use, data_dir_path)
+                print "COMPLETED. Data stored to '{0}'.".format(data_dir_path)
                 op_successful_count += 1
             except OperationError as error:
-                print "Failed. Reason: {0}".format(error.message)
-            print "Completed. Data stored to {0}".format(data_dir_path)
+                print "FAILED. Reason: '{0}'".format(error.message)
+
+        print '\n{0} operation(s) completed successfully.'.format(op_successful_count)
 
         if op_successful_count < op_count:
             # TODO: Debemos atrapar esto en la parte de UI.
-            raise RuntimeError
+            raise RuntimeError('At least one operation failed.')
 
     def add_data_type(self, def_path):
         """
