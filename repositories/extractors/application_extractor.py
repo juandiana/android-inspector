@@ -29,18 +29,19 @@ class ApplicationExtractor(Extractor):
 
             print "Fetching '{}' file...".format(apk_path)
             self.device.pull(remote=apk_path, local=extracted_data_dir_path)
+        except subprocess.CalledProcessError:
+            raise OperationError('Extraction error while attempting to fetch the APK.')
 
+        try:
             print "Fetching '{}' directory...".format(data_path)
             self.device.pull(remote=data_path, local=extracted_data_dir_path)
-
-            print 'Extraction finished.'
         except subprocess.CalledProcessError:
-            raise OperationError('Extraction failed.')
+            raise OperationError('Extraction error while attempting to fetch the data.')
 
     @staticmethod
     def obtain_apk_path_from_output(app_package_name, output):
         for line in output.splitlines():
-            if line.__contains__('package:'):
+            if 'package:' in line:
                 return line.replace('package:', '')
 
-        raise OperationError("Extraction failed. Could not find the APK for package '{}'.".format(app_package_name))
+        raise OperationError('Extraction failed. Could not find the APK for package {}.'.format(app_package_name))

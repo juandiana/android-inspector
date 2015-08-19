@@ -6,8 +6,8 @@ from cybox.core import Observables
 
 from model import DeviceInfo, INSPECTED_DATA_FILE_NAME, SOURCE_DATA_FILE_NAME, write_observables_xml_file
 from repositories.inspectors.contact_facebook_inspector import ContactFacebookInspector
-from repositories.inspectors.contact_stock_inspector import ContactStockInspector
-from repositories.inspectors.contact_whatsapp_inspector import ContactWhatsAppInspector
+from repositories.inspectors.contact_aosp_agenda_inspector import ContactAOSPAgendaInspector
+from repositories.inspectors.contact_whats_app_inspector import ContactWhatsAppInspector
 from repositories.inspectors.email_message_inspector import EmailMessageInspector
 from repositories.inspectors.sms_message_inspector import SmsMessageInspector
 
@@ -50,7 +50,7 @@ class TestInspectors(unittest.TestCase):
         self._run_inspector_test(ContactWhatsAppInspector(), 'contact_whatsapp')
 
     def test_contact_stock_inspector(self):
-        self._run_inspector_test(ContactStockInspector(), 'contact_stock')
+        self._run_inspector_test(ContactAOSPAgendaInspector(), 'contact_stock')
 
 
 if __name__ == '__main__':
