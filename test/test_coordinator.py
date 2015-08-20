@@ -24,8 +24,9 @@ class TestCoordinator(unittest.TestCase):
         ids = ['EmailMessageAOSPEmail']
         device_info = DeviceInfo('5.1', 'XT1053')
         results_dir_path = os.path.join('test', 'results')
+        simple_output = True
 
-        self.coordinator.execute_operations(ids, device_info, results_dir_path)
+        self.coordinator.execute_operations(ids, device_info, results_dir_path, simple_output)
 
     def tearDown(self):
         os.remove(os.path.join('test', 'definitions.db'))
