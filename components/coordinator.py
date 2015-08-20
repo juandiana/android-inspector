@@ -30,11 +30,12 @@ class Coordinator(object):
         device_info_to_use = device_info if (device_info is None) else self.device_info
         return self.operations_manager.get_operations_info(data_type, data_source, device_info_to_use)
 
-    def execute_operations(self, names, device_info, results_dir_path):
+    def execute_operations(self, names, device_info, results_dir_path, simple_output=False):
         """
         :type names: list(string)
         :type device_info: DeviceInfo
         :type results_dir_path: string
+        :type simple_output: bool
         :rtype : None
         """
         if device_info is None and self.device_info is None:
@@ -52,7 +53,7 @@ class Coordinator(object):
             data_dir_path = path.join(results_dir_path, data_dir_name)
             print "\n[{0}/{1}] Executing '{2}': ".format(op_count, len(names), name)
             try:
-                op.execute(device_info_to_use, data_dir_path)
+                op.execute(device_info_to_use, data_dir_path, simple_output)
                 print "COMPLETED. Data stored to '{0}'.".format(data_dir_path)
                 op_successful_count += 1
             except OperationError as error:
