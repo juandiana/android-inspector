@@ -2,6 +2,8 @@
 from os import path
 from datetime import datetime
 
+from tabulate import tabulate
+
 from model import OperationError
 
 
@@ -19,6 +21,7 @@ class Coordinator(object):
         :rtype : None
         """
         self.device_info = device_info
+        print 'Successful.'
 
     def list_operations(self, data_type, data_source, device_info):
         """
@@ -27,8 +30,12 @@ class Coordinator(object):
         :type device_info: DeviceInfo
         :rtype : None
         """
-        device_info_to_use = device_info if (device_info is None) else self.device_info
-        return self.operations_manager.get_operations_info(data_type, data_source, device_info_to_use)
+        device_info_to_use = device_info if (device_info is not None) else self.device_info
+        op_infos = self.operations_manager.get_operations_info(data_type, data_source, device_info_to_use)
+        table = []
+        for op_info in op_infos:
+            table.append(op_info.to_tuple())
+        print tabulate(table, headers=["Name", "Data type", "Data Source", "Supported devices", "Supported Android OS"])
 
     def execute_operations(self, names, device_info, results_dir_path, simple_output=False):
         """
