@@ -61,7 +61,7 @@ class InputParser(object):
             for p in args.source_params:
                 if ':' not in p:
                     raise ValueError(
-                        "The parameter 'source_params' is a withespace separated list of pairs param_name:param_value.")
+                        "The parameter 'source_params' is a whitespace separated list of pairs param_name:param_value.")
 
                 p_split = re.search('(.*):(.*)', p)
                 params[p_split.group(1)] = p_split.group(2)
