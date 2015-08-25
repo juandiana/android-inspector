@@ -15,8 +15,8 @@ class InputParser(object):
         :rtype DeviceInfo
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument('--version', '-v', help='specify the android version.')
-        parser.add_argument('--model', '-m', help='specify the device model.')
+        parser.add_argument('--version', '-v')
+        parser.add_argument('--model', '-m')
 
         args = parser.parse_args(shlex.split(arg_line))
 
@@ -41,11 +41,11 @@ class InputParser(object):
         di = None
 
         parser = argparse.ArgumentParser()
-        parser.add_argument('--type', '-t', help='specify the data type.')
-        parser.add_argument('--source_type', '-st', help='specify the data source')
-        parser.add_argument('--source_params', '-sp', nargs='*', help='specify the data source')
-        parser.add_argument('--version', '-v', help='specify the android version.')
-        parser.add_argument('--model', '-m', help='specify the device model.')
+        parser.add_argument('--type', '-t')
+        parser.add_argument('--source_type', '-st')
+        parser.add_argument('--source_params', '-sp', nargs='*')
+        parser.add_argument('--version', '-v')
+        parser.add_argument('--model', '-m')
 
         args = parser.parse_args(shlex.split(arg_line))
 
@@ -84,9 +84,9 @@ class InputParser(object):
         """
 
         parser = argparse.ArgumentParser()
-        parser.add_argument('--operations', '-op', nargs='+', help='specify the operations by names.')
-        parser.add_argument('--version', '-v', help='specify the android version.')
-        parser.add_argument('--model', '-m', help='specify the device model.')
+        parser.add_argument('--operations', '-op', nargs='+')
+        parser.add_argument('--version', '-v')
+        parser.add_argument('--model', '-m')
 
         args = parser.parse_args(shlex.split(arg_line))
 
