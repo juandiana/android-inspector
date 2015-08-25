@@ -62,6 +62,9 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
     def test_query_operation_for_non_existent_data_type(self):
         self.assertEqual(self.db_helper.query_operations_info('Non_existent', self.ds_aosp_email, self.dv_info), [])
 
+    def test_query_operation_for_data_source_with_missing_params(self):
+        self.assertFalse(self.db_helper.has_all_required_param_values(DataSource('Application', None)))
+
     def test_get_operation_exec_info(self):
         extractor_id, inspector_id, param_values = self.db_helper.get_operation_exec_info('EmailMessageAOSPEmail')
 

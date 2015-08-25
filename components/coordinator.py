@@ -21,7 +21,7 @@ class Coordinator(object):
         :rtype : None
         """
         self.device_info = device_info
-        print 'Successful.'
+        print 'The device info was save correctly.'
 
     def list_operations(self, data_type, data_source, device_info):
         """
@@ -31,6 +31,10 @@ class Coordinator(object):
         :rtype : None
         """
         device_info_to_use = device_info if (device_info is not None) else self.device_info
+        if device_info_to_use is None:
+            print 'No device information was set previously.'
+            return
+
         op_infos = self.operations_manager.get_operations_info(data_type, data_source, device_info_to_use)
         table = []
         for op_info in op_infos:
@@ -69,7 +73,6 @@ class Coordinator(object):
         print '\n{0} operation(s) completed successfully.'.format(op_successful_count)
 
         if op_successful_count < op_count:
-            # TODO: Debemos atrapar esto en la parte de UI.
             raise RuntimeError('At least one operation failed.')
 
     def add_data_type(self, def_path):

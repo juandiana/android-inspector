@@ -34,7 +34,7 @@ VALUES (3, 'GT-I9300');
 INSERT INTO device_models (operation_id, model_number)
 VALUES (3, 'XT1053');
 INSERT INTO device_models (operation_id, model_number)
-VALUES (3, 'Nexus 5');
+VALUES (3, 'Nexus5');
 INSERT INTO android_versions (operation_id, from_version, to_version)
 VALUES (3, '4.1', '4.4.4');
 INSERT INTO data_source_params_values (operation_id, param_name, param_value)
