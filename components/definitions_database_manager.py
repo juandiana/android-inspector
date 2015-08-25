@@ -322,6 +322,9 @@ class DefinitionsDatabaseManager(object):
                 WHERE dst.id = rp.data_source_type_id AND dst.name = ?
                 """, [data_source.type_])
 
+        if data_source.info is None and c.fetchone() is not None:
+            return False
+
         for row in c:
             if not data_source.info.get(row[0]):
                 return False

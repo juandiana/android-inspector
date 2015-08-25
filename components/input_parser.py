@@ -23,7 +23,7 @@ class InputParser(object):
         :rtype string, DataSource, DeviceInfo
         """
         dt = None
-        ds = None
+        ds = DataSource(None, None)
         di = DeviceInfo(None, None)
 
         parser = argparse.ArgumentParser()
@@ -38,14 +38,17 @@ class InputParser(object):
         if args.type:
             dt = args.type
 
-        if args.source_type and args.source_params:
+        if args.source_type:
+            ds.type_ = args.source_type
+
+        if args.source_params:
             params = {}
 
             for p in args.source_params:
                 p_split = re.search('(.*):(.*)', p)
                 params[p_split.group(1)] = p_split.group(2)
 
-            ds = DataSource(args.source_type, params)
+            ds.info = params
 
         if args.model:
             di.device_model = args.model
