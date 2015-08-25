@@ -15,7 +15,12 @@ class InputParser(object):
         :type arg_line: string
         :rtype DeviceInfo
         """
-        return DeviceInfo('4.0', 'XT1053')
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--version', help='specify the android version.')
+        parser.add_argument('--model', help='specify the device model.')
+
+        args = parser.parse_args(shlex.split(arg_line))
+        return DeviceInfo(args.version, args.model)
 
     def parse_list_args(self, arg_line):
         """

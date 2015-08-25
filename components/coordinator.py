@@ -20,8 +20,13 @@ class Coordinator(object):
         :type device_info: DeviceInfo
         :rtype : None
         """
-        self.device_info = device_info
-        print 'Successful.'
+        if device_info.device_model is None:
+            print "The parameter --model is required."
+        elif device_info.os_version is None:
+            print "The parameter --version is required."
+        else:
+            self.device_info = device_info
+            print 'Successful.'
 
     def list_operations(self, data_type, data_source, device_info):
         """
