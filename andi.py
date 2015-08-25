@@ -40,6 +40,13 @@ class InteractiveCommandLine(Cmd):
         """Executes a set of operations.
         """
         ids, device_info = self.input_parser.parse_execute_args(arg_line)
+
+        if ids is None:
+            print 'The parameter \'ids\' is required.'
+
+        if device_info is None:
+            print 'The parameters \'model\' and \'version\' are required.'
+
         self.coordinator.execute_operations(ids, device_info, results_dir_path='results')
 
 
