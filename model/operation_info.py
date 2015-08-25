@@ -17,24 +17,20 @@ def android_versions_repr(versions):
     return '[' + ', '.join(os_versions) + ']'
 
 
-def data_source_repr(data_source):
-    params = []
-    for p in data_source.info:
-        params.append(p + ':' + data_source.info[p])
-
-    return data_source.type_ + '{' + ', '.join(params) + '}'
-
-
 class DataSource(object):
     def __init__(self, type_, info):
         self.type_ = type_
         self.info = info
 
-    def __repr__(self):
-        return '{0}:{1}'.format(self.type_, self.info)
-
     def __eq__(self, other):
         return self.type_ == other.type_ and self.info == other.info
+
+    def __str__(self):
+        params = []
+        for p in self.info:
+            params.append(p + ':' + self.info[p])
+
+        return self.type_ + '{' + ', '.join(params) + '}'
 
 
 class OperationInfo(object):
@@ -64,7 +60,7 @@ class OperationInfo(object):
                and self.supported_os_versions == other.supported_os_versions
 
     def to_tuple(self):
-        return self.name, self.data_type, data_source_repr(self.data_source), \
+        return self.name, self.data_type, self.data_source.__str__(), \
             to_string_list_repr(self.supported_device_models), android_versions_repr(self.supported_os_versions)
 
 
