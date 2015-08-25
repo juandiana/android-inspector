@@ -23,13 +23,13 @@ class InteractiveCommandLine(Cmd):
 
     def do_list(self, arg_line):
         """Lists available operations.
-        Usage: list [type=<data_type>] [source=<data_source_type>:<param_values>] [version=<android_versions>]
-                    [model=<device_models>]
+        Usage: list [type=<data_type>] [sourcetype=<data_source_type> [sourceparams=<param_values>]]
+                    [version=<android_versions>] [model=<device_models>]
             where:
                 <data_type>         is a string representing a datatype name.
                 <data_source_type>  is a string representing a data source type name.
-                <param_values>      is a comma separated string list of values in the same order than the required
-                                    params of its data source type.
+                <param_values>      is a comma separated string list of pairs param:value with the required params of
+                                    its corresponding data source type.
                 <android_versions>  is a comma separated string list of android versions (e.g. 4.4.4, 5.0.1).
                 <device_models>     is a comma separated string list of device models (e.g. XT1053, GT-2200).
         """
