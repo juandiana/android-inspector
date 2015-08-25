@@ -35,7 +35,7 @@ class InteractiveCommandLine(Cmd):
             print error
 
     def do_list(self, arg_line):
-        """
+        """s
         Lists available operations.
         Usage: list [--type <data_type>] [--source_type <data_source_type> [--source_params <param_values>]]
                     [--version <android_version>] [--model <device_model>]
@@ -60,7 +60,7 @@ class InteractiveCommandLine(Cmd):
         Usage: execute --operations <operation_names> [--version <android_version>] [--model <device_model>]
 
         where:
-            <operation_names>   is a withespace separated string list representing the names of the operations to execute.
+            <operation_names>   is a whitespace separated string list representing the names of the operations to execute.
             <android_version>   is a string representing an android version (e.g. 4.4.4).
             <device_model>      is a string representing a device model (e.g. XT1053).
         """
