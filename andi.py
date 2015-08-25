@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding=utf-8
 from cmd import Cmd
 
@@ -6,7 +7,6 @@ from components.definitions_database_manager import DefinitionsDatabaseManager
 from components.input_parser import InputParser
 from components.operations_manager import OperationsManager
 from components.repositories_manager import RepositoriesManager
-from model import OperationError
 
 
 class InteractiveCommandLine(Cmd):
