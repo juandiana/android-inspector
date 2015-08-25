@@ -60,7 +60,7 @@ class OperationInfo(object):
                and self.supported_os_versions == other.supported_os_versions
 
     def to_tuple(self):
-        return self.name, self.data_type, self.data_source.__str__(), \
+        return self.name, self.data_type, self.data_source, \
             to_string_list_repr(self.supported_device_models), android_versions_repr(self.supported_os_versions)
 
 
