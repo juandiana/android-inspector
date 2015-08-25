@@ -1,6 +1,30 @@
 # coding=utf-8
 
 
+def to_string_list_repr(elements):
+    return u'[' + u', '.join(unicode(x) for x in elements) + u']'
+
+
+def android_versions_repr(versions):
+    os_versions = []
+
+    for v in versions:
+        if v[0] == v[1]:
+            os_versions.append(v[0])
+        else:
+            os_versions.append(v[0] + '-' + v[1])
+
+    return '[' + ', '.join(os_versions) + ']'
+
+
+def data_source_repr(data_source):
+    params = []
+    for p in data_source.info:
+        params.append(p + ':' + data_source.info[p])
+
+    return data_source.type_ + '{' + ', '.join(params) + '}'
+
+
 class DataSource(object):
     def __init__(self, type_, info):
         self.type_ = type_
@@ -40,7 +64,8 @@ class OperationInfo(object):
                and self.supported_os_versions == other.supported_os_versions
 
     def to_tuple(self):
-        return self.name, self.data_type, self.data_source, self.supported_device_models, self.supported_os_versions
+        return self.name, self.data_type, data_source_repr(self.data_source), \
+            to_string_list_repr(self.supported_device_models), android_versions_repr(self.supported_os_versions)
 
 
 class DeviceInfo(object):

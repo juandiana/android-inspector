@@ -7,8 +7,7 @@ from model import DeviceInfo, DataSource
 
 
 class InputParser(object):
-
-
+    android_version_pattern = re.compile("^[1-9]+\.[0-9]+(\.[0-9]+)?$")
 
     def parse_set_device_info_args(self, arg_line):
         """
@@ -20,6 +19,16 @@ class InputParser(object):
         parser.add_argument('--model', help='specify the device model.')
 
         args = parser.parse_args(shlex.split(arg_line))
+
+        if args.model is None:
+            raise ValueError("The parameter 'model' is required.")
+
+        if args.version is None:
+            raise ValueError("The parameter 'version' is required.")
+
+        if not self.android_version_pattern.match(args.version):
+            raise ValueError('The Android version is not valid.')
+
         return DeviceInfo(args.version, args.model)
 
     def parse_list_args(self, arg_line):
@@ -28,13 +37,13 @@ class InputParser(object):
         :rtype string, DataSource, DeviceInfo
         """
         dt = None
-        ds = DataSource(None, None)
-        di = DeviceInfo(None, None)
+        ds = None
+        di = None
 
         parser = argparse.ArgumentParser()
         parser.add_argument('--type', help='specify the data type.')
         parser.add_argument('--source_type', help='specify the data source')
-        parser.add_argument('--source_params', nargs='+', help='specify the data source')
+        parser.add_argument('--source_params', nargs='*', help='specify the data source')
         parser.add_argument('--version', help='specify the android version.')
         parser.add_argument('--model', help='specify the device model.')
 
@@ -44,21 +53,26 @@ class InputParser(object):
             dt = args.type
 
         if args.source_type:
-            ds.type_ = args.source_type
+            ds = DataSource(args.source_type, {})
 
         if args.source_params:
             params = {}
 
             for p in args.source_params:
+                if ':' not in p:
+                    raise ValueError(
+                        "The parameter 'source_params' is a comma separated list of pairs 'param_name':'param_value'")
+
                 p_split = re.search('(.*):(.*)', p)
                 params[p_split.group(1)] = p_split.group(2)
 
             ds.info = params
 
-        if args.model:
-            di.device_model = args.model
+        if args.model and args.version:
+            if not self.android_version_pattern.match(args.version):
+                raise ValueError('The Android version is not valid.')
 
-        if args.version:
+            di = DeviceInfo(args.version, args.model)
             di.os_version = args.version
 
         return dt, ds, di
@@ -70,16 +84,23 @@ class InputParser(object):
         """
 
         parser = argparse.ArgumentParser()
-        parser.add_argument('--ids', nargs='+', help='specify the operations by ids.')
-        parser.add_argument('--version', nargs='*', help='specify the android version.')
-        parser.add_argument('--model', nargs='*', help='specify the device model.')
+        parser.add_argument('--operations', nargs='+', help='specify the operations by names.')
+        parser.add_argument('--version', help='specify the android version.')
+        parser.add_argument('--model', help='specify the device model.')
 
         args = parser.parse_args(shlex.split(arg_line))
 
-        ids = args.ids
         di = None
+
+        if args.operations is None:
+            raise ValueError("The parameter 'operations' is required.")
+
+        ops = args.operations
+
+        if args.version and not self.android_version_pattern.match(args.version):
+            raise ValueError('The Android version is not valid.')
 
         if args.model and args.version:
             di = DeviceInfo(args.version, args.model)
 
-        return ids, di
+        return ops, di
