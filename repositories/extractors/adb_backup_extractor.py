@@ -15,7 +15,15 @@ from model import Extractor, OperationError
 class AdbBackupExtractor(Extractor):
     @staticmethod
     def get_ab(ab_path, app_package_name):
-        device = adb.get_device()
+        device = None
+        try:
+            device = adb.get_device()
+        except:
+            raise OperationError('No device or multiple devices were found connected.')
+
+        if device is None:
+            raise OperationError('Error while attempting to connect to the device.')
+
         # Wait 500ms to make sure the device is ready.
         time.sleep(0.5)
         device.backup(app_package_name, ab_path)

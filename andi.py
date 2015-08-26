@@ -2,7 +2,7 @@
 # coding=utf-8
 from cmd import Cmd
 
-from components.coordinator import Coordinator
+from components.coordinator import Coordinator, CommandError
 from components.definitions_database_manager import DefinitionsDatabaseManager
 from components.input_parser import InputParser
 from components.operations_manager import OperationsManager
@@ -31,7 +31,7 @@ class InteractiveCommandLine(Cmd):
         try:
             di = self.input_parser.parse_set_device_info_args(arg_line)
             self.coordinator.set_device_info(di)
-        except ValueError as error:
+        except (ValueError, CommandError) as error:
             print error
 
     def do_list(self, arg_line):
@@ -51,7 +51,7 @@ class InteractiveCommandLine(Cmd):
         try:
             data_type, data_source, device_info = self.input_parser.parse_list_args(arg_line)
             self.coordinator.list_operations(data_type, data_source, device_info)
-        except ValueError as error:
+        except (ValueError, CommandError) as error:
             print error
 
     def do_execute(self, arg_line):
@@ -67,7 +67,7 @@ class InteractiveCommandLine(Cmd):
         try:
             ids, device_info = self.input_parser.parse_execute_args(arg_line)
             self.coordinator.execute_operations(ids, device_info, results_dir_path='results')
-        except (ValueError, RuntimeError) as error:
+        except (ValueError, CommandError) as error:
             print error
 
 
