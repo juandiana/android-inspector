@@ -7,6 +7,10 @@ from tabulate import tabulate
 from model import OperationError
 
 
+class CommandError(Exception):
+    pass
+
+
 class Coordinator(object):
     def __init__(self, operations_manager):
         """
@@ -15,13 +19,20 @@ class Coordinator(object):
         self.operations_manager = operations_manager
         self.device_info = None
 
+    def _get_device_info(self, device_info):
+        if device_info is None and self.device_info is None:
+            raise CommandError('The device information must be set or specified in order to execute this command.')
+        device_info_to_use = device_info if (device_info is not None) else self.device_info
+        return device_info_to_use
+
     def set_device_info(self, device_info):
         """
         :type device_info: DeviceInfo
         :rtype : None
         """
         self.device_info = device_info
-        print 'The device info was save correctly.'
+        print "Device model '{0}' running Android version '{1}' was set as the current device information." \
+            .format(device_info.device_model, device_info.os_version)
 
     def list_operations(self, data_type, data_source, device_info):
         """
@@ -30,10 +41,7 @@ class Coordinator(object):
         :type device_info: DeviceInfo
         :rtype : None
         """
-        device_info_to_use = device_info if (device_info is not None) else self.device_info
-        if device_info_to_use is None:
-            print 'No device information was set previously.'
-            return
+        device_info_to_use = self._get_device_info(device_info)
 
         op_infos = self.operations_manager.get_operations_info(data_type, data_source, device_info_to_use)
         table = []
@@ -49,11 +57,7 @@ class Coordinator(object):
         :type simple_output: bool
         :rtype : None
         """
-        if device_info is None and self.device_info is None:
-            print 'No device information set.'
-            return
-
-        device_info_to_use = device_info if (device_info is None) else self.device_info
+        device_info_to_use = self._get_device_info(device_info)
 
         op_count = 0
         op_successful_count = 0
@@ -73,7 +77,7 @@ class Coordinator(object):
         print '\n{0} operation(s) completed successfully.'.format(op_successful_count)
 
         if op_successful_count < op_count:
-            raise RuntimeError('At least one operation failed.')
+            raise CommandError('At least one operation failed.')
 
     def add_data_type(self, def_path):
         """
