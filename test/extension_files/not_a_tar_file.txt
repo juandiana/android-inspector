@@ -1,0 +1,1 @@
+Este archivo se usa para los test donde el archivo de definición no es un .tar

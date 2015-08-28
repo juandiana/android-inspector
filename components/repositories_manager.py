@@ -42,7 +42,7 @@ class RepositoriesManager(object):
         """
         dest_path = os.path.join(self.repositories_dir_name, repo_name)
         try:
-            shutil.copyfile(file_path, dest_path)
+            shutil.copy(file_path, dest_path)
         except IOError:
             raise
 
