@@ -1,38 +1,45 @@
 # coding=utf-8
 import os
 import unittest
+import sqlite3
 
 from components.definitions_database_manager import DefinitionsDatabaseManager
 from model import DataSource, DeviceInfo, OperationInfo
 
 
 class TestDefinitionsDatabaseManager(unittest.TestCase):
-    def setUp(self):
-        self.db_helper = DefinitionsDatabaseManager(os.path.join('test', 'test_definitions.db'),
-                                                    'create_db.sql',
-                                                    os.path.join('test', 'my_test_insert_default_data_types.sql'),
-                                                    os.path.join('test',
-                                                                 'my_test_insert_default_data_source_types.sql'),
-                                                    os.path.join('test', 'my_test_insert_default_operations.sql'))
-        self.ds_aosp_email = DataSource('Application', {'package_name': 'com.android.email'})
-        self.ds_facebook = DataSource('Application', {'package_name': 'com.facebook.katana'})
-        self.ds_aosp_sms = DataSource('Application', {'package_name': 'com.android.providers.telephony'})
-        self.bad_ds = DataSource('Application', {})
-        self.dv_info = DeviceInfo('3.0.0', 'GT-I9300')
+    DB_FILE_PATH = os.path.join('test', 'test_definitions.db')
+    DB_CREATION_SCRIPT_PATH = 'create_db.sql'
+    DEFAULT_DATA_TYPES_SCRIPT_PATH = os.path.join('test', 'insert_test_default_data_types.sql')
+    DEFAULT_DATA_SOURCE_TYPES_SCRIPT_PATH = os.path.join('test', 'insert_test_default_data_source_types.sql')
+    DEFAULT_OPERATIONS_SCRIPT_PATH = os.path.join('test', 'insert_test_default_operations.sql')
 
-        self.op_info_email_aosp_email = OperationInfo('EmailMessageAOSPEmail', 'EmailMessage', self.ds_aosp_email,
-                                                      ['GT-I9300'], [('2.3.7', '5.1.1')])
-        self.op_info_image_aosp_email = OperationInfo('ImageFileAOSPEmail', 'ImageFile', self.ds_aosp_email,
-                                                      ['GT-I9300'], [('2.3.7', '5.1.1')])
-        self.op_info_image_facebook = OperationInfo('ImageFileFacebook', 'ImageFile', self.ds_facebook,
-                                                    ['GT-I9300', 'XT1053'], [('2.3.7', '5.1.1')])
-        self.info = OperationInfo('SmsMessageAOSPSms', 'SmsMessage', self.ds_aosp_sms, ['GT-I9300', 'LG-D820'],
-                                  [('2.0', '4.4.4')])
-        self.op_info_sms_aosp_sms = self.info
+    @classmethod
+    def setUpClass(cls):
+        cls.db_helper = DefinitionsDatabaseManager(cls.DB_FILE_PATH,
+                                                   cls.DB_CREATION_SCRIPT_PATH,
+                                                   cls.DEFAULT_DATA_TYPES_SCRIPT_PATH,
+                                                   cls.DEFAULT_DATA_SOURCE_TYPES_SCRIPT_PATH,
+                                                   cls.DEFAULT_OPERATIONS_SCRIPT_PATH)
 
-    def tearDown(self):
-        self.db_helper.conn.close()
-        os.remove(os.path.join('test', 'test_definitions.db'))
+        cls.ds_aosp_email = DataSource('Application', {'package_name': 'com.android.email'})
+        cls.ds_facebook = DataSource('Application', {'package_name': 'com.facebook.katana'})
+        cls.ds_aosp_sms = DataSource('Application', {'package_name': 'com.android.providers.telephony'})
+        cls.bad_ds = DataSource('Application', {})
+        cls.dv_info = DeviceInfo('3.0.0', 'GT-I9300')
+
+        cls.op_info_email_aosp_email = OperationInfo('EmailMessageAOSPEmail', 'EmailMessage', cls.ds_aosp_email,
+                                                     ['GT-I9300'], [('2.3.7', '5.1.1')])
+        cls.op_info_image_aosp_email = OperationInfo('ImageFileAOSPEmail', 'ImageFile', cls.ds_aosp_email,
+                                                     ['GT-I9300'], [('2.3.7', '5.1.1')])
+        cls.op_info_image_facebook = OperationInfo('ImageFileFacebook', 'ImageFile', cls.ds_facebook,
+                                                   ['GT-I9300', 'XT1053'], [('2.3.7', '5.1.1')])
+        cls.op_info_sms_aosp_sms = OperationInfo('SmsMessageAOSPSms', 'SmsMessage', cls.ds_aosp_sms,
+                                                 ['GT-I9300', 'LG-D820'], [('2.0', '4.4.4')])
+
+    @classmethod
+    def tearDownClass(cls):
+        os.remove(cls.DB_FILE_PATH)
 
     def test_query_operation_for_email_message(self):
         result = self.db_helper.query_operations_info('EmailMessage', self.ds_aosp_email, self.dv_info)
@@ -167,14 +174,16 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         param_values = ['param1', 'param2']
         self.assertTrue(self.db_helper.add_data_source_type(data_source_type_name, extractor_name, param_values))
 
-        rows = self.db_helper.conn.execute(
-            """
-            SELECT rp.param_name
-            FROM data_source_types dst, required_params rp
-            WHERE dst.id = rp.data_source_type_id AND dst.name = '{0}'
-            AND dst.extractor_name = '{1}'
-            """.format(data_source_type_name, extractor_name)
-        )
+        with sqlite3.connect(self.DB_FILE_PATH) as conn:
+            rows = conn.execute(
+                """
+                SELECT rp.param_name
+                FROM data_source_types dst, required_params rp
+                WHERE dst.id = rp.data_source_type_id AND dst.name = ?
+                AND dst.extractor_name = ?
+                """,
+                [data_source_type_name, extractor_name]
+            )
 
         params = []
         for rp in rows:
@@ -195,15 +204,22 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         self.db_helper.add_data_source_type(data_source_type_name, 'removeExtractor', ['param1'])
         self.assertTrue(self.db_helper.remove_data_source_type(data_source_type_name))
 
-        c = self.db_helper.conn.cursor()
-        c.execute('SELECT * FROM data_source_types WHERE name = "{0}"'.format(data_source_type_name))
+        with sqlite3.connect(self.DB_FILE_PATH) as conn:
+            c = conn.cursor()
+            c.execute("""
+                      SELECT * FROM data_source_types
+                      WHERE name = ?
+                      """,
+                      [data_source_type_name]
+                      )
 
-        dst = c.fetchone()
+            dst = c.fetchone()
 
-        c.execute('SELECT 1 FROM required_params WHERE data_source_type_id NOT IN (SELECT id FROM data_source_types)')
-        rp = c.fetchone()
+            c.execute('SELECT 1 FROM required_params '
+                      'WHERE data_source_type_id NOT IN (SELECT id FROM data_source_types)')
+            rp = c.fetchone()
 
-        c.close()
+            c.close()
 
         self.assertTrue(dst is None and rp is None)
 
