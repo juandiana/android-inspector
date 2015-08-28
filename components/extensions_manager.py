@@ -8,10 +8,6 @@ from components.repositories_manager import camel_case_to_underscore
 from model import OperationError
 
 
-def underscore_to_camel_case(name):
-    return ''.join(x.capitalize() or '_' for x in name.split('_'))
-
-
 class ExtensionsManager(object):
     def __init__(self, definitions_database_manager, repositories_manager):
         self.definitions_database_manager = definitions_database_manager
@@ -67,7 +63,17 @@ class ExtensionsManager(object):
         :type name: string
         :rtype : bool
         """
-        pass
+        try:
+            self.definitions_database_manager.remove_data_type(name)
+        except (ValueError, RuntimeError):
+            raise
+
+        try:
+            self.repositories_manager.remove_file('custom_cybox_objects', camel_case_to_underscore(name) + '_object.py')
+        except OSError:
+            raise
+
+        return True
 
     def add_data_source_type(self, def_path):
         """

@@ -17,9 +17,9 @@ class TestOperation(unittest.TestCase):
         repositories_manager = RepositoriesManager(os.path.join('test', 'test_repositories'))
         self.extension_manager = ExtensionsManager(self.def_db, repositories_manager)
 
-    def tearDown(self):
-        self.def_db.conn.close()
-        os.remove(os.path.join('test', 'test_definitions.db'))
+    # def tearDown(self):
+    #     self.def_db.conn.close()
+    #     os.remove(os.path.join('test', 'test_definitions.db'))
 
     def test_add_data_type(self):
         self.assertTrue(
@@ -44,3 +44,7 @@ class TestOperation(unittest.TestCase):
         self.assertRaisesRegexp(OperationError, 'The definition module does not contain a definition file.',
                                 self.extension_manager.add_data_type,
                                 os.path.join('test', 'extension_files', 'without_definition_file.tar'))
+
+    def test_remove_data_type(self):
+        self.extension_manager.add_data_type(os.path.join('test', 'extension_files', 'remove_data_type.tar'))
+        self.assertTrue(self.extension_manager.remove_data_type('RemoveDataType'))
