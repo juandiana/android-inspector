@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 from cmd import Cmd
+import sys
 
 from components.coordinator import Coordinator, CommandError
 from components.definitions_database_manager import DefinitionsDatabaseManager
@@ -10,6 +11,11 @@ from components.repositories_manager import RepositoriesManager
 
 
 class InteractiveCommandLine(Cmd):
+    prompt = '(Andi) '
+    intro = 'Android Inspector v1.0\n'
+    doc_header = 'Commands list'
+    ruler = '-'
+
     def __init__(self, input_parser, coordinator):
         """
         :type input_parser: InputParser
@@ -18,6 +24,18 @@ class InteractiveCommandLine(Cmd):
         Cmd.__init__(self)
         self.input_parser = input_parser
         self.coordinator = coordinator
+
+    def do_EOF(self, arg_line):
+        """
+        Exits the program cleanly.
+        """
+        return True
+
+    def do_exit(self, arg_line):
+        """
+        Exits the program cleanly.
+        """
+        return True
 
     def do_set_device_info(self, arg_line):
         """
@@ -83,7 +101,10 @@ def main():
     input_parser = InputParser()
     coordinator = Coordinator(operations_manager)
 
-    InteractiveCommandLine(input_parser, coordinator).cmdloop('Android Inspector v1.0\n')
+    if len(sys.argv) > 1:
+        InteractiveCommandLine(input_parser, coordinator).onecmd(' '.join(sys.argv[1:]))
+    else:
+        InteractiveCommandLine(input_parser, coordinator).cmdloop()
 
 
 if __name__ == '__main__':
