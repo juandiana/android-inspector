@@ -4,8 +4,8 @@ import os
 import shutil
 import tarfile
 import tempfile
+
 from components.repositories_manager import camel_case_to_underscore
-from model import OperationError
 
 
 class ExtensionsManager(object):
@@ -20,10 +20,10 @@ class ExtensionsManager(object):
         :rtype : bool
         """
         if not os.path.exists(def_path):
-            raise OperationError('The definition module specified does not exist.')
+            raise RuntimeError('The definition module specified does not exist.')
 
         if not def_path.endswith('.tar'):
-            raise OperationError('The definition module specified is not a .tar file.')
+            raise RuntimeError('The definition module specified is not a .tar file.')
 
         unpacked_files = tempfile.mkdtemp()
 
@@ -34,7 +34,7 @@ class ExtensionsManager(object):
             definitions_file_path = os.path.join(unpacked_files, 'definition')
 
             if not os.path.exists(definitions_file_path):
-                raise OperationError('The definition module does not contain a definition file.')
+                raise RuntimeError('The definition module does not contain a definition file.')
 
             with open(definitions_file_path) as data_file:
                 data = json.load(data_file)
@@ -52,7 +52,7 @@ class ExtensionsManager(object):
                                                                 data['data_source_param_values'], data['device_models'],
                                                                 data['android_versions'])
             else:
-                raise OperationError('Extension type not supported.')
+                raise ValueError('Extension type not supported.')
 
             self.repositories_manager.add_file(repository_name, new_component_file_path)
         finally:
@@ -80,7 +80,7 @@ class ExtensionsManager(object):
             self.definitions_database_manager.remove_operation(name)
             self.repositories_manager.remove_file('inspectors', camel_case_to_underscore(inspector_name) + '.py')
         else:
-            raise OperationError('Extension type not supported.')
+            raise ValueError('Extension type not supported.')
 
         return True
 
@@ -108,7 +108,7 @@ def check_component_name_and_path(ex_type, definition, unpacked_files_path):
     new_component_file_path = os.path.join(unpacked_files_path, new_component_file_name)
 
     if not os.path.exists(new_component_file_path):
-        raise OperationError(
-            "The {0} does not match with '{1}'.".format(component_name, new_component_file_name))
+        raise ValueError("The {0} does not match with '{1}'."
+                         .format(component_name, new_component_file_name))
 
     return new_component_file_path, repository_name

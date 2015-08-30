@@ -13,19 +13,12 @@ def camel_case_to_underscore(name):
 
 
 def get_class_from_file(prefix, name, interface_class):
-    try:
-        module = import_module(prefix + camel_case_to_underscore(name))
-    except ImportError:
-        raise
-
-    try:
-        concrete_class = getattr(module, name)
-    except AttributeError:
-        raise
+    module = import_module(prefix + camel_case_to_underscore(name))
+    concrete_class = getattr(module, name)
 
     if not issubclass(concrete_class, interface_class):
-        raise TypeError(
-            "'{0}' must implement the '{1}' interface.".format(concrete_class.__name__, interface_class.__name__))
+        raise TypeError("'{0}' must implement the '{1}' interface."
+                        .format(concrete_class.__name__, interface_class.__name__))
 
     return concrete_class
 
@@ -60,7 +53,6 @@ class RepositoriesManager(object):
             return
 
         os.remove(target_path)
-
 
     def get_extractor_instance(self, name):
         """

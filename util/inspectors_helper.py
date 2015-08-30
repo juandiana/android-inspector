@@ -51,7 +51,6 @@ def execute_query(db_file_path, sql_query):
     try:
         c.execute(sql_query)
     except (sqlite3.OperationalError, sqlite3.DatabaseError) as error:
-        # TODO: Log the error message.
         raise OperationError('Inspection failed: Could not perform SQL query on {0}.'.format(db_file_path))
     return c, conn
 

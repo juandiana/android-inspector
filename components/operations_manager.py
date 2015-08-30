@@ -43,9 +43,16 @@ class OperationsManager(object):
         if not self.definitions_database.exists_operation(name):
             raise ValueError("'{0}' is not a defined Operation.".format(name))
 
-        extractor_id, inspector_id, param_values = self.definitions_database.get_operation_exec_info(name)
+        extractor_name, inspector_name, param_values = self.definitions_database.get_operation_exec_info(name)
 
-        extractor = self.repositories_manager.get_extractor_instance(extractor_id)  # TODO: Check if it raises exception
-        inspector = self.repositories_manager.get_inspector_instance(inspector_id)  # TODO: Check if it raises exception
+        try:
+            extractor = self.repositories_manager.get_extractor_instance(extractor_name)
+        except (ImportError, AttributeError, TypeError):
+            raise RuntimeError('Could not instantiate the operation\'s extractor class')
+
+        try:
+            inspector = self.repositories_manager.get_inspector_instance(inspector_name)
+        except (ImportError, AttributeError, TypeError):
+            raise RuntimeError('Could not instantiate the operation\'s inspector class')
 
         return Operation(extractor, inspector, param_values)
