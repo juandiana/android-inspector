@@ -113,8 +113,7 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         ds = DataSource(dst_name, param_values)
         dev_info = DeviceInfo('4.3', dev_models[0])
 
-        self.assertTrue(self.db_helper.add_operation(op_name, dt_name, dst_name, inspector_name,
-                                                     param_values, dev_models, os_versions))
+        self.db_helper.add_operation(op_name, dt_name, dst_name, inspector_name, param_values, dev_models, os_versions)
 
         result = self.db_helper.query_operations_info(dt_name, ds, dev_info)
 
@@ -129,7 +128,7 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
 
     def test_remove_operation(self):
         op_name = 'EmailMessageAOSPEmail'
-        self.assertTrue(self.db_helper.remove_operation(op_name))
+        self.db_helper.remove_operation(op_name)
 
         ext_id, ins_id, params = self.db_helper.get_operation_exec_info(op_name)
 
@@ -143,7 +142,7 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
 
     def test_add_data_type(self):
         dt_name = 'newDataType'
-        self.assertTrue(self.db_helper.add_data_type(dt_name, 'newCyboxObject'))
+        self.db_helper.add_data_type(dt_name, 'newCyboxObject')
         self.assertTrue(self.db_helper.exists_data_type(dt_name))
 
     def test_add_data_type_that_already_exists(self):
@@ -156,7 +155,7 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
     def test_remove_data_type(self):
         data_type_name = 'removeDataType'
         self.db_helper.add_data_type(data_type_name, 'removeCyboxObject')
-        self.assertTrue(self.db_helper.remove_data_type(data_type_name))
+        self.db_helper.remove_data_type(data_type_name)
         self.assertFalse(self.db_helper.exists_data_type(data_type_name))
 
     def test_remove_data_type_with_non_existing_data_type(self):
@@ -172,7 +171,8 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
         data_source_type_name = 'newDataSourceType'
         extractor_name = 'newExtractor'
         param_values = ['param1', 'param2']
-        self.assertTrue(self.db_helper.add_data_source_type(data_source_type_name, extractor_name, param_values))
+
+        self.db_helper.add_data_source_type(data_source_type_name, extractor_name, param_values)
 
         with sqlite3.connect(self.DB_FILE_PATH) as conn:
             rows = conn.execute(
@@ -202,7 +202,7 @@ class TestDefinitionsDatabaseManager(unittest.TestCase):
     def test_remove_data_source_type(self):
         data_source_type_name = 'removeDataType'
         self.db_helper.add_data_source_type(data_source_type_name, 'removeExtractor', ['param1'])
-        self.assertTrue(self.db_helper.remove_data_source_type(data_source_type_name))
+        self.db_helper.remove_data_source_type(data_source_type_name)
 
         with sqlite3.connect(self.DB_FILE_PATH) as conn:
             c = conn.cursor()

@@ -4,6 +4,7 @@ import unittest
 
 from components.coordinator import Coordinator
 from components.definitions_database_manager import DefinitionsDatabaseManager
+from components.extensions_manager import ExtensionsManager
 from components.operations_manager import OperationsManager
 from components.repositories_manager import RepositoriesManager
 from model import DeviceInfo
@@ -18,7 +19,8 @@ class TestCoordinator(unittest.TestCase):
                                                           'insert_default_operations.sql')
         repositories_manager = RepositoriesManager('repositories')
         operations_manager = OperationsManager(definitions_database, repositories_manager)
-        self.coordinator = Coordinator(operations_manager)
+        extensions_manager = ExtensionsManager(definitions_database, repositories_manager)
+        self.coordinator = Coordinator(operations_manager, extensions_manager)
 
     def test_use_case_batch_mode(self):
         ids = ['EmailMessageAOSPEmail']

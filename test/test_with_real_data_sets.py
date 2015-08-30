@@ -6,6 +6,7 @@ from unittest import TestCase
 
 from components.coordinator import Coordinator
 from components.definitions_database_manager import DefinitionsDatabaseManager
+from components.extensions_manager import ExtensionsManager
 from components.operations_manager import OperationsManager
 from components.repositories_manager import RepositoriesManager
 from load_data_sets import load_data_set
@@ -20,7 +21,9 @@ class TestWithRealDataSets(TestCase):
                                                     'insert_default_data_source_types.sql',
                                                     'insert_default_operations.sql')
         repositories_manager = RepositoriesManager('repositories')
-        self.coordinator = Coordinator(OperationsManager(def_db_manager, repositories_manager))
+        operations_manager = OperationsManager(def_db_manager, repositories_manager)
+        extensions_manager = ExtensionsManager(def_db_manager, repositories_manager)
+        self.coordinator = Coordinator(operations_manager, extensions_manager)
         self.results_dir_path = tempfile.mkdtemp()
 
     def test_sms_inspector(self):
