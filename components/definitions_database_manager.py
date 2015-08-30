@@ -268,7 +268,7 @@ class DefinitionsDatabaseManager(object):
     def get_operation_exec_info(self, name):
         """
         :type name: string
-        :rtype : extractor_id: string, inspector_id: string, params_values: dict(string)
+        :rtype : string, string, dict(string)
         """
         extractor_id = ''
         inspector_id = ''
@@ -468,8 +468,6 @@ class DefinitionsDatabaseManager(object):
             conn.commit()
             c.close()
 
-            return True
-
     def remove_operation(self, name):
         """
         :type name: string
@@ -498,7 +496,6 @@ class DefinitionsDatabaseManager(object):
 
             conn.commit()
             c.close()
-            return True
 
     def add_data_type(self, name, cybox_object_name):
         """
@@ -530,7 +527,6 @@ class DefinitionsDatabaseManager(object):
 
             conn.commit()
             c.close()
-            return True
 
     def remove_data_type(self, name):
         """
@@ -569,7 +565,6 @@ class DefinitionsDatabaseManager(object):
 
             conn.commit()
             c.close()
-            return True
 
     def add_data_source_type(self, name, extractor_name, required_params):
         """
@@ -613,7 +608,6 @@ class DefinitionsDatabaseManager(object):
 
             conn.commit()
             c.close()
-            return True
 
     def remove_data_source_type(self, name):
         """
@@ -664,4 +658,3 @@ class DefinitionsDatabaseManager(object):
 
             conn.commit()
             c.close()
-            return True

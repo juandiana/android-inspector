@@ -97,14 +97,14 @@ def check_component_name_and_path(ex_type, definition, unpacked_files_path):
     :rtype: (string, string)
     """
     if ex_type == 'data_type':
-        component_name = 'cybox_object_name'
-        repository_name = 'custom_cybox_objects'
+        component_name = "cybox_object_name"
+        repository_name = "custom_cybox_objects"
     elif ex_type == 'data_source_type':
-        component_name = 'extractor_name'
-        repository_name = 'extractors'
+        component_name = "extractor_name"
+        repository_name = "extractors"
     else:
-        component_name = 'inspector_name'
-        repository_name = 'inspectors'
+        component_name = "inspector_name"
+        repository_name = "inspectors"
 
     new_component_file_name = camel_case_to_underscore(definition[component_name]) + '.py'
     new_component_file_path = os.path.join(unpacked_files_path, new_component_file_name)

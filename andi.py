@@ -94,11 +94,11 @@ class InteractiveCommandLine(Cmd):
         Usage: add_ext --type <data_type|data_source_type|operation> --path <def_path>
 
         where:
-            <def_path>      is an absolute path to the definition .tar file.
+            <def_path>      is an absolute path to the .tar file definition.
         """
         try:
             ex_type, def_path = self.input_parser.parse_add_ext_args(arg_line)
-            self.coordinator.add(ex_type, def_path)
+            self.coordinator.add_ext(ex_type, def_path)
         except (ValueError, RuntimeError) as error:
             print error
 
@@ -108,11 +108,11 @@ class InteractiveCommandLine(Cmd):
         Usage: rm_ext --type <data_type|data_source_type|operation> --name <component_name>
 
         where:
-            <component_name>    is the name of the component to be removed.
+            <component_name>    is the name of the extension to be removed.
         """
         try:
             ex_type, name = self.input_parser.parse_rm_ext_args(arg_line)
-            self.coordinator.remove(ex_type, name)
+            self.coordinator.rm_ext(ex_type, name)
         except (ValueError, RuntimeError) as error:
             print error
 
