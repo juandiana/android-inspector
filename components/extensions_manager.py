@@ -1,9 +1,9 @@
 # coding=utf-8
-from importlib import import_module
 import json
 import os
 import shutil
 import tarfile
+import tempfile
 from components.repositories_manager import camel_case_to_underscore
 from model import OperationError
 
@@ -13,8 +13,9 @@ class ExtensionsManager(object):
         self.definitions_database_manager = definitions_database_manager
         self.repositories_manager = repositories_manager
 
-    def add_data_type(self, def_path):
+    def add(self, ex_type, def_path):
         """
+        :type ex_type: string
         :type def_path: string
         :rtype : bool
         """
@@ -24,7 +25,7 @@ class ExtensionsManager(object):
         if not def_path.endswith('.tar'):
             raise OperationError('The definition module specified is not a .tar file.')
 
-        unpacked_files = 'temp_new_data_type'
+        unpacked_files = tempfile.mkdtemp()
 
         with tarfile.open(def_path) as tar:
             tar.extractall(path=unpacked_files)
@@ -38,67 +39,70 @@ class ExtensionsManager(object):
         with open(definitions_file_path) as data_file:
             data = json.load(data_file)
 
-        cybox_object_file_name = camel_case_to_underscore(data['cybox_object_name']) + '.py'
-        cybox_object_file_path = os.path.join(unpacked_files, cybox_object_file_name)
+        # Check if the component_name matches the .py file name.
+        # If they match, return the .py file_path and the repository_name. Else, raise OperationError exception.
+        new_component_file_path, repository_name = check_component_name_and_path(ex_type, data, unpacked_files)
 
-        if not os.path.exists(cybox_object_file_path):
-            shutil.rmtree(unpacked_files)
-            raise OperationError('The cybox_object_name does not match with the CybOX object file name.')
+        if ex_type == 'data_type':
+            self.definitions_database_manager.add_data_type(data['name'], data['cybox_object_name'])
+        elif ex_type == 'data_source_type':
+            self.definitions_database_manager.add_data_source_type(data['name'], data['extractor_name'],
+                                                                   data['required_params'])
+        elif ex_type == 'operation':
+            self.definitions_database_manager.add_operation(data['name'], data['data_type'],
+                                                            data['data_source_type'], data['inspector_name'],
+                                                            data['data_source_param_values'], data['device_models'],
+                                                            data['android_versions'])
+        else:
+            raise OperationError('Extension type not supported.')
 
-        self.repositories_manager.add_file('custom_cybox_objects', os.path.join(unpacked_files, cybox_object_file_name))
-
+        self.repositories_manager.add_file(repository_name, new_component_file_path)
         shutil.rmtree(unpacked_files)
 
-        try:
-            self.definitions_database_manager.add_data_type(data['name'], data['cybox_object_name'])
-        except (ValueError, RuntimeError):
-            self.repositories_manager.remove_file('custom_cybox_objects',
-                                                  os.path.join(unpacked_files, cybox_object_file_name))
-            raise
-
         return True
 
-    def remove_data_type(self, name):
+    def remove(self, ex_type, name):
         """
+        :type ex_type: string
         :type name: string
         :rtype : bool
         """
-        try:
+        if ex_type == 'data_type':
+            custom_cybox_object_name = self.definitions_database_manager.get_data_type_custom_cybox_object_name(name)
             self.definitions_database_manager.remove_data_type(name)
-        except (ValueError, RuntimeError):
-            raise
-
-        try:
-            self.repositories_manager.remove_file('custom_cybox_objects', camel_case_to_underscore(name) + '_object.py')
-        except OSError:
-            raise
+            self.repositories_manager.remove_file('custom_cybox_objects',
+                                                  camel_case_to_underscore(custom_cybox_object_name) + '.py')
+        elif ex_type == 'data_source_type':
+            extractor_name = self.definitions_database_manager.get_data_source_type_extractor_name(name)
+            self.definitions_database_manager.remove_data_source_type(name)
+            self.repositories_manager.remove_file('extractors', camel_case_to_underscore(extractor_name) + '.py')
+        elif ex_type == 'operation':
+            inspector_name = self.definitions_database_manager.get_operation_inspector_name(name)
+            self.definitions_database_manager.remove_operation(name)
+            self.repositories_manager.remove_file('inspectors', camel_case_to_underscore(inspector_name) + '.py')
+        else:
+            raise OperationError('Extension type not supported.')
 
         return True
 
-    def add_data_source_type(self, def_path):
-        """
-        :type def_path: string
-        :rtype : bool
-        """
-        pass
 
-    def remove_data_source_type(self, name):
-        """
-        :type name: string
-        :rtype : bool
-        """
-        pass
+def check_component_name_and_path(ex_type, definition, unpacked_files):
+    if ex_type == 'data_type':
+        component_name = 'cybox_object_name'
+        repository_name = 'custom_cybox_objects'
+    elif ex_type == 'data_source_type':
+        component_name = 'extractor_name'
+        repository_name = 'extractors'
+    else:
+        component_name = 'inspector_name'
+        repository_name = 'inspectors'
 
-    def add_operation(self, def_path):
-        """
-        :type def_path: string
-        :rtype : bool
-        """
-        pass
+    new_component_file_name = camel_case_to_underscore(definition[component_name]) + '.py'
+    new_component_file_path = os.path.join(unpacked_files, new_component_file_name)
 
-    def remove_operation(self, name):
-        """
-        :type name: string
-        :rtype : bool
-        """
-        pass
+    if not os.path.exists(new_component_file_path):
+        shutil.rmtree(unpacked_files)
+        raise OperationError(
+            "The {0} does not match with '{1}'.".format(component_name, new_component_file_name))
+
+    return new_component_file_path, repository_name
