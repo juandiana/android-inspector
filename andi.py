@@ -5,6 +5,7 @@ import sys
 
 from components.coordinator import Coordinator, CommandError
 from components.definitions_database_manager import DefinitionsDatabaseManager
+from components.extensions_manager import ExtensionsManager
 from components.input_parser import InputParser
 from components.operations_manager import OperationsManager
 from components.repositories_manager import RepositoriesManager
@@ -87,6 +88,34 @@ class InteractiveCommandLine(Cmd):
         except (ValueError, CommandError) as error:
             print error
 
+    def do_add_ext(self, arg_line):
+        """
+        Adds a data_type, data_source_type or operation.
+        Usage: add_ext --type <data_type|data_source_type|operation> --path <def_path>
+
+        where:
+            <def_path>      is an absolute path to the .tar file definition.
+        """
+        try:
+            ex_type, def_path = self.input_parser.parse_add_ext_args(arg_line)
+            self.coordinator.add_ext(ex_type, def_path)
+        except (ValueError, RuntimeError) as error:
+            print error
+
+    def do_rm_ext(self, arg_line):
+        """
+        Removes a data_type, data_source_type or operation.
+        Usage: rm_ext --type <data_type|data_source_type|operation> --name <component_name>
+
+        where:
+            <component_name>    is the name of the extension to be removed.
+        """
+        try:
+            ex_type, name = self.input_parser.parse_rm_ext_args(arg_line)
+            self.coordinator.rm_ext(ex_type, name)
+        except (ValueError, RuntimeError) as error:
+            print error
+
 
 def main():
     repositories_manager = RepositoriesManager('repositories')
@@ -97,8 +126,10 @@ def main():
                                                       'insert_default_operations.sql')
     operations_manager = OperationsManager(definitions_database, repositories_manager)
 
+    extensions_manager = ExtensionsManager(definitions_database,repositories_manager)
+
     input_parser = InputParser()
-    coordinator = Coordinator(operations_manager)
+    coordinator = Coordinator(operations_manager, extensions_manager)
 
     if len(sys.argv) > 1:
         InteractiveCommandLine(input_parser, coordinator).onecmd(' '.join(sys.argv[1:]))

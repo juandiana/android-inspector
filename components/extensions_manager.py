@@ -4,6 +4,7 @@ import os
 import shutil
 import tarfile
 import tempfile
+import re
 
 from components.repositories_manager import camel_case_to_underscore
 
@@ -47,18 +48,21 @@ class ExtensionsManager(object):
                 self.definitions_database_manager.add_data_source_type(data['name'], data['extractor_name'],
                                                                        data['required_params'])
             elif ex_type == 'operation':
+                os_versions = []
+                for av in data['android_versions']:
+                    av_split = re.search('(.*)-(.*)', av)
+                    os_versions.append((av_split.group(1), av_split.group(2)))
+
                 self.definitions_database_manager.add_operation(data['name'], data['data_type'],
                                                                 data['data_source_type'], data['inspector_name'],
                                                                 data['data_source_param_values'], data['device_models'],
-                                                                data['android_versions'])
+                                                                os_versions)
             else:
                 raise ValueError('Extension type not supported.')
 
             self.repositories_manager.add_file(repository_name, new_component_file_path)
         finally:
             shutil.rmtree(unpacked_files)
-
-        return True
 
     def remove(self, ex_type, name):
         """
@@ -82,8 +86,6 @@ class ExtensionsManager(object):
         else:
             raise ValueError('Extension type not supported.')
 
-        return True
-
 
 def check_component_name_and_path(ex_type, definition, unpacked_files_path):
     """
@@ -95,14 +97,14 @@ def check_component_name_and_path(ex_type, definition, unpacked_files_path):
     :rtype: (string, string)
     """
     if ex_type == 'data_type':
-        component_name = 'cybox_object_name'
-        repository_name = 'custom_cybox_objects'
+        component_name = "cybox_object_name"
+        repository_name = "custom_cybox_objects"
     elif ex_type == 'data_source_type':
-        component_name = 'extractor_name'
-        repository_name = 'extractors'
+        component_name = "extractor_name"
+        repository_name = "extractors"
     else:
-        component_name = 'inspector_name'
-        repository_name = 'inspectors'
+        component_name = "inspector_name"
+        repository_name = "inspectors"
 
     new_component_file_name = camel_case_to_underscore(definition[component_name]) + '.py'
     new_component_file_path = os.path.join(unpacked_files_path, new_component_file_name)

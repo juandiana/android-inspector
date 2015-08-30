@@ -6,6 +6,11 @@ import re
 from model import DeviceInfo, DataSource
 
 
+class ArgumentParser(argparse.ArgumentParser):
+    def error(self, message):
+        raise ValueError(message)
+
+
 class InputParser(object):
     android_version_pattern = re.compile("^[1-9]+\.[0-9]+(\.[0-9]+)?$")
 
@@ -14,11 +19,11 @@ class InputParser(object):
         :type arg_line: string
         :rtype DeviceInfo
         """
-        parser = argparse.ArgumentParser()
+        parser = ArgumentParser()
         parser.add_argument('--version', '-v')
         parser.add_argument('--model', '-m')
 
-        args = parser.parse_args(shlex.split(arg_line))
+        args, unknown = parser.parse_known_args(shlex.split(arg_line))
 
         if args.model is None:
             raise ValueError("The parameter 'model' is required.")
@@ -40,17 +45,17 @@ class InputParser(object):
         ds = None
         di = None
 
-        parser = argparse.ArgumentParser()
+        parser = ArgumentParser()
         parser.add_argument('--data_type', '-dt')
         parser.add_argument('--source_type', '-st')
         parser.add_argument('--source_params', '-sp', nargs='*')
         parser.add_argument('--model', '-m')
         parser.add_argument('--version', '-v')
 
-        args = parser.parse_args(shlex.split(arg_line))
+        args, unknown = parser.parse_known_args(shlex.split(arg_line))
 
-        if args.type:
-            dt = args.type
+        if args.data_type:
+            dt = args.data_type
 
         if args.source_type:
             ds = DataSource(args.source_type, {})
@@ -82,13 +87,12 @@ class InputParser(object):
         :type arg_line: string
         :rtype list(string), DeviceInfo
         """
-
-        parser = argparse.ArgumentParser()
+        parser = ArgumentParser()
         parser.add_argument('--operations', '-op', nargs='+')
         parser.add_argument('--model', '-m')
         parser.add_argument('--version', '-v')
 
-        args = parser.parse_args(shlex.split(arg_line))
+        args, unknown = parser.parse_known_args(shlex.split(arg_line))
 
         di = None
 
@@ -104,3 +108,37 @@ class InputParser(object):
             di = DeviceInfo(args.version, args.model)
 
         return ops, di
+
+    def parse_add_ext_args(self, arg_line):
+        """
+        :type arg_line: string
+        :return: string, string
+        """
+        parser = ArgumentParser()
+        parser.add_argument('--type', '-t')
+        parser.add_argument('--path', '-p')
+
+        args, unknown = parser.parse_known_args(shlex.split(arg_line))
+
+        if args.type is None:
+            raise ValueError("The parameter 'type' is required.")
+
+        if args.path is None:
+            raise ValueError("The parameter 'path' is required.")
+
+        return args.type, args.path
+
+    def parse_rm_ext_args(self, arg_line):
+        parser = ArgumentParser()
+        parser.add_argument('--type', '-t')
+        parser.add_argument('--name', '-n')
+
+        args, unknown = parser.parse_known_args(shlex.split(arg_line))
+
+        if args.type is None:
+            raise ValueError("The parameter 'type' is required.")
+
+        if args.name is None:
+            raise ValueError("The parameter 'name' is required.")
+
+        return args.type, args.name

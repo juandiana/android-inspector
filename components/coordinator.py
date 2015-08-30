@@ -12,11 +12,12 @@ class CommandError(Exception):
 
 
 class Coordinator(object):
-    def __init__(self, operations_manager):
+    def __init__(self, operations_manager, extensions_manager):
         """
         :type operations_manager: operations_manager.OperationsManager
         """
         self.operations_manager = operations_manager
+        self.extensions_manager = extensions_manager
         self.device_info = None
 
     def _get_device_info(self, device_info):
@@ -79,44 +80,23 @@ class Coordinator(object):
         if op_successful_count < op_count:
             raise CommandError('At least one operation failed.')
 
-    def add_data_type(self, def_path):
+    def add_ext(self, type_, path_):
         """
-        :type def_path: string
+        :type type_: string
+        :type path_: string
         :rtype : None
         """
-        pass
+        self.extensions_manager.add(type_, path_)
 
-    def remove_data_type(self, name):
+        print 'The operation was added successfully.'
+
+    def rm_ext(self, type_, name):
         """
+        :type type_: string
         :type name: string
         :rtype : None
         """
-        pass
+        self.extensions_manager.remove(type_, name)
 
-    def add_data_source_type(self, def_path):
-        """
-        :type def_path: string
-        :rtype : None
-        """
-        pass
+        print 'The operation was removed successfully.'
 
-    def remove_data_source_type(self, name):
-        """
-        :type name: string
-        :rtype : None
-        """
-        pass
-
-    def add_operation(self, def_path):
-        """
-        :type def_path: string
-        :rtype : None
-        """
-        pass
-
-    def remove_operation(self, name):
-        """
-        :type name: string
-        :rtype : None
-        """
-        pass

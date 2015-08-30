@@ -15,6 +15,7 @@ class TestExtensionsManager(unittest.TestCase):
     DEFAULT_DATA_TYPES_SCRIPT_PATH = os.path.join('test', 'insert_test_default_data_types.sql')
     DEFAULT_DATA_SOURCE_TYPES_SCRIPT_PATH = os.path.join('test', 'insert_test_default_data_source_types.sql')
     DEFAULT_OPERATIONS_SCRIPT_PATH = os.path.join('test', 'insert_test_default_operations.sql')
+    TEST_EXTENSION_FILES = os.path.join('test', 'extension_files')
 
     @classmethod
     def setUpClass(cls):
@@ -37,7 +38,7 @@ class TestExtensionsManager(unittest.TestCase):
         ('operation', 'valid_operation.tar')
     ])
     def test_add(self, ex_type, def_name):
-        self.assertTrue(self.extension_manager.add(ex_type, os.path.join('test', 'extension_files', def_name)))
+        self.extension_manager.add(ex_type, os.path.join(self.TEST_EXTENSION_FILES, def_name))
 
     @parameterized.expand([
         ('operation', 'NuevaOperation'),
@@ -45,30 +46,30 @@ class TestExtensionsManager(unittest.TestCase):
         ('data_source_type', 'NuevoDataSourceType')
     ])
     def test_remove(self, ex_type, component_name):
-        self.assertTrue(self.extension_manager.remove(ex_type, component_name))
+        self.extension_manager.remove(ex_type, component_name)
 
     def test_add_non_existing_tar(self):
-        self.assertRaisesRegexp(OperationError, 'The definition module specified does not exist.',
+        self.assertRaisesRegexp(RuntimeError, 'The definition module specified does not exist.',
                                 self.extension_manager.add, 'data_type', 'non_existing_data_type.tar')
 
     def test_add_with_no_tar_file(self):
-        self.assertRaisesRegexp(OperationError, 'The definition module specified is not a .tar file.',
+        self.assertRaisesRegexp(RuntimeError, 'The definition module specified is not a .tar file.',
                                 self.extension_manager.add, 'data_type',
-                                os.path.join('test', 'extension_files', 'not_a_tar_file.txt'))
+                                os.path.join(self.TEST_EXTENSION_FILES, 'not_a_tar_file.txt'))
 
     def test_add_component_name_does_not_match(self):
-        self.assertRaisesRegexp(OperationError,
+        self.assertRaisesRegexp(ValueError,
                                 "The {0} does not match with '{1}'.".format('cybox_object_name', 'no_match_name.py'),
                                 self.extension_manager.add, 'data_type',
-                                os.path.join('test', 'extension_files', 'name_does_not_match.tar'))
+                                os.path.join(self.TEST_EXTENSION_FILES, 'name_does_not_match.tar'))
 
     def test_add_no_definition_file_inside_def_module(self):
-        self.assertRaisesRegexp(OperationError, 'The definition module does not contain a definition file.',
+        self.assertRaisesRegexp(RuntimeError, 'The definition module does not contain a definition file.',
                                 self.extension_manager.add, 'data_type',
-                                os.path.join('test', 'extension_files', 'without_definition_file.tar'))
+                                os.path.join(self.TEST_EXTENSION_FILES, 'without_definition_file.tar'))
 
     def test_added_file_already_exists_in_repo(self):
-        self.assertRaisesRegexp(OperationError,
+        self.assertRaisesRegexp(RuntimeError,
                                 "The file 'valid_extractor.py' already exists on the repository 'extractors'",
                                 self.extension_manager.add, 'data_source_type',
-                                os.path.join('test', 'extension_files', 'already_exists_in_repo.tar'))
+                                os.path.join(self.TEST_EXTENSION_FILES, 'already_exists_in_repo.tar'))
