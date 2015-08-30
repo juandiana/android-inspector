@@ -79,44 +79,20 @@ class Coordinator(object):
         if op_successful_count < op_count:
             raise CommandError('At least one operation failed.')
 
-    def add_data_type(self, def_path):
+    def add(self, ex_type, def_path):
         """
+        :type ex_type: string
         :type def_path: string
         :rtype : None
         """
         pass
+    # TODO: Catch ValueError y RuntimeError
 
-    def remove_data_type(self, name):
+    def remove(self, ex_type, name):
         """
+        :type ex_type: string
         :type name: string
         :rtype : None
         """
         pass
 
-    def add_data_source_type(self, def_path):
-        """
-        :type def_path: string
-        :rtype : None
-        """
-        pass
-
-    def remove_data_source_type(self, name):
-        """
-        :type name: string
-        :rtype : None
-        """
-        pass
-
-    def add_operation(self, def_path):
-        """
-        :type def_path: string
-        :rtype : None
-        """
-        pass
-
-    def remove_operation(self, name):
-        """
-        :type name: string
-        :rtype : None
-        """
-        pass

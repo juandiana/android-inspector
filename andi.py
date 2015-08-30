@@ -25,6 +25,9 @@ class InteractiveCommandLine(Cmd):
         self.input_parser = input_parser
         self.coordinator = coordinator
 
+    def do_default(self, line):
+        print "Bad command: " + line
+
     def do_EOF(self, arg_line):
         """
         Exits the program cleanly.
