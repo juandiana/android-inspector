@@ -40,11 +40,11 @@ class InteractiveCommandLine(Cmd):
     def do_set_device_info(self, arg_line):
         """
         Stores the device info to be used in the session.
-        Usage: set_device_info version=<android_version> model=<device_model>
+        Usage: set_device_info model=<device_model> version=<android_version>
 
         where:
-            <android_version>   is a string representing an android version (e.g. 4.4.4).
             <device_model>      is a string representing a device model (e.g. XT1053).
+            <android_version>   is a string representing an android version (e.g. 4.4.4).
         """
         try:
             di = self.input_parser.parse_set_device_info_args(arg_line)
@@ -53,18 +53,17 @@ class InteractiveCommandLine(Cmd):
             print error
 
     def do_list(self, arg_line):
-        """s
+        """
         Lists available operations.
-        Usage: list [--type <data_type>] [--source_type <data_source_type> [--source_params <param_values>]]
-                    [--version <android_version>] [--model <device_model>]
-
+        Usage: list [--data_type <data_type>] [--source_type <data_source_type> [--source_params <param_values>]]
+                    [--model <device_model>] [--version <android_version>]
         where:
-            <data_type>         is a string representing a datatype name.
+            <data_type>         is a string representing a data type name.
             <data_source_type>  is a string representing a data source type name.
             <param_values>      is a comma separated string list of pairs param:value with the required params of
                                 its corresponding data source type.
-            <android_version>   is a string representing an android version (e.g. 4.4.4).
             <device_model>      is a string representing a device model (e.g. XT1053).
+            <android_version>   is a string representing an android version (e.g. 4.4.4).
         """
         try:
             data_type, data_source, device_info = self.input_parser.parse_list_args(arg_line)
@@ -75,12 +74,12 @@ class InteractiveCommandLine(Cmd):
     def do_execute(self, arg_line):
         """
         Executes a set of operations.
-        Usage: execute --operations <operation_names> [--version <android_version>] [--model <device_model>]
+        Usage: execute --operations <operation_names> [--model <device_model>] [--version <android_version>]
 
         where:
             <operation_names>   is a whitespace separated string list representing the names of the operations to execute.
-            <android_version>   is a string representing an android version (e.g. 4.4.4).
             <device_model>      is a string representing a device model (e.g. XT1053).
+            <android_version>   is a string representing an android version (e.g. 4.4.4).
         """
         try:
             ids, device_info = self.input_parser.parse_execute_args(arg_line)

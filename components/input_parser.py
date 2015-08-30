@@ -41,11 +41,11 @@ class InputParser(object):
         di = None
 
         parser = argparse.ArgumentParser()
-        parser.add_argument('--type', '-t')
+        parser.add_argument('--data_type', '-dt')
         parser.add_argument('--source_type', '-st')
         parser.add_argument('--source_params', '-sp', nargs='*')
-        parser.add_argument('--version', '-v')
         parser.add_argument('--model', '-m')
+        parser.add_argument('--version', '-v')
 
         args = parser.parse_args(shlex.split(arg_line))
 
@@ -85,8 +85,8 @@ class InputParser(object):
 
         parser = argparse.ArgumentParser()
         parser.add_argument('--operations', '-op', nargs='+')
-        parser.add_argument('--version', '-v')
         parser.add_argument('--model', '-m')
+        parser.add_argument('--version', '-v')
 
         args = parser.parse_args(shlex.split(arg_line))
 
