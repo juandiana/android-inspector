@@ -4,6 +4,7 @@ import os
 import shutil
 import tarfile
 import tempfile
+import re
 
 from components.repositories_manager import camel_case_to_underscore
 
@@ -47,10 +48,15 @@ class ExtensionsManager(object):
                 self.definitions_database_manager.add_data_source_type(data['name'], data['extractor_name'],
                                                                        data['required_params'])
             elif ex_type == 'operation':
+                os_versions = []
+                for av in data['android_versions']:
+                    av_split = re.search('(.*)-(.*)', av)
+                    os_versions.append((av_split.group(1), av_split.group(2)))
+
                 self.definitions_database_manager.add_operation(data['name'], data['data_type'],
                                                                 data['data_source_type'], data['inspector_name'],
                                                                 data['data_source_param_values'], data['device_models'],
-                                                                data['android_versions'])
+                                                                os_versions)
             else:
                 raise ValueError('Extension type not supported.')
 
