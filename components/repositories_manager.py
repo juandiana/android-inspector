@@ -4,7 +4,7 @@ import re
 import os
 import shutil
 
-from model import Extractor, Inspector
+from model import Extractor, Inspector, OperationError
 
 
 def camel_case_to_underscore(name):
@@ -41,6 +41,11 @@ class RepositoriesManager(object):
         :rtype : None
         """
         dest_path = os.path.join(self.repositories_dir_name, repo_name)
+        file_name = os.path.basename(file_path)
+
+        if os.path.exists(os.path.join(dest_path, file_name)):
+            raise OperationError("The file '{0}' already exists on the repository '{1}'".format(file_name, repo_name))
+
         try:
             shutil.copy(file_path, dest_path)
         except IOError:

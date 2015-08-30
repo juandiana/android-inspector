@@ -65,3 +65,9 @@ class TestOperation(unittest.TestCase):
         self.assertRaisesRegexp(OperationError, 'The definition module does not contain a definition file.',
                                 self.extension_manager.add, 'data_type',
                                 os.path.join('test', 'extension_files', 'without_definition_file.tar'))
+
+    def test_added_file_already_exists_in_repo(self):
+        self.assertRaisesRegexp(OperationError,
+                                "The file 'valid_extractor.py' already exists on the repository 'extractors'",
+                                self.extension_manager.add, 'data_source_type',
+                                os.path.join('test', 'extension_files', 'already_exists_in_repo.tar'))
