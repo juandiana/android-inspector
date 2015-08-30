@@ -46,10 +46,7 @@ class RepositoriesManager(object):
         if os.path.exists(os.path.join(dest_path, file_name)):
             raise OperationError("The file '{0}' already exists on the repository '{1}'".format(file_name, repo_name))
 
-        try:
-            shutil.copy(file_path, dest_path)
-        except IOError:
-            raise
+        shutil.copy(file_path, dest_path)
 
     def remove_file(self, repo_name, file_name):
         """
@@ -58,10 +55,12 @@ class RepositoriesManager(object):
         :rtype : None
         """
         target_path = os.path.join(self.repositories_dir_name, repo_name, file_name)
-        try:
-            os.remove(target_path)
-        except OSError:
-            raise
+
+        if not os.path.exists(target_path):
+            return
+
+        os.remove(target_path)
+
 
     def get_extractor_instance(self, name):
         """
