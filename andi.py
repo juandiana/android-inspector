@@ -26,9 +26,6 @@ class InteractiveCommandLine(Cmd):
         self.input_parser = input_parser
         self.coordinator = coordinator
 
-    def do_default(self, line):
-        print "Bad command: " + line
-
     def do_EOF(self, arg_line):
         """
         Exits the program cleanly.
@@ -91,32 +88,30 @@ class InteractiveCommandLine(Cmd):
         except (ValueError, CommandError) as error:
             print error
 
-    def do_add(self, arg_line):
+    def do_add_ext(self, arg_line):
         """
         Adds a data_type, data_source_type or operation.
-        Usage: add --ex_type <component_type> --def_path <definition_path>
+        Usage: add_ext --type <data_type|data_source_type|operation> --path <def_path>
 
         where:
-            <component_type>    is the type of the component to be added ('data_type', 'data_source_type' or 'operation')
-            <def_path>          is a absolute path to the .tar file definition.
+            <def_path>      is an absolute path to the definition .tar file.
         """
         try:
-            ex_type, def_path = self.input_parser.parse_add_args(arg_line)
+            ex_type, def_path = self.input_parser.parse_add_ext_args(arg_line)
             self.coordinator.add(ex_type, def_path)
         except (ValueError, RuntimeError) as error:
             print error
 
-    def do_remove(self, arg_line):
+    def do_rm_ext(self, arg_line):
         """
         Removes a data_type, data_source_type or operation.
-        Usage: remove --ex_type <component_type> --name <component_name>
+        Usage: rm_ext --type <data_type|data_source_type|operation> --name <component_name>
 
         where:
-            <component_type>    is the type of the component to be removed ('data_type', 'data_source_type' or 'operation')
             <component_name>    is the name of the component to be removed.
         """
         try:
-            ex_type, name = self.input_parser.parse_remove_args(arg_line)
+            ex_type, name = self.input_parser.parse_rm_ext_args(arg_line)
             self.coordinator.remove(ex_type, name)
         except (ValueError, RuntimeError) as error:
             print error

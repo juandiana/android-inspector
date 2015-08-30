@@ -54,8 +54,8 @@ class InputParser(object):
 
         args, unknown = parser.parse_known_args(shlex.split(arg_line))
 
-        if args.type:
-            dt = args.type
+        if args.data_type:
+            dt = args.data_type
 
         if args.source_type:
             ds = DataSource(args.source_type, {})
@@ -109,36 +109,36 @@ class InputParser(object):
 
         return ops, di
 
-    def parse_add_args(self, arg_line):
+    def parse_add_ext_args(self, arg_line):
         """
         :type arg_line: string
         :return: string, string
         """
         parser = ArgumentParser()
-        parser.add_argument('--ex_type', '-et')
-        parser.add_argument('--def_path', '-dp')
+        parser.add_argument('--type', '-t')
+        parser.add_argument('--path', '-p')
 
         args, unknown = parser.parse_known_args(shlex.split(arg_line))
 
-        if args.ex_type is None:
-            raise ValueError("The parameter 'ex_type' is required.")
+        if args.type is None:
+            raise ValueError("The parameter 'type' is required.")
 
-        if args.def_path is None:
-            raise ValueError("The parameter 'def_path' is required.")
+        if args.path is None:
+            raise ValueError("The parameter 'path' is required.")
 
-        return args.ex_type, args.def_path
+        return args.type, args.path
 
-    def parse_remove_args(self, arg_line):
+    def parse_rm_ext_args(self, arg_line):
         parser = ArgumentParser()
-        parser.add_argument('--ex_type', '-et')
+        parser.add_argument('--type', '-t')
         parser.add_argument('--name', '-n')
 
         args, unknown = parser.parse_known_args(shlex.split(arg_line))
 
-        if args.ex_type is None:
-            raise ValueError("The parameter 'ex_type' is required.")
+        if args.type is None:
+            raise ValueError("The parameter 'type' is required.")
 
         if args.name is None:
             raise ValueError("The parameter 'name' is required.")
 
-        return args.ex_type, args.name
+        return args.type, args.name
