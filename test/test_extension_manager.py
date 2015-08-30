@@ -8,8 +8,9 @@ from model import OperationError
 from nose_parameterized import parameterized
 
 
-class TestOperation(unittest.TestCase):
+class TestExtensionsManager(unittest.TestCase):
     DB_FILE_PATH = os.path.join('test', 'test_definitions.db')
+    DB_REPOSITORIES_PATH = os.path.join('test', 'test_repositories')
     DB_CREATION_SCRIPT_PATH = 'create_db.sql'
     DEFAULT_DATA_TYPES_SCRIPT_PATH = os.path.join('test', 'insert_test_default_data_types.sql')
     DEFAULT_DATA_SOURCE_TYPES_SCRIPT_PATH = os.path.join('test', 'insert_test_default_data_source_types.sql')
@@ -23,7 +24,7 @@ class TestOperation(unittest.TestCase):
                                                 cls.DEFAULT_DATA_SOURCE_TYPES_SCRIPT_PATH,
                                                 cls.DEFAULT_OPERATIONS_SCRIPT_PATH)
 
-        repositories_manager = RepositoriesManager(os.path.join('test', 'test_repositories'))
+        repositories_manager = RepositoriesManager(cls.DB_REPOSITORIES_PATH)
         cls.extension_manager = ExtensionsManager(cls.def_db, repositories_manager)
 
     @classmethod
