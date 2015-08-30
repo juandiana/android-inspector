@@ -37,7 +37,7 @@ class RepositoriesManager(object):
         file_name = os.path.basename(file_path)
 
         if os.path.exists(os.path.join(dest_path, file_name)):
-            raise OperationError("The file '{0}' already exists on the repository '{1}'".format(file_name, repo_name))
+            raise RuntimeError("The file '{0}' already exists on the repository '{1}'".format(file_name, repo_name))
 
         shutil.copy(file_path, dest_path)
 

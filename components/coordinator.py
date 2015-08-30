@@ -12,11 +12,12 @@ class CommandError(Exception):
 
 
 class Coordinator(object):
-    def __init__(self, operations_manager):
+    def __init__(self, operations_manager, extensions_manager):
         """
         :type operations_manager: operations_manager.OperationsManager
         """
         self.operations_manager = operations_manager
+        self.extensions_manager = extensions_manager
         self.device_info = None
 
     def _get_device_info(self, device_info):
@@ -85,8 +86,9 @@ class Coordinator(object):
         :type def_path: string
         :rtype : None
         """
-        pass
-    # TODO: Catch ValueError y RuntimeError
+        self.extensions_manager.add(ex_type, def_path)
+
+        print 'The operation was added successfully.'
 
     def remove(self, ex_type, name):
         """
@@ -94,5 +96,7 @@ class Coordinator(object):
         :type name: string
         :rtype : None
         """
-        pass
+        self.extensions_manager.remove(ex_type, name)
+
+        print 'The operation was removed successfully.'
 

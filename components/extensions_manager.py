@@ -58,8 +58,6 @@ class ExtensionsManager(object):
         finally:
             shutil.rmtree(unpacked_files)
 
-        return True
-
     def remove(self, ex_type, name):
         """
         :type ex_type: string
@@ -81,8 +79,6 @@ class ExtensionsManager(object):
             self.repositories_manager.remove_file('inspectors', camel_case_to_underscore(inspector_name) + '.py')
         else:
             raise ValueError('Extension type not supported.')
-
-        return True
 
 
 def check_component_name_and_path(ex_type, definition, unpacked_files_path):

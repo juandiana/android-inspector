@@ -108,3 +108,37 @@ class InputParser(object):
             di = DeviceInfo(args.version, args.model)
 
         return ops, di
+
+    def parse_add_args(self, arg_line):
+        """
+        :type arg_line: string
+        :return: string, string
+        """
+        parser = ArgumentParser()
+        parser.add_argument('--ex_type', '-et')
+        parser.add_argument('--def_path', '-dp')
+
+        args, unknown = parser.parse_known_args(shlex.split(arg_line))
+
+        if args.ex_type is None:
+            raise ValueError("The parameter 'ex_type' is required.")
+
+        if args.def_path is None:
+            raise ValueError("The parameter 'def_path' is required.")
+
+        return args.ex_type, args.def_path
+
+    def parse_remove_args(self, arg_line):
+        parser = ArgumentParser()
+        parser.add_argument('--ex_type', '-et')
+        parser.add_argument('--name', '-n')
+
+        args, unknown = parser.parse_known_args(shlex.split(arg_line))
+
+        if args.ex_type is None:
+            raise ValueError("The parameter 'ex_type' is required.")
+
+        if args.name is None:
+            raise ValueError("The parameter 'name' is required.")
+
+        return args.ex_type, args.name

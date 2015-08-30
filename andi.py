@@ -5,6 +5,7 @@ import sys
 
 from components.coordinator import Coordinator, CommandError
 from components.definitions_database_manager import DefinitionsDatabaseManager
+from components.extensions_manager import ExtensionsManager
 from components.input_parser import InputParser
 from components.operations_manager import OperationsManager
 from components.repositories_manager import RepositoriesManager
@@ -90,6 +91,36 @@ class InteractiveCommandLine(Cmd):
         except (ValueError, CommandError) as error:
             print error
 
+    def do_add(self, arg_line):
+        """
+        Adds a data_type, data_source_type or operation.
+        Usage: add --ex_type <component_type> --def_path <definition_path>
+
+        where:
+            <component_type>    is the type of the component to be added ('data_type', 'data_source_type' or 'operation')
+            <def_path>          is a absolute path to the .tar file definition.
+        """
+        try:
+            ex_type, def_path = self.input_parser.parse_add_args(arg_line)
+            self.coordinator.add(ex_type, def_path)
+        except (ValueError, RuntimeError) as error:
+            print error
+
+    def do_remove(self, arg_line):
+        """
+        Removes a data_type, data_source_type or operation.
+        Usage: remove --ex_type <component_type> --name <component_name>
+
+        where:
+            <component_type>    is the type of the component to be removed ('data_type', 'data_source_type' or 'operation')
+            <component_name>    is the name of the component to be removed.
+        """
+        try:
+            ex_type, name = self.input_parser.parse_remove_args(arg_line)
+            self.coordinator.remove(ex_type, name)
+        except (ValueError, RuntimeError) as error:
+            print error
+
 
 def main():
     repositories_manager = RepositoriesManager('repositories')
@@ -100,8 +131,10 @@ def main():
                                                       'insert_default_operations.sql')
     operations_manager = OperationsManager(definitions_database, repositories_manager)
 
+    extensions_manager = ExtensionsManager(definitions_database,repositories_manager)
+
     input_parser = InputParser()
-    coordinator = Coordinator(operations_manager)
+    coordinator = Coordinator(operations_manager, extensions_manager)
 
     if len(sys.argv) > 1:
         InteractiveCommandLine(input_parser, coordinator).onecmd(' '.join(sys.argv[1:]))
