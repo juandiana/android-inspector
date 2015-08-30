@@ -41,17 +41,6 @@ class OperationInfo(object):
         self.supported_device_models = supported_device_models
         self.supported_os_versions = supported_os_versions
 
-    def __repr__(self):  # TODO: Remove this method?
-        return '{{\n' \
-               '\tname: {0}\n' \
-               '\tdata_type: {1}\n' \
-               '\tdata_source: {2}\n' \
-               '\tsupported_device_models: {3}\n' \
-               '\tsupported_os_models: {4}\n' \
-               '}}\n' \
-            .format(self.name, self.data_type, self.data_source, self.supported_device_models,
-                    self.supported_os_versions)
-
     def __eq__(self, other):
         return self.name == other.name \
                and self.data_type == other.data_type \
