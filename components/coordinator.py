@@ -80,23 +80,23 @@ class Coordinator(object):
         if op_successful_count < op_count:
             raise CommandError('At least one operation failed.')
 
-    def add(self, ex_type, def_path):
+    def add_ext(self, type_, path_):
         """
-        :type ex_type: string
-        :type def_path: string
+        :type type_: string
+        :type path_: string
         :rtype : None
         """
-        self.extensions_manager.add(ex_type, def_path)
+        self.extensions_manager.add(type_, path_)
 
         print 'The operation was added successfully.'
 
-    def remove(self, ex_type, name):
+    def rm_ext(self, type_, name):
         """
-        :type ex_type: string
+        :type type_: string
         :type name: string
         :rtype : None
         """
-        self.extensions_manager.remove(ex_type, name)
+        self.extensions_manager.remove(type_, name)
 
         print 'The operation was removed successfully.'
 
