@@ -220,6 +220,36 @@ class DefinitionsDatabaseManager(object):
             return OperationInfo(op_name, data_type, DataSource(data_source_type, param_values),
                                  supported_models, supported_os_versions)
 
+    def get_data_type_custom_cybox_object_name(self, dt_name):
+        """
+        :type dt_name: string
+        :rtype: string
+        """
+        with sqlite3.connect(self.db_file_path) as conn:
+            c = conn.cursor()
+            c.execute('SELECT dt.cybox_object_name FROM data_types AS dt WHERE dt.name = ?', [dt_name])
+
+            row = c.fetchone()
+            if row is None:
+                return None
+
+            return row[0]
+
+    def get_data_source_type_extractor_name(self, dst_name):
+        """
+        :type dst_name: string
+        :rtype: string
+        """
+        with sqlite3.connect(self.db_file_path) as conn:
+            c = conn.cursor()
+            c.execute('SELECT dst.extractor_name FROM data_source_types AS dst WHERE dst.name = ?', [dst_name])
+
+            row = c.fetchone()
+            if row is None:
+                return None
+
+            return row[0]
+
     def get_operation_inspector_name(self, op_name):
         """
         :type op_name: string
