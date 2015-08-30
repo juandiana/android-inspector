@@ -31,7 +31,6 @@ class RepositoriesManager(object):
         """
         :type repo_name: string
         :type file_path: string
-        :rtype : None
         """
         dest_path = os.path.join(self.repositories_dir_name, repo_name)
         file_name = os.path.basename(file_path)
@@ -45,7 +44,6 @@ class RepositoriesManager(object):
         """
         :type repo_name: string
         :type file_name: string
-        :rtype : None
         """
         target_path = os.path.join(self.repositories_dir_name, repo_name, file_name)
 
