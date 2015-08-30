@@ -89,10 +89,10 @@ def check_component_name_and_path(ex_type, definition, unpacked_files_path):
     """
     Check if the component_name matches the .py file name.
     If they match, return the .py file_path and the repository_name. Else, raise OperationError exception.
-    :param ex_type: string
-    :param definition: string
-    :param unpacked_files_path: string
-    :return: (string, string)
+    :type ex_type: string
+    :type definition: string
+    :type unpacked_files_path: string
+    :rtype: (string, string)
     """
     if ex_type == 'data_type':
         component_name = 'cybox_object_name'
