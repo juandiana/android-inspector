@@ -27,37 +27,36 @@ class ExtensionsManager(object):
 
         unpacked_files = tempfile.mkdtemp()
 
-        with tarfile.open(def_path) as tar:
-            tar.extractall(path=unpacked_files)
+        try:
+            with tarfile.open(def_path) as tar:
+                tar.extractall(path=unpacked_files)
 
-        definitions_file_path = os.path.join(unpacked_files, 'definition')
+            definitions_file_path = os.path.join(unpacked_files, 'definition')
 
-        if not os.path.exists(definitions_file_path):
+            if not os.path.exists(definitions_file_path):
+                raise OperationError('The definition module does not contain a definition file.')
+
+            with open(definitions_file_path) as data_file:
+                data = json.load(data_file)
+
+            new_component_file_path, repository_name = check_component_name_and_path(ex_type, data, unpacked_files)
+
+            if ex_type == 'data_type':
+                self.definitions_database_manager.add_data_type(data['name'], data['cybox_object_name'])
+            elif ex_type == 'data_source_type':
+                self.definitions_database_manager.add_data_source_type(data['name'], data['extractor_name'],
+                                                                       data['required_params'])
+            elif ex_type == 'operation':
+                self.definitions_database_manager.add_operation(data['name'], data['data_type'],
+                                                                data['data_source_type'], data['inspector_name'],
+                                                                data['data_source_param_values'], data['device_models'],
+                                                                data['android_versions'])
+            else:
+                raise OperationError('Extension type not supported.')
+
+            self.repositories_manager.add_file(repository_name, new_component_file_path)
+        finally:
             shutil.rmtree(unpacked_files)
-            raise OperationError('The definition module does not contain a definition file.')
-
-        with open(definitions_file_path) as data_file:
-            data = json.load(data_file)
-
-        # Check if the component_name matches the .py file name.
-        # If they match, return the .py file_path and the repository_name. Else, raise OperationError exception.
-        new_component_file_path, repository_name = check_component_name_and_path(ex_type, data, unpacked_files)
-
-        if ex_type == 'data_type':
-            self.definitions_database_manager.add_data_type(data['name'], data['cybox_object_name'])
-        elif ex_type == 'data_source_type':
-            self.definitions_database_manager.add_data_source_type(data['name'], data['extractor_name'],
-                                                                   data['required_params'])
-        elif ex_type == 'operation':
-            self.definitions_database_manager.add_operation(data['name'], data['data_type'],
-                                                            data['data_source_type'], data['inspector_name'],
-                                                            data['data_source_param_values'], data['device_models'],
-                                                            data['android_versions'])
-        else:
-            raise OperationError('Extension type not supported.')
-
-        self.repositories_manager.add_file(repository_name, new_component_file_path)
-        shutil.rmtree(unpacked_files)
 
         return True
 
@@ -86,7 +85,15 @@ class ExtensionsManager(object):
         return True
 
 
-def check_component_name_and_path(ex_type, definition, unpacked_files):
+def check_component_name_and_path(ex_type, definition, unpacked_files_path):
+    """
+    Check if the component_name matches the .py file name.
+    If they match, return the .py file_path and the repository_name. Else, raise OperationError exception.
+    :param ex_type: string
+    :param definition: string
+    :param unpacked_files_path: string
+    :return: (string, string)
+    """
     if ex_type == 'data_type':
         component_name = 'cybox_object_name'
         repository_name = 'custom_cybox_objects'
@@ -98,10 +105,9 @@ def check_component_name_and_path(ex_type, definition, unpacked_files):
         repository_name = 'inspectors'
 
     new_component_file_name = camel_case_to_underscore(definition[component_name]) + '.py'
-    new_component_file_path = os.path.join(unpacked_files, new_component_file_name)
+    new_component_file_path = os.path.join(unpacked_files_path, new_component_file_name)
 
     if not os.path.exists(new_component_file_path):
-        shutil.rmtree(unpacked_files)
         raise OperationError(
             "The {0} does not match with '{1}'.".format(component_name, new_component_file_name))
 
