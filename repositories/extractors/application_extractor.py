@@ -51,4 +51,4 @@ class ApplicationExtractor(Extractor):
             if 'package:' in line:
                 return line.replace('package:', '')
 
-        raise OperationError('Extraction failed. Could not find the APK for package {}.'.format(app_package_name))
+        raise OperationError('Extraction failed. Could not find the APK for package "{}".'.format(app_package_name))

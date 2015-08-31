@@ -21,6 +21,10 @@ def load_data_set(data_set_name):
             file_path = os.path.join(data_set_dir_path, file_name)
             if os.path.isfile(file_path) and file_name.endswith('.apk'):
                 print "Installing '{0}' into the device...".format(file_name)
+                package_name = os.path.splitext(file_name)[0]
+                if '-' in package_name:
+                    package_name = package_name.partition('-')[0]
+                device.uninstall(package_name)
                 device.install(file_path, replace=True)
 
         for file_name in os.listdir(data_set_dir_path):
