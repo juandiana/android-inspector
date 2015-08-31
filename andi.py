@@ -26,95 +26,104 @@ class InteractiveCommandLine(Cmd):
         self.input_parser = input_parser
         self.coordinator = coordinator
 
-    def do_EOF(self, arg_line):
-        """
-        Exits the program cleanly.
-        """
-        return True
+    def emptyline(self):
+        pass
 
     def do_exit(self, arg_line):
-        """
-        Exits the program cleanly.
-        """
         return True
 
-    def do_set_device_info(self, arg_line):
-        """
-        Stores the device info to be used in the session.
-        Usage: set_device_info model=<device_model> version=<android_version>
+    def help_exit(self):
+        print 'Description: Finishes the interactive session.'
 
-        where:
-            <device_model>      is a string representing a device model (e.g. XT1053).
-            <android_version>   is a string representing an android version (e.g. 4.4.4).
-        """
+    do_EOF = do_exit
+    help_EOF = help_exit
+
+    def do_set_device_info(self, arg_line):
         try:
             di = self.input_parser.parse_set_device_info_args(arg_line)
             self.coordinator.set_device_info(di)
         except (ValueError, CommandError) as error:
             print error
 
+    def help_set_device_info(self):
+        print '\n'.join([
+            'Description: Stores the device info to be used in the session.',
+            'Usage: set_device_info model=<device_model> version=<android_version>',
+            '',
+            '\t- <device_model>    is a string representing a device model (e.g. XT1053).',
+            '\t- <android_version> is a string representing an android version (e.g. 4.4.4).'
+        ])
+
     def do_list(self, arg_line):
-        """
-        Lists available operations.
-        Usage: list [--data_type <data_type>] [--source_type <data_source_type> [--source_params <param_values>]]
-                    [--model <device_model>] [--version <android_version>]
-        where:
-            <data_type>         is a string representing a data type name.
-            <data_source_type>  is a string representing a data source type name.
-            <param_values>      is a comma separated string list of pairs param:value with the required params of
-                                its corresponding data source type.
-            <device_model>      is a string representing a device model (e.g. XT1053).
-            <android_version>   is a string representing an android version (e.g. 4.4.4).
-        """
         try:
             data_type, data_source, device_info = self.input_parser.parse_list_args(arg_line)
             self.coordinator.list_operations(data_type, data_source, device_info)
         except (ValueError, CommandError) as error:
             print error
 
-    def do_execute(self, arg_line):
-        """
-        Executes a set of operations.
-        Usage: execute --operations <operation_names> [--model <device_model>] [--version <android_version>]
+    def help_list(self):
+        print '\n'.join([
+            'Description: Lists available operations.',
+            'Usage: list [--data_type <data_type>] [--source_type <data_source_type> [--source_params <param_values>]]'
+            ' [--model <device_model>] [--version <android_version>]',
+            '',
+            '\t- <data_type>        is a string representing a data type name.',
+            '\t- <data_source_type> is a string representing a data source type name.',
+            '\t- <param_values>     is a comma separated string list of pairs param:value with the required params of'
+            ' its corresponding data source type.',
+            '\t- <device_model>     is a string representing a device model (e.g. XT1053).',
+            '\t- <android_version>  is a string representing an android version (e.g. 4.4.4).'
+        ])
 
-        where:
-            <operation_names>   is a whitespace separated string list representing the names of the operations to execute.
-            <device_model>      is a string representing a device model (e.g. XT1053).
-            <android_version>   is a string representing an android version (e.g. 4.4.4).
-        """
+    def do_execute(self, arg_line):
         try:
             ids, device_info = self.input_parser.parse_execute_args(arg_line)
             self.coordinator.execute_operations(ids, device_info, results_dir_path='results')
         except (ValueError, CommandError) as error:
             print error
 
-    def do_add_ext(self, arg_line):
-        """
-        Adds a data_type, data_source_type or operation.
-        Usage: add_ext --type <data_type|data_source_type|operation> --path <def_path>
+    def help_execute(self):
+        print '\n'.join([
+            'Description: Executes a set of operations.',
+            'Usage: execute --operations <operation_names> [--model <device_model>] [--version <android_version>]',
+            '',
+            '\t- <operation_names> is a whitespace separated string list representing the names of the operations to'
+            ' execute.',
+            '\t- <device_model>    is a string representing a device model (e.g. XT1053).',
+            '\t- <android_version> is a string representing an android version (e.g. 4.4.4).'
+        ])
 
-        where:
-            <def_path>      is an absolute path to the .tar file definition.
-        """
+    def do_add_ext(self, arg_line):
         try:
             ex_type, def_path = self.input_parser.parse_add_ext_args(arg_line)
             self.coordinator.add_ext(ex_type, def_path)
         except (ValueError, RuntimeError) as error:
             print error
 
-    def do_rm_ext(self, arg_line):
-        """
-        Removes a data_type, data_source_type or operation.
-        Usage: rm_ext --type <data_type|data_source_type|operation> --name <component_name>
+    def help_add_ext(self):
+        print '\n'.join([
+            'Description: Adds an extension to the system.',
+            'Usage: add_ext --type <extension_type> --path <def_path>',
+            '',
+            '\t- <extension_type> is either \'data_type\', \'data_source_type\' or \'operation\'.',
+            '\t- <def_path>       is an absolute path to the .tar file definition.'
+        ])
 
-        where:
-            <component_name>    is the name of the extension to be removed.
-        """
+    def do_rm_ext(self, arg_line):
         try:
             ex_type, name = self.input_parser.parse_rm_ext_args(arg_line)
             self.coordinator.rm_ext(ex_type, name)
         except (ValueError, RuntimeError) as error:
             print error
+
+    def help_rm_ext(self):
+        print '\n'.join([
+            'Description: Removes an extension from the system.',
+            'Usage: rm_ext --type <extension_type> --name <extension_name>',
+            '',
+            '\t- <extension_type> is either \'data_type\', \'data_source_type\' or \'operation\'.',
+            '\t- <extension_name> is the name of the extension to be removed.'
+        ])
 
 
 def main():
@@ -126,7 +135,7 @@ def main():
                                                       'insert_default_operations.sql')
     operations_manager = OperationsManager(definitions_database, repositories_manager)
 
-    extensions_manager = ExtensionsManager(definitions_database,repositories_manager)
+    extensions_manager = ExtensionsManager(definitions_database, repositories_manager)
 
     input_parser = InputParser()
     coordinator = Coordinator(operations_manager, extensions_manager)
