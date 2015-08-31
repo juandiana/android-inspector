@@ -195,6 +195,9 @@ class AndroidDevice(object):
         cmd.append(filename)
         return self._simple_call(cmd)
 
+    def uninstall(self, package_name):
+        return self._simple_call(['uninstall', package_name])
+
     def push(self, local, remote):
         return self._simple_call(['push', local, remote])
 
