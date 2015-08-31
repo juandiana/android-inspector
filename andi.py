@@ -13,11 +13,11 @@ from components.repositories_manager import RepositoriesManager
 
 class InteractiveCommandLine(Cmd):
     prompt = '(Andi) '
-    intro = 'Android Inspector v1.0\n'
+    intro = '\nAndroid Inspector v1.0'
     doc_header = 'Commands list'
     ruler = '-'
 
-    def __init__(self, input_parser, coordinator):
+    def __init__(self, input_parser, coordinator, simple_output):
         """
         :type input_parser: InputParser
         :type coordinator: Coordinator
@@ -25,6 +25,10 @@ class InteractiveCommandLine(Cmd):
         Cmd.__init__(self)
         self.input_parser = input_parser
         self.coordinator = coordinator
+        self.simple_output = simple_output
+
+        if simple_output:
+            self.intro += '\nNote: Simplified output for CybOX content is enabled.'
 
     def emptyline(self):
         pass
@@ -78,7 +82,7 @@ class InteractiveCommandLine(Cmd):
     def do_execute(self, arg_line):
         try:
             ids, device_info = self.input_parser.parse_execute_args(arg_line)
-            self.coordinator.execute_operations(ids, device_info, results_dir_path='results')
+            self.coordinator.execute_operations(ids, device_info, 'results', self.simple_output)
         except (ValueError, CommandError) as error:
             print error
 
@@ -127,6 +131,11 @@ class InteractiveCommandLine(Cmd):
 
 
 def main():
+    simple_output = False
+    if len(sys.argv) > 1 and sys.argv[1] == '--simple_output':
+        simple_output = True
+        sys.argv.remove(sys.argv[1])
+
     repositories_manager = RepositoriesManager('repositories')
     definitions_database = DefinitionsDatabaseManager('definitions.db',
                                                       'create_db.sql',
@@ -141,9 +150,9 @@ def main():
     coordinator = Coordinator(operations_manager, extensions_manager)
 
     if len(sys.argv) > 1:
-        InteractiveCommandLine(input_parser, coordinator).onecmd(' '.join(sys.argv[1:]))
+        InteractiveCommandLine(input_parser, coordinator, simple_output).onecmd(' '.join(sys.argv[1:]))
     else:
-        InteractiveCommandLine(input_parser, coordinator).cmdloop()
+        InteractiveCommandLine(input_parser, coordinator, simple_output).cmdloop()
 
 
 if __name__ == '__main__':
