@@ -22,11 +22,11 @@ class ContactAOSPAgendaInspector(Inspector):
         inspected_objects = []
 
         query = """
-                SELECT pp._id AS id, pp.display_name AS display_name, pp.display_name_alt AS alt_name,
-                       pp.account_name AS account_name, pp.account_type AS account_type,
+                SELECT rc._id AS id, rc.display_name AS display_name, rc.display_name_alt AS alt_name,
+                       rc.account_name AS account_name, rc.account_type AS account_type,
                        c.photo_id AS photo_id
-                FROM view_v1_people pp, contacts c
-                WHERE pp._id = c._id
+                FROM contacts c, raw_contacts rc
+                WHERE c._id = rc._id
                 """
 
         cursor, conn = inspectors_helper.execute_query(contacts_db_file_path, query)

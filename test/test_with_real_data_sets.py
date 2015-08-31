@@ -30,7 +30,7 @@ class TestWithRealDataSets(TestCase):
         success = load_data_set('HTC_Evo_3D')
         self.assertTrue(success)
 
-        operations = ['SmsMessageAOSPSms', 'ContactFacebook', 'ContactWhatsApp']  # TODO: Agregar 'ContactAOSPAgenda'
+        operations = ['SmsMessageAOSPSms', 'ContactFacebook', 'ContactWhatsApp', 'ContactAOSPAgenda']
         device_info = DeviceInfo('4.3', 'GT-i9300')
         self.coordinator.execute_operations(operations, device_info, self.results_dir_path)
 
