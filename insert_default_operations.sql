@@ -24,7 +24,6 @@ VALUES (2, '2.2.0', '4.4.4');
 INSERT INTO data_source_params_values (operation_id, param_name, param_value)
 VALUES (2, 'package_name', 'com.android.providers.telephony');
 
--- TODO: Ver si dejamos estas operaciones por defecto (al igual que el tipo de dato Contact).
 -- Operation to extract Contacts from the Facebook.
 INSERT INTO operations (name, inspector_name, data_type_id, data_source_type_id)
 VALUES ('ContactFacebook', 'ContactFacebookInspector', 3, 1);
