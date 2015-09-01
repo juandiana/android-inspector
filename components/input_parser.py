@@ -39,7 +39,7 @@ class InputParser(object):
     def parse_list_args(self, arg_line):
         """
         :type arg_line: string
-        :rtype string, DataSource, DeviceInfo
+        :rtype (string, DataSource, DeviceInfo)
         """
         dt = None
         ds = None
@@ -85,7 +85,7 @@ class InputParser(object):
     def parse_execute_args(self, arg_line):
         """
         :type arg_line: string
-        :rtype list(string), DeviceInfo
+        :rtype (list[string], DeviceInfo)
         """
         parser = ArgumentParser()
         parser.add_argument('--operations', '-op', nargs='+')
@@ -112,7 +112,7 @@ class InputParser(object):
     def parse_add_ext_args(self, arg_line):
         """
         :type arg_line: string
-        :return: string, string
+        :rtype: (string, string)
         """
         parser = ArgumentParser()
         parser.add_argument('--type', '-t')
@@ -129,6 +129,10 @@ class InputParser(object):
         return args.type, args.path
 
     def parse_rm_ext_args(self, arg_line):
+        """
+        :type arg_line: string
+        :rtype: (string, string)
+        """
         parser = ArgumentParser()
         parser.add_argument('--type', '-t')
         parser.add_argument('--name', '-n')

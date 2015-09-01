@@ -17,7 +17,7 @@ class OperationsManager(object):
         :type data_type: DataType
         :type data_source: DataSource
         :type device_info: DeviceInfo
-        :rtype : list(OperationInfo)
+        :rtype : list[OperationInfo]
         """
         if device_info is None:
             raise ValueError("get_operations_info must always receive a DeviceInfo instance.")
