@@ -244,6 +244,7 @@ class DefinitionsDatabaseManager(object):
         :rtype: string
         """
         with sqlite3.connect(self.db_file_path) as conn:
+            conn.row_factory = sqlite3.Row
             c = conn.cursor()
             c.execute('SELECT dst.extractor_name AS name FROM data_source_types AS dst WHERE dst.name = ?', [dst_name])
 
