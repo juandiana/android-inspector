@@ -92,7 +92,7 @@ class Coordinator(object):
         """
         self.extensions_manager.add(type_, path_)
 
-        print 'The operation was added successfully.'
+        print 'The {0} was added successfully.'.format(type_)
 
     def rm_ext(self, type_, name):
         """
@@ -101,5 +101,5 @@ class Coordinator(object):
         """
         self.extensions_manager.remove(type_, name)
 
-        print 'The operation was removed successfully.'
+        print 'The {0} was removed successfully.'.format(type_)
 
