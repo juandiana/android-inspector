@@ -45,10 +45,17 @@ class Coordinator(object):
         device_info_to_use = self._get_device_info(device_info)
 
         op_infos = self.operations_manager.get_operations_info(data_type, data_source, device_info_to_use)
-        table = []
-        for op_info in op_infos:
-            table.append(op_info.to_tuple())
-        print tabulate(table, headers=["Name", "Data type", "Data Source", "Supported devices", "Supported Android OS"])
+
+        if len(op_infos) == 0:
+            result = 'No matching operations were found.'
+        else:
+            table = []
+            for op_info in op_infos:
+                table.append(op_info.to_tuple())
+            result = tabulate(table, headers=['Name', 'Data type', 'Data Source', 'Devices supported',
+                                              'Android versions supported'])
+
+        print result
 
     def execute_operations(self, names, device_info, results_dir_path, simple_output=False):
         """
