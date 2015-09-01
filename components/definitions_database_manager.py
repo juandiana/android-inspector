@@ -118,6 +118,7 @@ class DefinitionsDatabaseManager(object):
         """
         result = []
         with sqlite3.connect(self.db_file_path) as conn:
+            conn.row_factory = sqlite3.Row
             c = conn.cursor()
 
             query_builder = MatchingOperationsQueryBuilder()
@@ -140,7 +141,7 @@ class DefinitionsDatabaseManager(object):
                 data_source_params = data_source.info
 
                 for row in c:
-                    op_id = row[0]
+                    op_id = row['id']
 
                     c2 = conn.cursor()
                     c2.execute(
@@ -154,7 +155,7 @@ class DefinitionsDatabaseManager(object):
                     supported = True
 
                     for pv in c2:
-                        if data_source_params.get(pv[0]) != pv[1]:
+                        if data_source_params.get(pv['param_name']) != pv['param_value']:
                             supported = False
                             break
 
@@ -177,19 +178,20 @@ class DefinitionsDatabaseManager(object):
         :rtype : OperationInfo
         """
         with sqlite3.connect(self.db_file_path) as conn:
+            conn.row_factory = sqlite3.Row
             c = conn.cursor()
             c.execute(
                 """
-                SELECT dt.name, dst.name, o.name
+                SELECT dt.name AS dt_name, dst.name AS dst_name, o.name AS o_name
                 FROM operations AS o, data_types AS dt, data_source_types AS dst
                 WHERE o.data_type_id = dt.id AND o.data_source_type_id = dst.id AND o.id = ?
                 """, [id_]
             )
 
             res = c.fetchone()
-            data_type = res[0]
-            data_source_type = res[1]
-            op_name = res[2]
+            data_type = res['dt_name']
+            data_source_type = res['dst_name']
+            op_name = res['o_name']
 
             c.execute(
                 """
@@ -201,19 +203,19 @@ class DefinitionsDatabaseManager(object):
 
             param_values = {}
             for pv in c:
-                param_values[pv[0]] = pv[1]
+                param_values[pv['param_name']] = pv['param_value']
 
             c.execute('SELECT model_number FROM device_models WHERE operation_id = ?', [id_])
 
             supported_models = []
             for dm in c:
-                supported_models.append(dm[0])
+                supported_models.append(dm['model_number'])
 
             c.execute('SELECT from_version, to_version FROM android_versions WHERE operation_id = ?', [id_])
 
             supported_os_versions = []
             for av in c:
-                supported_os_versions.append((av[0], av[1]))
+                supported_os_versions.append((av['from_version'], av['to_version']))
 
             c.close()
 
@@ -226,14 +228,15 @@ class DefinitionsDatabaseManager(object):
         :rtype: string
         """
         with sqlite3.connect(self.db_file_path) as conn:
+            conn.row_factory = sqlite3.Row
             c = conn.cursor()
-            c.execute('SELECT dt.cybox_object_name FROM data_types AS dt WHERE dt.name = ?', [dt_name])
+            c.execute('SELECT dt.cybox_object_name AS name FROM data_types AS dt WHERE dt.name = ?', [dt_name])
 
             row = c.fetchone()
             if row is None:
                 return None
 
-            return row[0]
+            return row['name']
 
     def get_data_source_type_extractor_name(self, dst_name):
         """
@@ -242,13 +245,13 @@ class DefinitionsDatabaseManager(object):
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
-            c.execute('SELECT dst.extractor_name FROM data_source_types AS dst WHERE dst.name = ?', [dst_name])
+            c.execute('SELECT dst.extractor_name AS name FROM data_source_types AS dst WHERE dst.name = ?', [dst_name])
 
             row = c.fetchone()
             if row is None:
                 return None
 
-            return row[0]
+            return row['name']
 
     def get_operation_inspector_name(self, op_name):
         """
@@ -256,14 +259,15 @@ class DefinitionsDatabaseManager(object):
         :rtype: string
         """
         with sqlite3.connect(self.db_file_path) as conn:
+            conn.row_factory = sqlite3.Row
             c = conn.cursor()
-            c.execute('SELECT o.inspector_name FROM operations AS o WHERE o.name = ?', [op_name])
+            c.execute('SELECT o.inspector_name AS name FROM operations AS o WHERE o.name = ?', [op_name])
 
             row = c.fetchone()
             if row is None:
                 return None
 
-            return row[0]
+            return row['name']
 
     def get_operation_exec_info(self, name):
         """
@@ -275,10 +279,11 @@ class DefinitionsDatabaseManager(object):
         param_values = {}
 
         with sqlite3.connect(self.db_file_path) as conn:
+            conn.row_factory = sqlite3.Row
             c = conn.cursor()
             c.execute(
                 """
-                SELECT o.id, dst.extractor_name, o.inspector_name
+                SELECT o.id AS id, dst.extractor_name AS ext_name, o.inspector_name AS ins_name
                 FROM operations AS o, data_source_types AS dst
                 WHERE o.data_source_type_id = dst.id AND o.name = ?
                 """, [name]
@@ -286,16 +291,16 @@ class DefinitionsDatabaseManager(object):
 
             row = c.fetchone()
             if row is not None:
-                extractor_id = row[1]
-                inspector_id = row[2]
+                extractor_id = row['ext_name']
+                inspector_id = row['ins_name']
 
                 c2 = conn.cursor()
                 c2.execute('SELECT param_name, param_value '
                            'FROM data_source_params_values dspv '
-                           'WHERE dspv.operation_id = ?', [row[0]])
+                           'WHERE dspv.operation_id = ?', [row['id']])
 
                 for pv in c2:
-                    param_values[pv[0]] = pv[1]
+                    param_values[pv['param_name']] = pv['param_value']
 
                 c2.close()
             c.close()
@@ -355,6 +360,7 @@ class DefinitionsDatabaseManager(object):
         :rtype : bool
         """
         with sqlite3.connect(self.db_file_path) as conn:
+            conn.row_factory = sqlite3.Row
             c = conn.cursor()
             c.execute("""
                     SELECT param_name FROM data_source_types AS dst, required_params AS rp
@@ -365,7 +371,7 @@ class DefinitionsDatabaseManager(object):
                 return False
 
             for row in c:
-                if not data_source.info.get(row[0]):
+                if not data_source.info.get(row['param_name']):
                     return False
 
             c.close()
@@ -385,6 +391,7 @@ class DefinitionsDatabaseManager(object):
         :rtype: bool
         """
         with sqlite3.connect(self.db_file_path) as conn:
+            conn.row_factory = sqlite3.Row
             c = conn.cursor()
 
             # Get data_type id using the data_type_name
@@ -395,7 +402,7 @@ class DefinitionsDatabaseManager(object):
             if row is None:
                 raise ValueError("'{0}' is not a defined DataType.".format(data_type_name))
 
-            dt_id = row[0]
+            dt_id = row['id']
 
             # Get data_source_type id using the data_source_type_name
             c.execute('SELECT id FROM data_source_types WHERE name = ?', [data_source_type_name])
@@ -405,7 +412,7 @@ class DefinitionsDatabaseManager(object):
             if row is None:
                 raise ValueError("'{0}' is not a defined DataSourceType.".format(data_source_type_name))
 
-            dst_id = row[0]
+            dst_id = row['id']
 
             # Insert a new row in operations table
             try:
@@ -474,6 +481,7 @@ class DefinitionsDatabaseManager(object):
         :rtype: bool
         """
         with sqlite3.connect(self.db_file_path) as conn:
+            conn.row_factory = sqlite3.Row
             c = conn.cursor()
 
             # Get operation id
@@ -484,7 +492,7 @@ class DefinitionsDatabaseManager(object):
             if row is None:
                 raise ValueError("'{0}' is not a defined Operation.".format(name))
 
-            op_id = row[0]
+            op_id = row['id']
             try:
                 c.execute('DELETE FROM device_models WHERE operation_id = ?', [op_id])
                 c.execute('DELETE FROM android_versions WHERE operation_id = ?', [op_id])
@@ -615,6 +623,7 @@ class DefinitionsDatabaseManager(object):
         :rtype: bool
         """
         with sqlite3.connect(self.db_file_path) as conn:
+            conn.row_factory = sqlite3.Row
             c = conn.cursor()
 
             # Check if the data_source_type exists.
@@ -646,7 +655,7 @@ class DefinitionsDatabaseManager(object):
             if row is None:
                 raise ValueError("'{0}' is not a defined DataSourceType.".format(name))
 
-            dst_id = row[0]
+            dst_id = row['id']
 
             # Delete the data_source_type
             try:
