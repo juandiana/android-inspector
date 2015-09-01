@@ -14,7 +14,8 @@ class CommandError(Exception):
 class Coordinator(object):
     def __init__(self, operations_manager, extensions_manager):
         """
-        :type operations_manager: operations_manager.OperationsManager
+        :type operations_manager: OperationsManager
+        :type extensions_manager: ExtensionsManager
         """
         self.operations_manager = operations_manager
         self.extensions_manager = extensions_manager
@@ -29,7 +30,6 @@ class Coordinator(object):
     def set_device_info(self, device_info):
         """
         :type device_info: DeviceInfo
-        :rtype : None
         """
         self.device_info = device_info
         print "Device model '{0}' running Android version '{1}' was set as the current device information." \
@@ -40,7 +40,6 @@ class Coordinator(object):
         :type data_type: string
         :type data_source: DataSource
         :type device_info: DeviceInfo
-        :rtype : None
         """
         device_info_to_use = self._get_device_info(device_info)
 
@@ -59,11 +58,10 @@ class Coordinator(object):
 
     def execute_operations(self, names, device_info, results_dir_path, simple_output=False):
         """
-        :type names: list(string)
+        :type names: list[string]
         :type device_info: DeviceInfo
         :type results_dir_path: string
         :type simple_output: bool
-        :rtype : None
         """
         device_info_to_use = self._get_device_info(device_info)
 
@@ -91,7 +89,6 @@ class Coordinator(object):
         """
         :type type_: string
         :type path_: string
-        :rtype : None
         """
         self.extensions_manager.add(type_, path_)
 
@@ -101,7 +98,6 @@ class Coordinator(object):
         """
         :type type_: string
         :type name: string
-        :rtype : None
         """
         self.extensions_manager.remove(type_, name)
 

@@ -12,6 +12,11 @@ from model import OperationError
 
 
 def sha256_checksum(file_path, block_size=65536):
+    """
+    :type file_path: string
+    :type block_size: int
+    :rtype: string
+    """
     sha256sum = hashlib.sha256()
 
     with open(file_path, 'rb') as fh:
@@ -24,6 +29,11 @@ def sha256_checksum(file_path, block_size=65536):
 
 
 def get_source_object(file_path, source_objects):
+    """
+    :type file_path: string
+    :type source_objects: list[File]
+    :rtype: File
+    """
     for o in source_objects:
         if o.file_path == file_path:
             return o
@@ -31,6 +41,11 @@ def get_source_object(file_path, source_objects):
 
 
 def create_file_object(file_path, original_file_path):
+    """
+    :type file_path: string
+    :type original_file_path: string
+    :rtype: File
+    """
     f = File()
     f.file_name = os.path.basename(file_path)
     f.file_extension = os.path.splitext(file_path)[1]
@@ -42,6 +57,11 @@ def create_file_object(file_path, original_file_path):
 
 
 def execute_query(db_file_path, sql_query):
+    """
+    :type db_file_path: string
+    :type sql_query: string
+    :rtype: (Cursor, Connection)
+    """
     if not os.path.exists(db_file_path):
         raise OperationError('Inspection failed: {0} not found.'.format(db_file_path))
     conn = sqlite3.connect(db_file_path)
@@ -56,6 +76,10 @@ def execute_query(db_file_path, sql_query):
 
 
 def get_app_version_name(apk_file_path):
+    """
+    :type apk_file_path: string
+    :rtype: string
+    """
     command = ['aapt', 'dump', 'badging', apk_file_path]
     try:
         p = subprocess.Popen(command, cwd=os.getcwd(), stdout=subprocess.PIPE)

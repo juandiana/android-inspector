@@ -27,8 +27,7 @@ class Extractor(object):
     def execute(self, extracted_data_dir_path, param_values):
         """
         :type extracted_data_dir_path: string
-        :type param_values: dict<string, string>
-        :rtype : None
+        :type param_values: dict[string, string]
         """
         pass
 
@@ -41,7 +40,7 @@ class Inspector(object):
         """
         :type device_info: DeviceInfo
         :type extracted_data_dir_path: string
-        :rtype : (list(Object), list(FileObject))
+        :rtype : (list[Object], list[FileObject])
         """
         pass
 
@@ -55,7 +54,7 @@ class Operation(object):
         """
         :type extractor: Extractor
         :type inspector: Inspector
-        :type param_values: dict<string, string>
+        :type param_values: dict[string, string]
         """
         self.extractor = extractor
         self.inspector = inspector
@@ -65,7 +64,6 @@ class Operation(object):
         """
         :type device_info: DeviceInfo
         :type data_dir_path: string
-        :rtype : None
         """
         extracted_data_dir_path = os.path.join(data_dir_path, EXTRACTED_DATA_DIR_NAME)
         try:

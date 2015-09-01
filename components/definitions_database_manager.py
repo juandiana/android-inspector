@@ -114,7 +114,7 @@ class DefinitionsDatabaseManager(object):
         :type data_type: string or None
         :type data_source: DataSource or None
         :type device_info: DeviceInfo
-        :rtype : list(OperationInfo)
+        :rtype : list[OperationInfo]
         """
         result = []
         with sqlite3.connect(self.db_file_path) as conn:
@@ -268,7 +268,7 @@ class DefinitionsDatabaseManager(object):
     def get_operation_exec_info(self, name):
         """
         :type name: string
-        :rtype : string, string, dict(string)
+        :rtype : (string, string, dict[string])
         """
         extractor_id = ''
         inspector_id = ''
@@ -379,9 +379,9 @@ class DefinitionsDatabaseManager(object):
         :type data_type_name: string
         :type data_source_type_name: string
         :type inspector_name: string
-        :type param_values: dict(string)
-        :type device_models: list(string)
-        :type android_versions: list((string, string))
+        :type param_values: dict[string]
+        :type device_models: list[string]
+        :type android_versions: list[(string, string)]
         :rtype: bool
         """
         with sqlite3.connect(self.db_file_path) as conn:
@@ -570,7 +570,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type name: string
         :type extractor_name: string
-        :type required_params: dict(string)
+        :type required_params: dict[string]
         :rtype : bool
         """
         with sqlite3.connect(self.db_file_path) as conn:

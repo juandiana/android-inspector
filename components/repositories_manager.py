@@ -55,7 +55,7 @@ class RepositoriesManager(object):
     def get_extractor_instance(self, name):
         """
         :type name: string
-        :type : Extractor
+        :rtype : Extractor
         """
         extractor_class = get_class_from_file(self.repositories_dir_name + '.extractors.', name, Extractor)
         return extractor_class()
