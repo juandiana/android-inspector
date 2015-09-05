@@ -4,11 +4,11 @@ from abc import abstractmethod, ABCMeta
 from datetime import datetime
 import os
 import errno
+import subprocess
 
 from cybox.common import MeasureSource, ToolInformation, ToolInformationList, ToolType, Time
 from cybox.core import Observables
 from cybox.utils import IDGenerator, set_id_method
-import subprocess
 
 EXTRACTED_DATA_DIR_NAME = 'extracted_data'
 INSPECTED_DATA_FILE_NAME = 'inspected_data.xml'
@@ -22,9 +22,12 @@ def write_observables_xml_file(observables, file_path, simple_output):
 
 
 def generate_html_files(data_dir_path):
-    absolute_op_dir = os.path.join(os.getcwd(), data_dir_path)
-    subprocess.call(['sh', 'stix-to-html.sh', '--indir', absolute_op_dir, '--outdir', absolute_op_dir],
-                    cwd='stix-to-html', stdout=subprocess.PIPE)
+    try:
+        subprocess.check_output(['java', '-jar', 'stix-to-html.jar',
+                                 '--indir', data_dir_path,
+                                 '--outdir', data_dir_path])
+    except subprocess.CalledProcessError as e:
+        print 'HTML generation failed.'
 
 
 class Extractor(object):
