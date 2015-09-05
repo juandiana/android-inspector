@@ -8,6 +8,7 @@ import errno
 from cybox.common import MeasureSource, ToolInformation, ToolInformationList, ToolType, Time
 from cybox.core import Observables
 from cybox.utils import IDGenerator, set_id_method
+import subprocess
 
 EXTRACTED_DATA_DIR_NAME = 'extracted_data'
 INSPECTED_DATA_FILE_NAME = 'inspected_data.xml'
@@ -18,6 +19,12 @@ def write_observables_xml_file(observables, file_path, simple_output):
     xml_data = observables.to_xml(include_namespaces=not simple_output)
     with open(file_path, mode='w') as _file:
         _file.write(xml_data)
+
+
+def generate_html_files(data_dir_path):
+    absolute_op_dir = os.path.join(os.getcwd(), data_dir_path)
+    subprocess.call(['sh', 'stix-to-html.sh', '--indir', absolute_op_dir, '--outdir', absolute_op_dir],
+                    cwd='stix-to-html', stdout=subprocess.PIPE)
 
 
 class Extractor(object):
@@ -60,7 +67,7 @@ class Operation(object):
         self.inspector = inspector
         self.param_values = param_values
 
-    def execute(self, device_info, data_dir_path, simple_output=False):
+    def execute(self, device_info, data_dir_path, simple_output=False, html_output=False):
         """
         :type device_info: DeviceInfo
         :type data_dir_path: string
@@ -98,3 +105,6 @@ class Operation(object):
         write_observables_xml_file(source_observables,
                                    os.path.join(data_dir_path, SOURCE_DATA_FILE_NAME),
                                    simple_output)
+
+        if html_output:
+            generate_html_files(data_dir_path)
