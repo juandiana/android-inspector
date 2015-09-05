@@ -21,10 +21,10 @@ def write_observables_xml_file(observables, file_path, simple_output):
         _file.write(xml_data)
 
 
-def write_observable_html_file(data_dir_path):
+def generate_html_files(data_dir_path):
     absolute_op_dir = os.path.join(os.getcwd(), data_dir_path)
     subprocess.call(['sh', 'stix-to-html.sh', '--indir', absolute_op_dir, '--outdir', absolute_op_dir],
-                    cwd='util', stdout=subprocess.PIPE)
+                    cwd='stix-to-html', stdout=subprocess.PIPE)
 
 
 class Extractor(object):
@@ -107,4 +107,4 @@ class Operation(object):
                                    simple_output)
 
         if html_output:
-            write_observable_html_file(data_dir_path)
+            generate_html_files(data_dir_path)
