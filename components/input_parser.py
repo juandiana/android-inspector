@@ -91,10 +91,12 @@ class InputParser(object):
         parser.add_argument('--operations', '-op', nargs='+')
         parser.add_argument('--model', '-m')
         parser.add_argument('--version', '-v')
+        parser.add_argument('--html', action='store_true')
 
         args, unknown = parser.parse_known_args(shlex.split(arg_line))
 
         di = None
+        html_output = False
 
         if args.operations is None:
             raise ValueError("The parameter 'operations' is required.")
@@ -107,7 +109,10 @@ class InputParser(object):
         if args.model and args.version:
             di = DeviceInfo(args.version, args.model)
 
-        return ops, di
+        if args.html:
+            html_output = True
+
+        return ops, di, html_output
 
     def parse_add_ext_args(self, arg_line):
         """

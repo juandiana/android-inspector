@@ -81,8 +81,8 @@ class InteractiveCommandLine(Cmd):
 
     def do_execute(self, arg_line):
         try:
-            ids, device_info = self.input_parser.parse_execute_args(arg_line)
-            self.coordinator.execute_operations(ids, device_info, 'results', self.simple_output)
+            ids, device_info, html_output = self.input_parser.parse_execute_args(arg_line)
+            self.coordinator.execute_operations(ids, device_info, 'results', self.simple_output, html_output)
         except (ValueError, CommandError) as error:
             print error
 

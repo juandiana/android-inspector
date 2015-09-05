@@ -56,12 +56,13 @@ class Coordinator(object):
 
         print result
 
-    def execute_operations(self, names, device_info, results_dir_path, simple_output=False):
+    def execute_operations(self, names, device_info, results_dir_path, simple_output=False, html_output=False):
         """
         :type names: list[string]
         :type device_info: DeviceInfo
         :type results_dir_path: string
         :type simple_output: bool
+        :type html_output: bool
         """
         device_info_to_use = self._get_device_info(device_info)
 
@@ -74,7 +75,7 @@ class Coordinator(object):
             data_dir_path = path.join(results_dir_path, data_dir_name)
             print "\n[{0}/{1}] Executing '{2}': ".format(op_count, len(names), name)
             try:
-                op.execute(device_info_to_use, data_dir_path, simple_output)
+                op.execute(device_info_to_use, data_dir_path, simple_output, html_output)
                 print "COMPLETED. Data stored to '{0}'.".format(data_dir_path)
                 op_successful_count += 1
             except OperationError as error:
