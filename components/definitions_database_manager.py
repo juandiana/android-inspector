@@ -115,6 +115,7 @@ class DefinitionsDatabaseManager(object):
         :type data_source: DataSource or None
         :type device_info: DeviceInfo
         :rtype : list[OperationInfo]
+
         """
         result = []
         with sqlite3.connect(self.db_file_path) as conn:
@@ -176,6 +177,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type id_: int
         :rtype : OperationInfo
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -226,6 +228,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type dt_name: string
         :rtype: string
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -242,6 +245,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type dst_name: string
         :rtype: string
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -258,6 +262,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type op_name: string
         :rtype: string
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -274,6 +279,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type name: string
         :rtype : (string, string, dict[string])
+
         """
         extractor_id = ''
         inspector_id = ''
@@ -312,6 +318,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type name: string
         :rtype : bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
@@ -327,6 +334,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type name: string
         :rtype : bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
@@ -343,6 +351,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type data_source_type: string
         :rtype : bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
@@ -359,6 +368,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type data_source: DataSource
         :rtype : bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -390,6 +400,7 @@ class DefinitionsDatabaseManager(object):
         :type device_models: list[string]
         :type android_versions: list[(string, string)]
         :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -480,6 +491,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type name: string
         :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -511,6 +523,7 @@ class DefinitionsDatabaseManager(object):
         :type name:string
         :type cybox_object_name: string
         :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
@@ -541,6 +554,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type name: string
         :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
@@ -581,6 +595,7 @@ class DefinitionsDatabaseManager(object):
         :type extractor_name: string
         :type required_params: dict[string]
         :rtype : bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
@@ -622,6 +637,7 @@ class DefinitionsDatabaseManager(object):
         """
         :type name: string
         :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row

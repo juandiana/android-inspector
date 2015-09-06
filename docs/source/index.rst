@@ -1,11 +1,11 @@
 Welcome to Android Inspector's documentation!
 =============================================
 
-``components`` Package
-======================
+``android-inspector`` Package
+=============================
 
-.. automodule:: components
-:members:
+.. automodule:: android-inspector
+   :members:
 
 
 --------------------
@@ -13,6 +13,6 @@ Welcome to Android Inspector's documentation!
 **Sub-Modules**
 
 .. toctree::
-
-   components.coordinator
-
+   components
+   model
+   util
