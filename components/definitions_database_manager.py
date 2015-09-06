@@ -114,7 +114,7 @@ class DefinitionsDatabaseManager(object):
         :type data_type: string or None
         :type data_source: DataSource or None
         :type device_info: DeviceInfo
-        :rtype : list[OperationInfo]
+        :rtype: list[OperationInfo]
 
         """
         result = []
@@ -176,7 +176,7 @@ class DefinitionsDatabaseManager(object):
     def get_operation_info_by_id(self, id_):
         """
         :type id_: int
-        :rtype : OperationInfo
+        :rtype: OperationInfo
 
         """
         with sqlite3.connect(self.db_file_path) as conn:
@@ -278,7 +278,7 @@ class DefinitionsDatabaseManager(object):
     def get_operation_exec_info(self, name):
         """
         :type name: string
-        :rtype : (string, string, dict[string])
+        :rtype: (string, string, dict[string])
 
         """
         extractor_id = ''
@@ -317,7 +317,7 @@ class DefinitionsDatabaseManager(object):
     def exists_operation(self, name):
         """
         :type name: string
-        :rtype : bool
+        :rtype: bool
 
         """
         with sqlite3.connect(self.db_file_path) as conn:
@@ -333,7 +333,7 @@ class DefinitionsDatabaseManager(object):
     def exists_data_type(self, name):
         """
         :type name: string
-        :rtype : bool
+        :rtype: bool
 
         """
         with sqlite3.connect(self.db_file_path) as conn:
@@ -350,7 +350,7 @@ class DefinitionsDatabaseManager(object):
     def exists_data_source_type(self, data_source_type):
         """
         :type data_source_type: string
-        :rtype : bool
+        :rtype: bool
 
         """
         with sqlite3.connect(self.db_file_path) as conn:
@@ -367,7 +367,7 @@ class DefinitionsDatabaseManager(object):
     def has_all_required_param_values(self, data_source):
         """
         :type data_source: DataSource
-        :rtype : bool
+        :rtype: bool
 
         """
         with sqlite3.connect(self.db_file_path) as conn:
@@ -594,7 +594,7 @@ class DefinitionsDatabaseManager(object):
         :type name: string
         :type extractor_name: string
         :type required_params: dict[string]
-        :rtype : bool
+        :rtype: bool
 
         """
         with sqlite3.connect(self.db_file_path) as conn:

@@ -18,7 +18,7 @@ class ExtensionsManager(object):
         """
         :type ex_type: string
         :type def_path: string
-        :rtype : bool
+        :rtype: bool
         """
         if not os.path.exists(def_path):
             raise RuntimeError('The definition module specified does not exist.')
@@ -68,7 +68,7 @@ class ExtensionsManager(object):
         """
         :type ex_type: string
         :type name: string
-        :rtype : bool
+        :rtype: bool
         """
         if ex_type == 'data_type':
             custom_cybox_object_name = self.definitions_database_manager.get_data_type_custom_cybox_object_name(name)

@@ -4,7 +4,7 @@ import re
 import os
 import shutil
 
-from model import Extractor, Inspector, OperationError
+from model import Extractor, Inspector
 
 
 def camel_case_to_underscore(name):
@@ -55,7 +55,7 @@ class RepositoriesManager(object):
     def get_extractor_instance(self, name):
         """
         :type name: string
-        :rtype : Extractor
+        :rtype: Extractor
         """
         extractor_class = get_class_from_file(self.repositories_dir_name + '.extractors.', name, Extractor)
         return extractor_class()
@@ -63,7 +63,7 @@ class RepositoriesManager(object):
     def get_inspector_instance(self, name):
         """
         :type name: string
-        :rtype : Inspector
+        :rtype: Inspector
         """
         inspector_class = get_class_from_file(self.repositories_dir_name + '.inspectors.', name, Inspector)
         return inspector_class()
