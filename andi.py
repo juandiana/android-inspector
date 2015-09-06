@@ -15,6 +15,7 @@ class InteractiveCommandLine(Cmd):
     prompt = '(Andi) '
     intro = '\nAndroid Inspector v1.0'
     doc_header = 'Commands list'
+    undoc_header = None
     ruler = '-'
 
     def __init__(self, input_parser, coordinator, simple_output):
@@ -30,6 +31,10 @@ class InteractiveCommandLine(Cmd):
         if simple_output:
             self.intro += '\nNote: Simplified output for CybOX content is enabled.'
 
+    def print_topics(self, header, cmds, cmdlen, maxcol):
+        if header is not None:
+            Cmd.print_topics(self, header, cmds, cmdlen, maxcol)
+
     def emptyline(self):
         pass
 
@@ -40,7 +45,6 @@ class InteractiveCommandLine(Cmd):
         print 'Description: Finishes the interactive session.'
 
     do_EOF = do_exit
-    help_EOF = help_exit
 
     def do_set_device_info(self, arg_line):
         try:
