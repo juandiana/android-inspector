@@ -5,16 +5,16 @@ Android Inspector's packages reference
 Components
 ----------
 .. toctree::
-packages/components
+   packages/components
 
 -----
 Model
 -----
 .. toctree::
-packages/model
+   packages/model
 
 ----
 Util
 ----
 .. toctree::
-packages/util
+   packages/util
