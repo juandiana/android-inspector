@@ -3,12 +3,12 @@ Android Inspector
 
 Overview
 --------
-    *Android Inspector* is a forensic command-line tool that lets you extract & examine data from Android mobile devices.
-    You may choose to extract data of different types and from sources by using the different operations it brings.
-    The information examined is then represented using the `CybOX language`_.
+*Android Inspector* is a forensic command-line tool that lets you extract & examine data from Android mobile devices.
+You may choose to extract data of different types and from sources by using the different operations it brings.
+The information examined is then represented using the `CybOX language`_.
 
-    This tool is part of the undergraduate thesis *Data extraction from mobile devices* by Juan Andrés Diana and
-    José Ignacio Varela.
+This tool is part of the undergraduate thesis *Data extraction from mobile devices* by Juan Andrés Diana and José
+Ignacio Varela.
 
 Example
 -------
@@ -38,126 +38,122 @@ Example
 
 Requirements
 ------------
-    - Python 2.7
-    - *Java 6 (Optional: Used for HTML output generation only)*
+- Python 2.7
+- *Java 6 (Optional: Used for HTML output generation only)*
 
-    **Python dependencies:**
+**Python dependencies:**
 
-    - python-cybox (2.1.0.12)
-    - python-magic (0.4.6)
-    - python-tabulate (0.7.5)
-    - *nose-parameterized (0.5.0) (Optional: Used to run the tests only)*
+- python-cybox (2.1.0.12)
+- python-magic (0.4.6)
+- python-tabulate (0.7.5)
+- *nose-parameterized (0.5.0) (Optional: Used to run the tests only)*
 
-    **Other dependencies:**
+**Other dependencies:**
 
-    - adb (from the Android SDK Platform Tools)
-    - aapt (from the Android SDK Build Tools)
+- adb (from the Android SDK Platform Tools)
+- aapt (from the Android SDK Build Tools)
 
 Installation
 ------------
-    1. Download this repository and extract it to a directory on your system.
+1. Download this repository and extract it to a directory on your system.
 
-    2. To install the Python dependencies automatically run:
+2. To install the Python dependencies automatically run:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        $ pip install −r requirements.txt
+    $ pip install −r requirements.txt
 
-    3. Add the platform-tools & build-tools directories of the Android SDK to your PATH environment variable.
+3. Add the platform-tools & build-tools directories of the Android SDK to your PATH environment variable.
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        $ export ANDROID_HOME=/Path/to/Android/sdk
-        $ export PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/22.0.1
+    $ export ANDROID_HOME=/Path/to/Android/sdk
+    $ export PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/22.0.1
 
-    4. If you wish to make use of the HTML generation, add your Java directory to your PATH also.
+4. If you wish to make use of the HTML generation, add your Java directory to your PATH also.
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        $ export PATH=$PATH:$JAVA_HOME/bin/
+    $ export PATH=$PATH:$JAVA_HOME/bin/
 
-    5. Make the Python scripts executable by running:
+5. Make the Python scripts executable by running:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        $ chmod +x andi.py load_data_sets.py
+    $ chmod +x andi.py load_data_sets.py
 
 Usage
 -----
-    You may start by loading into your test device a test dataset from the ``datasets/`` directory as follows:
+You may start by loading into your test device a test dataset from the ``datasets/`` directory as follows:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        $ ./load_data_sets.py HTC_Evo_3D
+    $ ./load_data_sets.py HTC_Evo_3D
 
-    Then, just initiate *Android Inspector* in interactive mode, like so:
+Then, just initiate *Android Inspector* in interactive mode, like so:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        $ ./andi.py
-        Android Inspector v1.0
+    $ ./andi.py
+    Android Inspector v1.0
 
-    You may then use the following commands to operate:
+You may then use the following commands to operate:
 
-    =============== ========================================================================================================
-    Command         Description
-    =============== ========================================================================================================
-    set_device_info Sets the device information (i.e. device model and Android version).
-    list            Lists all the available operations for the device set and lets you filter by data type and data source.
-    execute         Executes a list of operations.
-    =============== ========================================================================================================
+=============== ========================================================================================================
+Command         Description
+=============== ========================================================================================================
+set_device_info Sets the device information (i.e. device model and Android version).
+list            Lists all the available operations for the device set and lets you filter by data type and data source.
+execute         Executes a list of operations.
+=============== ========================================================================================================
 
 Extending the tool
 ------------------
-    If you wish to extend the tool's functionality you may develop DataType, DataSourceType or Operation extensions and
-    users of the tool may import it using the `add_ext` and `rm_ext`. E.g.:
+If you wish to extend the tool's functionality you may develop DataType, DataSourceType or Operation extensions and
+users of the tool may import it using the `add_ext` and `rm_ext`. E.g.:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        $ ./andi.py add_ext data_type path/to/new_data_type_definition.tar
+    $ ./andi.py add_ext data_type path/to/new_data_type_definition.tar
 
-        $ ./andi.py rm_ext data_type new_data_type_name
+    $ ./andi.py rm_ext data_type new_data_type_name
 
 Layout
 ------
-    The tool's structure is:
+The tool's structure is:
 
-    ============ ==================================================================
-    Package      Description
-    ============ ==================================================================
-    components   Core components of the tool.
-    model        Data model classes.
-    repositories Extensions (DataTypes, DataSourceTypes & Operations) repositories.
-    test         UnitTests & testing resources.
-    util         Utility modules for developing extensions.
-    ============ ==================================================================
+============ ==================================================================
+Package      Description
+============ ==================================================================
+components   Core components of the tool.
+model        Data model classes.
+repositories Extensions (DataTypes, DataSourceTypes & Operations) repositories.
+test         UnitTests & testing resources.
+util         Utility modules for developing extensions.
+============ ==================================================================
 
 Documentation
 -------------
-    The code reference documentation may be built using *Sphenix* as follows:
+The code reference documentation may be built using *Sphenix* as follows:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        $ sphinx-build -b html docs/source/ docs/build/
+    $ sphinx-build -b html docs/source/ docs/build/
 
-    To access the generated docs, go to ``/docs/build/index.html``.
+To access the generated docs, go to ``/docs/build/index.html``.
 
 Notice
 ------
-    This tool also makes use of `device.py`_ (from the Android Open Source Project) and `STIX-to-HTML`_ (from the STIX Project).
+This tool also makes use of `device.py`_ (from the Android Open Source Project) and `STIX-to-HTML`_ (from the STIX Project).
 
-Copyright
----------
-::
+Authors
+-------
+| Juan Andrés Diana
+| José Ignacio Varela
 
-    Juan Andrés Diana
-    José Ignacio Varela
-
-::
-
-    Grupo de Seguridad Informática
-    Facultad de Ingeniería
-    Universidad de la República
+| Grupo de Seguridad Informática
+| Facultad de Ingeniería
+| Universidad de la República
 
 
 .. _CybOX language: https://cybox.mitre.org/
