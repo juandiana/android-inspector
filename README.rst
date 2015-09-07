@@ -150,7 +150,7 @@ Authors
 -------
 | Juan Andrés Diana
 | José Ignacio Varela
-
+|
 | Grupo de Seguridad Informática
 | Facultad de Ingeniería
 | Universidad de la República
