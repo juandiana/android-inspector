@@ -11,3 +11,4 @@
 .. toctree::
 
    model/operation
+   model/operation_info
