@@ -4,10 +4,10 @@ Android Inspector
 Overview
 --------
 *Android Inspector* is a forensic command-line tool that lets you extract & examine data from Android mobile devices.
-You may choose to extract data of different types and from sources by using the different operations it brings.
-The information examined is then represented using the `CybOX language`_.
+You may choose to extract data of diverse types and from different sources by using an extensible set of operations
+it offers. The information examined is then represented using the `CybOX language`_.
 
-This tool is part of the undergraduate thesis *Data extraction from mobile devices* by Juan Andrés Diana and José
+This tool is part of the undergraduate thesis *Data extraction from mobile devices* of Juan Andrés Diana and José
 Ignacio Varela.
 
 Example
@@ -39,7 +39,7 @@ Example
 Requirements
 ------------
 - Python 2.7
-- *Java Runtime Environment 6 (Optional: Used for HTML output generation only)*
+- *Java Runtime Environment 6 (Optional: Used for HTML output only)*
 
 **Python dependencies:**
 
@@ -55,7 +55,7 @@ Requirements
 
 Installation
 ------------
-1. Download this repository and extract it to a directory on your system.
+1. Download this repository and extract it to a directory on your filesystem.
 
 2. To install the Python dependencies automatically run:
 
@@ -63,14 +63,14 @@ Installation
 
     $ pip install −r requirements.txt
 
-3. Add the platform-tools & build-tools directories of the Android SDK to your PATH environment variable.
+3. Add the Android SDK's ``platform-tools/`` & ``build-tools/`` directories to your PATH.
 
 .. code-block:: bash
 
     $ export ANDROID_HOME=/Path/to/Android/sdk
     $ export PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/22.0.1
 
-4. If you wish to make use of the HTML generation, add your Java directory to your PATH also.
+4. If you wish to make use of the HTML generation option, add Java's ``bin/`` directory to your PATH.
 
 .. code-block:: bash
 
@@ -84,33 +84,37 @@ Installation
 
 Usage
 -----
-You may start by loading into your test device a test dataset from the ``datasets/`` directory as follows:
+You may start by loading into your test device a test data set from the ``datasets/`` directory as follows:
 
 .. code-block:: bash
 
     $ ./load_data_sets.py HTC_Evo_3D
 
-Then, just initiate *Android Inspector* in interactive mode, like so:
+
+Once the data is loaded, just initiate *Android Inspector* in interactive mode, like so:
 
 .. code-block:: bash
 
     $ ./andi.py
     Android Inspector v1.0
 
+
 You may then use the following commands to operate:
 
-=============== ========================================================================================================
+=============== ===========
 Command         Description
-=============== ========================================================================================================
+=============== ===========
 set_device_info Sets the device information (i.e. device model and Android version).
-list            Lists all the available operations for the device set and lets you filter by data type and data source.
+list            Lists the operations available for the device being used and lets you filter by data type and data source.
 execute         Executes a list of operations.
-=============== ========================================================================================================
+=============== ===========
 
 Extending the tool
 ------------------
-If you wish to extend the tool's functionality you may develop DataType, DataSourceType or Operation extensions and
-users of the tool may import it using the `add_ext` and `rm_ext`. E.g.:
+If you wish to extend the tool's functionality you may develop ``DataType``, ``DataSourceType`` or ``Operation``
+extensions. More information on how to proceed is available in the thesis's appendix A mentioned above.
+
+Users may then import an extension using the `add_ext` and `rm_ext` commands. E.g.:
 
 .. code-block:: bash
 
@@ -120,7 +124,7 @@ users of the tool may import it using the `add_ext` and `rm_ext`. E.g.:
 
 Layout
 ------
-The tool's structure is:
+The tool's relevant packages structure is as follows:
 
 ============ ==================================================================
 Package      Description
@@ -134,13 +138,13 @@ util         Utility modules for developing extensions.
 
 Documentation
 -------------
-The code reference documentation may be built using *Sphenix* as follows:
+The code reference documentation may be built using *Sphenix*.
 
 .. code-block:: bash
 
     $ sphinx-build -b html docs/source/ docs/build/
 
-To access the generated docs, go to ``/docs/build/index.html``.
+Go to ``/docs/build/index.html`` to access the generated docs.
 
 Notice
 ------
