@@ -4,11 +4,11 @@
 .. automodule:: model.operation_info
 :members:
 
-       .. autoclass:: model.operation_info.DataSource
+        .. autoclass:: model.operation_info.DataSource
 :members:
 
-       .. autoclass:: model.operation_info.OperationInfo
+        .. autoclass:: model.operation_info.OperationInfo
 :members:
 
-       .. autoclass:: model.operation_info.DeviceInfo
+        .. autoclass:: model.operation_info.DeviceInfo
 :members:
