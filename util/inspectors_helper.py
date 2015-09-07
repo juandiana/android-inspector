@@ -58,8 +58,8 @@ def create_file_object(file_path, original_file_path):
 
 def execute_query(db_file_path, sql_query):
     """
-    :type db_file_path: string
-    :type sql_query: string
+    :param db_file_path: string
+    :param sql_query: string
     :rtype: (Cursor, Connection)
     """
     if not os.path.exists(db_file_path):
@@ -77,7 +77,7 @@ def execute_query(db_file_path, sql_query):
 
 def get_app_version_name(apk_file_path):
     """
-    :type apk_file_path: string
+    :param apk_file_path: string
     :rtype: string
     """
     command = ['aapt', 'dump', 'badging', apk_file_path]

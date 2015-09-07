@@ -111,10 +111,11 @@ class DefinitionsDatabaseManager(object):
         The data_type exists in definitions.db
         The data_source.type_ exists in definitions.db and has all the required params.
         The device_info contains a model and an os_version.
-        :type data_type: string or None
-        :type data_source: DataSource or None
-        :type device_info: DeviceInfo
-        :rtype : list[OperationInfo]
+        :param data_type: string or None
+        :param data_source: DataSource or None
+        :param device_info: DeviceInfo
+        :rtype: list[OperationInfo]
+
         """
         result = []
         with sqlite3.connect(self.db_file_path) as conn:
@@ -174,8 +175,9 @@ class DefinitionsDatabaseManager(object):
 
     def get_operation_info_by_id(self, id_):
         """
-        :type id_: int
-        :rtype : OperationInfo
+        :param id_: int
+        :rtype: OperationInfo
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -224,8 +226,9 @@ class DefinitionsDatabaseManager(object):
 
     def get_data_type_custom_cybox_object_name(self, dt_name):
         """
-        :type dt_name: string
+        :param dt_name: string
         :rtype: string
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -240,8 +243,9 @@ class DefinitionsDatabaseManager(object):
 
     def get_data_source_type_extractor_name(self, dst_name):
         """
-        :type dst_name: string
+        :param dst_name: string
         :rtype: string
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -256,8 +260,9 @@ class DefinitionsDatabaseManager(object):
 
     def get_operation_inspector_name(self, op_name):
         """
-        :type op_name: string
+        :param op_name: string
         :rtype: string
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -272,8 +277,9 @@ class DefinitionsDatabaseManager(object):
 
     def get_operation_exec_info(self, name):
         """
-        :type name: string
-        :rtype : (string, string, dict[string])
+        :param name: string
+        :rtype: (string, string, dict[string])
+
         """
         extractor_id = ''
         inspector_id = ''
@@ -310,8 +316,9 @@ class DefinitionsDatabaseManager(object):
 
     def exists_operation(self, name):
         """
-        :type name: string
-        :rtype : bool
+        :param name: string
+        :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
@@ -325,8 +332,9 @@ class DefinitionsDatabaseManager(object):
 
     def exists_data_type(self, name):
         """
-        :type name: string
-        :rtype : bool
+        :param name: string
+        :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
@@ -341,8 +349,9 @@ class DefinitionsDatabaseManager(object):
 
     def exists_data_source_type(self, data_source_type):
         """
-        :type data_source_type: string
-        :rtype : bool
+        :param data_source_type: string
+        :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
@@ -357,8 +366,9 @@ class DefinitionsDatabaseManager(object):
 
     def has_all_required_param_values(self, data_source):
         """
-        :type data_source: DataSource
-        :rtype : bool
+        :param data_source: DataSource
+        :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -382,14 +392,15 @@ class DefinitionsDatabaseManager(object):
     def add_operation(self, name, data_type_name, data_source_type_name, inspector_name, param_values, device_models,
                       android_versions):
         """
-        :type name: string
-        :type data_type_name: string
-        :type data_source_type_name: string
-        :type inspector_name: string
-        :type param_values: dict[string]
-        :type device_models: list[string]
-        :type android_versions: list[(string, string)]
+        :param name: string
+        :param data_type_name: string
+        :param data_source_type_name: string
+        :param inspector_name: string
+        :param param_values: dict[string]
+        :param device_models: list[string]
+        :param android_versions: list[(string, string)]
         :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -478,8 +489,9 @@ class DefinitionsDatabaseManager(object):
 
     def remove_operation(self, name):
         """
-        :type name: string
+        :param name: string
         :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -508,9 +520,10 @@ class DefinitionsDatabaseManager(object):
 
     def add_data_type(self, name, cybox_object_name):
         """
-        :type name:string
-        :type cybox_object_name: string
+        :param name:string
+        :param cybox_object_name: string
         :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
@@ -539,8 +552,9 @@ class DefinitionsDatabaseManager(object):
 
     def remove_data_type(self, name):
         """
-        :type name: string
+        :param name: string
         :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
@@ -577,10 +591,11 @@ class DefinitionsDatabaseManager(object):
 
     def add_data_source_type(self, name, extractor_name, required_params):
         """
-        :type name: string
-        :type extractor_name: string
-        :type required_params: dict[string]
-        :rtype : bool
+        :param name: string
+        :param extractor_name: string
+        :param required_params: dict[string]
+        :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             c = conn.cursor()
@@ -620,8 +635,9 @@ class DefinitionsDatabaseManager(object):
 
     def remove_data_source_type(self, name):
         """
-        :type name: string
+        :param name: string
         :rtype: bool
+
         """
         with sqlite3.connect(self.db_file_path) as conn:
             conn.row_factory = sqlite3.Row
