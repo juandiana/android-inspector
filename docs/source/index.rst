@@ -1,24 +1,20 @@
-Android Inspector Packages reference
-====================================
-
-
-.. automodule:: android-inspector
-   :members:
+Android Inspector's packages reference
+======================================
 
 ----------
 Components
 ----------
 .. toctree::
-   components
+packages/components
 
 -----
 Model
 -----
 .. toctree::
-   model
+packages/model
 
 ----
 Util
 ----
 .. toctree::
-   util
+packages/util
