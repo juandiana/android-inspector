@@ -2,12 +2,11 @@
 ==================================
 
 .. automodule:: util
-    :members:
+   :members:
 
 --------------------
 
 **Module**
 
 .. toctree::
-
    util/inspectors_helper

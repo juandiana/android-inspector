@@ -2,13 +2,13 @@
 -----------------------------------------------
 
 .. automodule:: model.operation_info
-:members:
+   :members:
 
-        .. autoclass:: model.operation_info.DataSource
-:members:
+   .. autoclass:: model.operation_info.DataSource
+      :members:
 
-        .. autoclass:: model.operation_info.OperationInfo
-:members:
+   .. autoclass:: model.operation_info.OperationInfo
+      :members:
 
-        .. autoclass:: model.operation_info.DeviceInfo
-:members:
+   .. autoclass:: model.operation_info.DeviceInfo
+      :members:
