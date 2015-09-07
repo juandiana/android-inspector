@@ -44,10 +44,9 @@ def load_data_set(data_set_name):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Loads the data set to the android emulator.')
-    parser.add_argument('--ds', required=True, help='specify the data set')
-
+    parser.add_argument('data_set_name', help='Name of the dataset to be loaded.')
     args = parser.parse_args()
 
-    success = load_data_set(args.ds)
+    success = load_data_set(args.data_set_name)
     if success:
         print "The data set was pushed successfully."
