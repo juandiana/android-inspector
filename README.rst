@@ -39,7 +39,7 @@ Example
 Requirements
 ------------
 - Python 2.7
-- *Java 6 (Optional: Used for HTML output generation only)*
+- *Java Runtime Environment 6 (Optional: Used for HTML output generation only)*
 
 **Python dependencies:**
 
