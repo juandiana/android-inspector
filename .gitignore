@@ -104,6 +104,7 @@ crashlytics.properties
 crashlytics-build.properties
 
 # Project specific.
+docs/build
 test/results/
 test/application_extractor_data
 test/Facebook-16.apk

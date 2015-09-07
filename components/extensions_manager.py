@@ -16,9 +16,9 @@ class ExtensionsManager(object):
 
     def add(self, ex_type, def_path):
         """
-        :type ex_type: string
-        :type def_path: string
-        :rtype : bool
+        :param ex_type: string
+        :param def_path: string
+        :rtype: bool
         """
         if not os.path.exists(def_path):
             raise RuntimeError('The definition module specified does not exist.')
@@ -66,9 +66,9 @@ class ExtensionsManager(object):
 
     def remove(self, ex_type, name):
         """
-        :type ex_type: string
-        :type name: string
-        :rtype : bool
+        :param ex_type: string
+        :param name: string
+        :rtype: bool
         """
         if ex_type == 'data_type':
             custom_cybox_object_name = self.definitions_database_manager.get_data_type_custom_cybox_object_name(name)
@@ -91,9 +91,10 @@ def check_component_name_and_path(ex_type, definition, unpacked_files_path):
     """
     Check if the component_name matches the .py file name.
     If they match, return the .py file_path and the repository_name. Else, raise OperationError exception.
-    :type ex_type: string
-    :type definition: string
-    :type unpacked_files_path: string
+    
+    :param ex_type: string
+    :param definition: string
+    :param unpacked_files_path: string
     :rtype: (string, string)
     """
     if ex_type == 'data_type':

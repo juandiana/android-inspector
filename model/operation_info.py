@@ -33,6 +33,12 @@ class DataSource(object):
         return self.type_ + '{' + ', '.join(params) + '}'
 
 
+class DeviceInfo(object):
+    def __init__(self, os_version, device_model):
+        self.os_version = os_version
+        self.device_model = device_model
+
+
 class OperationInfo(object):
     def __init__(self, name, data_type, data_source, supported_device_models, supported_os_versions):
         self.name = name
@@ -50,10 +56,4 @@ class OperationInfo(object):
 
     def to_tuple(self):
         return self.name, self.data_type, self.data_source, \
-            to_string_list_repr(self.supported_device_models), android_versions_repr(self.supported_os_versions)
-
-
-class DeviceInfo(object):
-    def __init__(self, os_version, device_model):
-        self.os_version = os_version
-        self.device_model = device_model
+               to_string_list_repr(self.supported_device_models), android_versions_repr(self.supported_os_versions)
