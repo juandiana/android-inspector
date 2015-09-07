@@ -1,5 +1,5 @@
 `android-inspector.components.coordinator` Module
-=================================================
+-------------------------------------------------
 
 .. automodule:: components.coordinator
    :members:

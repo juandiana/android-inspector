@@ -1,18 +1,24 @@
-Welcome to Android Inspector's documentation!
-=============================================
+Android Inspector Packages reference
+====================================
 
-``android-inspector`` Package
-=============================
 
 .. automodule:: android-inspector
    :members:
 
-
---------------------
-
-**Sub-Modules**
-
+----------
+Components
+----------
 .. toctree::
    components
+
+-----
+Model
+-----
+.. toctree::
    model
+
+----
+Util
+----
+.. toctree::
    util

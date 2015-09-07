@@ -37,7 +37,7 @@ class OperationsManager(object):
 
     def get_operation(self, name):
         """
-        :type name: string
+        :param name: string
         :rtype: Operation
         """
         if not self.definitions_database.exists_operation(name):

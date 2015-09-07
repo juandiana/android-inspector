@@ -1,5 +1,5 @@
 `android-inspector.model.operation` Module
-==========================================
+------------------------------------------
 
 .. automodule:: model.operation
    :members:

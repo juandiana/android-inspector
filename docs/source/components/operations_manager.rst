@@ -1,5 +1,5 @@
 `android-inspector.components.operations_manager` Module
-========================================================
+--------------------------------------------------------
 
 .. automodule:: components.operations_manager
    :members:

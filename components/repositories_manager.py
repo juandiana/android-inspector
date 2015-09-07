@@ -29,8 +29,8 @@ class RepositoriesManager(object):
 
     def add_file(self, repo_name, file_path):
         """
-        :type repo_name: string
-        :type file_path: string
+        :param repo_name: string
+        :param file_path: string
         """
         dest_path = os.path.join(self.repositories_dir_name, repo_name)
         file_name = os.path.basename(file_path)
@@ -42,8 +42,8 @@ class RepositoriesManager(object):
 
     def remove_file(self, repo_name, file_name):
         """
-        :type repo_name: string
-        :type file_name: string
+        :param repo_name: string
+        :param file_name: string
         """
         target_path = os.path.join(self.repositories_dir_name, repo_name, file_name)
 
@@ -54,7 +54,7 @@ class RepositoriesManager(object):
 
     def get_extractor_instance(self, name):
         """
-        :type name: string
+        :param name: string
         :rtype: Extractor
         """
         extractor_class = get_class_from_file(self.repositories_dir_name + '.extractors.', name, Extractor)
@@ -62,7 +62,7 @@ class RepositoriesManager(object):
 
     def get_inspector_instance(self, name):
         """
-        :type name: string
+        :param name: string
         :rtype: Inspector
         """
         inspector_class = get_class_from_file(self.repositories_dir_name + '.inspectors.', name, Inspector)

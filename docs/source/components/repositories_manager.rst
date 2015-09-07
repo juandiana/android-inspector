@@ -1,5 +1,5 @@
 `android-inspector.components.repositories_manager` Module
-==========================================================
+----------------------------------------------------------
 
 .. automodule:: components.repositories_manager
    :members:

@@ -61,9 +61,9 @@ class OperationError(Exception):
 class Operation(object):
     def __init__(self, extractor, inspector, param_values):
         """
-        :type extractor: Extractor
-        :type inspector: Inspector
-        :type param_values: dict[string, string]
+        :param extractor: Extractor
+        :param inspector: Inspector
+        :param param_values: dict[string, string]
 
         """
         self.extractor = extractor
@@ -72,8 +72,8 @@ class Operation(object):
 
     def execute(self, device_info, data_dir_path, simple_output=False, html_output=False):
         """
-        :type device_info: DeviceInfo
-        :type data_dir_path: string
+        :param device_info: DeviceInfo
+        :param data_dir_path: string
 
         """
         extracted_data_dir_path = os.path.join(data_dir_path, EXTRACTED_DATA_DIR_NAME)

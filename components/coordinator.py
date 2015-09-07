@@ -29,7 +29,7 @@ class Coordinator(object):
 
     def set_device_info(self, device_info):
         """
-        :type device_info: DeviceInfo
+        :param device_info: DeviceInfo
         """
         self.device_info = device_info
         print "Device model '{0}' running Android version '{1}' was set as the current device information." \
@@ -37,9 +37,9 @@ class Coordinator(object):
 
     def list_operations(self, data_type, data_source, device_info):
         """
-        :type data_type: string
-        :type data_source: DataSource
-        :type device_info: DeviceInfo
+        :param data_type: string
+        :param data_source: DataSource
+        :param device_info: DeviceInfo
         """
         device_info_to_use = self._get_device_info(device_info)
 
@@ -58,11 +58,11 @@ class Coordinator(object):
 
     def execute_operations(self, names, device_info, results_dir_path, simple_output=False, html_output=False):
         """
-        :type names: list[string]
-        :type device_info: DeviceInfo
-        :type results_dir_path: string
-        :type simple_output: bool
-        :type html_output: bool
+        :param names: list[string]
+        :param device_info: DeviceInfo
+        :param results_dir_path: string
+        :param simple_output: bool
+        :param html_output: bool
         """
         device_info_to_use = self._get_device_info(device_info)
 
@@ -88,8 +88,8 @@ class Coordinator(object):
 
     def add_ext(self, type_, path_):
         """
-        :type type_: string
-        :type path_: string
+        :param type_: string
+        :param path_: string
         """
         self.extensions_manager.add(type_, path_)
 
@@ -97,8 +97,8 @@ class Coordinator(object):
 
     def rm_ext(self, type_, name):
         """
-        :type type_: string
-        :type name: string
+        :param type_: string
+        :param name: string
         """
         self.extensions_manager.remove(type_, name)
 
