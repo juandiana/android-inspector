@@ -6,7 +6,7 @@
 
 --------------------
 
-**Sub-Modules**
+**Module**
 
 .. toctree::
 

@@ -111,6 +111,7 @@ class DefinitionsDatabaseManager(object):
         The data_type exists in definitions.db
         The data_source.type_ exists in definitions.db and has all the required params.
         The device_info contains a model and an os_version.
+
         :param data_type: string or None
         :param data_source: DataSource or None
         :param device_info: DeviceInfo
@@ -520,7 +521,7 @@ class DefinitionsDatabaseManager(object):
 
     def add_data_type(self, name, cybox_object_name):
         """
-        :param name:string
+        :param name: string
         :param cybox_object_name: string
         :rtype: bool
 

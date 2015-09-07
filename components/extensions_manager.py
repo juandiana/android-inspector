@@ -91,6 +91,7 @@ def check_component_name_and_path(ex_type, definition, unpacked_files_path):
     """
     Check if the component_name matches the .py file name.
     If they match, return the .py file_path and the repository_name. Else, raise OperationError exception.
+    
     :param ex_type: string
     :param definition: string
     :param unpacked_files_path: string

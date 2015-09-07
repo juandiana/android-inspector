@@ -33,8 +33,8 @@ class Extractor(object):
     @abstractmethod
     def execute(self, extracted_data_dir_path, param_values):
         """
-        :type extracted_data_dir_path: string
-        :type param_values: dict[string, string]
+        :param extracted_data_dir_path: string
+        :param param_values: dict[string, string]
 
         """
         pass
@@ -46,8 +46,8 @@ class Inspector(object):
     @abstractmethod
     def execute(self, device_info, extracted_data_dir_path):
         """
-        :type device_info: DeviceInfo
-        :type extracted_data_dir_path: string
+        :param device_info: DeviceInfo
+        :param extracted_data_dir_path: string
         :rtype: (list[Object], list[FileObject])
 
         """
