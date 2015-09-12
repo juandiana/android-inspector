@@ -51,8 +51,7 @@ class Coordinator(object):
             table = []
             for op_info in op_infos:
                 table.append(op_info.to_tuple())
-            result = tabulate(table, headers=['Name', 'Data type', 'Data Source', 'Devices supported',
-                                              'Android versions supported'])
+            result = tabulate(table, headers=['Name', 'Data type', 'Data Source', 'Devices', 'Versions'])
 
         print result
 
