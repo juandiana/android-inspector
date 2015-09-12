@@ -138,13 +138,21 @@ util         Utility modules for developing extensions.
 
 Documentation
 -------------
-The code reference documentation may be built using *Sphenix*.
+The code reference documentation may be built using *Sphinx*.
+
+Before building, make sure you have the dependencies (Sphinx & themes):
+
+.. code-block:: bash
+
+    $ pip install −r docs/requirements.txt
+
+Then, compile using:
 
 .. code-block:: bash
 
     $ sphinx-build -b html docs/source/ docs/build/
 
-Go to ``/docs/build/index.html`` to access the generated docs.
+Finally, go to ``/docs/build/index.html`` to access the generated docs.
 
 Notice
 ------

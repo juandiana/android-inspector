@@ -108,9 +108,9 @@ class DefinitionsDatabaseManager(object):
 
     def query_operations_info(self, data_type, data_source, device_info):
         """
-        The data_type exists in definitions.db
-        The data_source.type_ exists in definitions.db and has all the required params.
-        The device_info contains a model and an os_version.
+        * `data_type` exists in definitions.db
+        * `data_source.type_` exists in definitions.db and has all the required params.
+        * `device_info` contains a model and an os_version.
 
         :param data_type: string or None
         :param data_source: DataSource or None
