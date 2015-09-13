@@ -30,7 +30,7 @@ class DataSource(object):
         for p in self.info:
             params.append(p + ':' + self.info[p])
 
-        return self.type_ + '{' + ', '.join(params) + '}'
+        return self.type_[:3] + '{' + ', '.join(params) + '}'
 
 
 class DeviceInfo(object):
